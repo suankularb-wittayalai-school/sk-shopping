@@ -1,13 +1,12 @@
 {
-  "brand": {
-    "name": "แม่แบบ Next.js",
-    "logoText": "<0>SK </0><1>แม่แบบ Next.js</1>",
-    "school": "โรงเรียนสวนกุหลาบวิทยาลัย"
-  },
+  "appName": "SK Shopping",
+  "tabName": "{tabName} - SK Shopping",
   "navigation": {
-    "home": "หน้าหลัก",
-    "login": "เข้าสู่ระบบ",
-    "about": "เกี่ยวกับ"
+    "landing": "ร้านค้า",
+    "categories": "ตามประเภท",
+    "cart": "รถเข็น",
+    "favorites": "สินค้าโปรด",
+    "account": "บัญชี"
   },
   "pageIsLoading": "หน้ากำลังโหลด…"
 }

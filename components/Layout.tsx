@@ -3,6 +3,7 @@ import cn from "@/utils/helpers/cn";
 import usePageIsLoading from "@/utils/helpers/usePageIsLoading";
 import { useSnackbar } from "@/utils/helpers/useSnackbar";
 import {
+  Interactive,
   MaterialIcon,
   NavBar,
   NavBarItem,
@@ -19,6 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, ReactNode, useState } from "react";
+import LogoImage from "@/public/images/logo.svg";
 
 /**
  * A Root Layout with persistent components.
@@ -45,83 +47,96 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
       {/* Navigation Drawer */}
       <NavDrawer open={navOpen} onClose={() => setNavOpen(false)}>
         {/* Top-level pages */}
-        <NavDrawerSection
-          header={
-            <Text type="headline-small" className="!tracking-tighter">
-              <Trans
-                i18nKey="brand.logoText"
-                ns="common"
-                components={[
-                  <span key={0} />,
-                  <span
-                    key={1}
-                    className={cn(`bg-gradient-to-r from-primary to-secondary
-                      bg-clip-text font-bold text-transparent`)}
-                  />,
-                ]}
-              />
-            </Text>
-          }
-          alt="SK Components"
-        >
+        <NavDrawerSection header={t("appName")}>
           <NavDrawerItem
-            icon={<MaterialIcon icon="home" />}
-            label={t("navigation.home")}
-            selected={router.pathname === "/"}
+            icon={<MaterialIcon icon="storefront" />}
+            label={t("navigation.landing")}
+            selected={router.asPath === "/"}
             href="/"
             element={Link}
           />
           <NavDrawerItem
-            icon={<MaterialIcon icon="login" />}
-            label={t("navigation.login")}
-            selected={router.pathname === "/account/login"}
-            href="/account/login"
+            icon={<MaterialIcon icon="category" />}
+            label={t("navigation.categories")}
+            selected={router.asPath.startsWith("/categories")}
+            href="/categories"
             element={Link}
           />
           <NavDrawerItem
-            icon={<MaterialIcon icon="info" />}
-            label={t("navigation.about")}
-            selected={router.pathname === "/about"}
-            href="/about"
+            icon={<MaterialIcon icon="shopping_cart" />}
+            label={t("navigation.cart")}
+            selected={router.asPath.startsWith("/cart")}
+            href="/cart"
+            element={Link}
+          />
+          <NavDrawerItem
+            icon={<MaterialIcon icon="star" />}
+            label={t("navigation.favorites")}
+            selected={router.asPath.startsWith("/favorites")}
+            href="/favorites"
+            element={Link}
+          />
+          <NavDrawerItem
+            icon={<MaterialIcon icon="account_circle" />}
+            label={t("navigation.account")}
+            selected={router.asPath.startsWith("/account")}
+            href="/account"
             element={Link}
           />
         </NavDrawerSection>
-
-        {/* Insert more Navigation Drawer Sections as your app expand. */}
       </NavDrawer>
 
       {/* Navigation Bar/Rail */}
       <NavBar
         brand={
-          <Image
-            src="/images/logo.svg"
-            priority
-            width={56}
-            height={56}
-            alt=""
-          />
+          <Interactive
+            href="/"
+            element={Link}
+            className="dark block rounded-sm"
+          >
+            <Image
+              src={LogoImage}
+              priority
+              alt=""
+              className="rounded-[inherit] transition-[border-radius]"
+            />
+          </Interactive>
         }
         onNavToggle={() => setNavOpen(true)}
       >
         <NavBarItem
-          icon={<MaterialIcon icon="home" />}
-          label={t("navigation.home")}
-          selected={/^\/$/.test(router.asPath)}
+          icon={<MaterialIcon icon="storefront" />}
+          label={t("navigation.landing")}
+          selected={router.asPath === "/"}
           href="/"
           element={Link}
         />
         <NavBarItem
-          icon={<MaterialIcon icon="login" />}
-          label={t("navigation.login")}
-          selected={/^\/account\/login/.test(router.asPath)}
-          href="/account/login"
+          icon={<MaterialIcon icon="category" />}
+          label={t("navigation.categories")}
+          selected={router.asPath.startsWith("/categories")}
+          href="/categories"
           element={Link}
         />
         <NavBarItem
-          icon={<MaterialIcon icon="info" />}
-          label={t("navigation.about")}
-          selected={/^\/about/.test(router.asPath)}
-          href="/about"
+          icon={<MaterialIcon icon="shopping_cart" />}
+          label={t("navigation.cart")}
+          selected={router.asPath.startsWith("/cart")}
+          href="/cart"
+          element={Link}
+        />
+        <NavBarItem
+          icon={<MaterialIcon icon="star" />}
+          label={t("navigation.favorites")}
+          selected={router.asPath.startsWith("/favorites")}
+          href="/favorites"
+          element={Link}
+        />
+        <NavBarItem
+          icon={<MaterialIcon icon="account_circle" />}
+          label={t("navigation.account")}
+          selected={router.asPath.startsWith("/account")}
+          href="/account"
           element={Link}
         />
       </NavBar>
