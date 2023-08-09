@@ -26,3 +26,23 @@
     }
   }
 }
+
+@layer components {
+  .link {
+    font-family: var(--font-display);
+    font-weight: var(--font-medium);
+    color: var(--primary);
+    text-align: center;
+    text-decoration-line: underline;
+    text-decoration-color: var(--primary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color var(--easing-standard)
+      var(--motion-short-4);
+  }
+
+  .link:hover,
+  .link:focus {
+    text-decoration-color: var(--tertiary);
+  }
+}
