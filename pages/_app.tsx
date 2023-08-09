@@ -18,6 +18,7 @@ import {
 } from "next/font/google";
 import localFont from "next/font/local";
 import { FC, ReactNode, useState } from "react";
+import { Provider as BalancerProvider } from "react-wrap-balancer";
 
 // English fonts
 const bodyFontEN = Inter({ subsets: ["latin"] });
@@ -60,7 +61,7 @@ const Contexts: FC<{ children: ReactNode }> = ({ children }) => {
     <SessionContextProvider supabaseClient={supabase}>
       <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
         <AppStateContext.Provider value={{ navOpen, setNavOpen }}>
-          {children}
+          <BalancerProvider>{children}</BalancerProvider>
         </AppStateContext.Provider>
       </SnackbarContext.Provider>
     </SessionContextProvider>
