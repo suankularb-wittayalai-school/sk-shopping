@@ -4,6 +4,8 @@ import AppStateContext from "@/contexts/AppStateContext";
 import SnackbarContext from "@/contexts/SnackbarContext";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@suankularb-components/react";
+import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { MotionConfig } from "framer-motion";
 import { appWithTranslation } from "next-i18next";
 import { AppProps } from "next/app";
@@ -50,16 +52,18 @@ const iconFont = localFont({
  * @returns The app wrapped with context providers.
  */
 const Contexts: FC<{ children: ReactNode }> = ({ children }) => {
+  const [supabase] = useState(() => createPagesBrowserClient());
   const [snackbar, setSnackbar] = useState<JSX.Element | null>(null);
   const [navOpen, setNavOpen] = useState(false);
 
   return (
-    // Add more contexts here as your app grows
-    <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
-      <AppStateContext.Provider value={{ navOpen, setNavOpen }}>
-        {children}
-      </AppStateContext.Provider>
-    </SnackbarContext.Provider>
+    <SessionContextProvider supabaseClient={supabase}>
+      <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
+        <AppStateContext.Provider value={{ navOpen, setNavOpen }}>
+          {children}
+        </AppStateContext.Provider>
+      </SnackbarContext.Provider>
+    </SessionContextProvider>
   );
 };
 
