@@ -1,36 +1,32 @@
 // Imports
-import PageHeader from "@/components/PageHeader";
 import { LangCode } from "@/utils/types/common";
-import {
-  ContentLayout,
-  Header,
-  Section,
-  Text,
-} from "@suankularb-components/react";
+import { ContentLayout } from "@suankularb-components/react";
 import { GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Head from "next/head";
 
-const IndexPage: NextPage = () => {
-  const { t } = useTranslation("home");
+const LandingPage: NextPage = () => {
+  const { t } = useTranslation("landing");
+  const { t: tx } = useTranslation("common");
 
   return (
     <>
-      <PageHeader>{t("title")}</PageHeader>
-      <ContentLayout>
-        <Section>
-          <Header>{t("welcome.title")}</Header>
-          <Text type="body-medium">{t("welcome.desc")}</Text>
-        </Section>
-      </ContentLayout>
+      <Head>
+        <title>{tx("appName")}</title>
+      </Head>
+      <ContentLayout>{}</ContentLayout>
     </>
   );
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
-    ...(await serverSideTranslations(locale as LangCode, ["common", "home"])),
+    ...(await serverSideTranslations(locale as LangCode, [
+      "common",
+      "landing",
+    ])),
   },
 });
 
-export default IndexPage;
+export default LandingPage;
