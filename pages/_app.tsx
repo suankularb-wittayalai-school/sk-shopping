@@ -96,4 +96,3 @@ function App({ Component, pageProps }: AppProps) {
 }
 
 export default appWithTranslation(App);
-
