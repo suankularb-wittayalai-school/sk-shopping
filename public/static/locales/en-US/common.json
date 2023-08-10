@@ -6,5 +6,26 @@
     "favorites": "Favorites",
     "account": "Account"
   },
+  "appDrawer": {
+    "mysk": {
+      "title": "MySK apps",
+      "mysk": "MySK",
+      "clubRegistry": "Club Registry",
+      "shopping": "SK Shopping"
+    },
+    "school": {
+      "title": "School apps",
+      "skAcTh": "sk.ac.th",
+      "kularbFah": "Kularb Fah",
+      "kularbLuang": "Kularb Luang",
+      "library": "Library",
+      "libraryEBook": "Library eBook",
+      "libraryOPAC": "Library OPAC"
+    },
+    "other": {
+      "title": "Other apps",
+      "schoolICT": "School ICT"
+    }
+  },
   "pageIsLoading": "Page loading…"
 }
