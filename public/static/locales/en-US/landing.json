@@ -1,0 +1,18 @@
+{
+  "advert": {
+    "empty": "Advertisement",
+    "note": {
+      "desc": "Paid advertisement",
+      "link": "Contact us"
+    }
+  },
+  "shops": {
+    "title": "Club/organization shops"
+  },
+  "collections": {
+    "title": "Browse collections",
+    "action": {
+      "browse": "Browse"
+    }
+  }
+}
