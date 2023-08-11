@@ -5,8 +5,8 @@ import { Shop } from "@/utils/types/shop";
 
 export type Collection = {
   id: string;
-  name: String;
-  description: String;
+  name: string;
+  description: string;
   foreground_url: string | null;
   background_url: string | null;
   shop: Shop;
