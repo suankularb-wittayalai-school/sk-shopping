@@ -57,7 +57,7 @@ const CollectionCard: StylableFC<{
         <div
           className={cn(
             `flex flex-col gap-1 self-stretch p-5`,
-            collection.foreground_url ? `sm:pl-0` : `pl-7`,
+            collection.foreground_url ? `sm:pl-0` : `pl-7 sm:pr-0`,
           )}
         >
           {/* Text */}
