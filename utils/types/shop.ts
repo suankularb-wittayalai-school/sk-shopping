@@ -7,14 +7,14 @@ import { ListingOption } from "@/utils/types/listing-option";
 export type Shop = {
   id: string;
   name: MultiLangString;
-  accent_color: string[];
-  background_color: string[];
-  logo_url: string[];
+  accent_color: string | null;
+  background_color: string | null;
+  logo_url: string | null;
   is_school_pickup_allowed: boolean;
-  pickup_location: string[];
+  pickup_location: string | null;
   is_delivery_allowed: boolean;
   accept_promptpay: boolean;
-  promptpay_number: string[];
+  promptpay_number: string | null;
   accept_cod: boolean;
 };
 
