@@ -33,7 +33,7 @@ const CollectionCard: StylableFC<{
       }}
       className={cn(
         `relative overflow-hidden rounded-xl border-1 border-outline-variant
-        bg-cover sm:h-[12.5rem]`,
+        bg-cover sm:aspect-[5/2]`,
         className,
       )}
     >
