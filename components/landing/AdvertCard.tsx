@@ -23,7 +23,7 @@ const AdvertCard: StylableFC = ({ style, className }) => {
         href="blob-card-full"
         className="absolute inset-0 -z-10 h-full w-full"
       />
-      <Text type="body-medium">พื้นที่โฆษณา</Text>
+      <Text type="title-large" className="opacity-80">พื้นที่โฆษณา</Text>
     </div>
   );
 };
