@@ -10,6 +10,7 @@ import {
   ContentLayout,
   Text,
 } from "@suankularb-components/react";
+import { useTranslation } from "next-i18next";
 import Balancer from "react-wrap-balancer";
 
 /**
@@ -23,6 +24,8 @@ import Balancer from "react-wrap-balancer";
  * @todo This is hard-coded to be Kornor’s advert because there is no API endpoint for adverts yet.
  */
 const AdvertBanner: StylableFC = ({ style, className }) => {
+  const { t } = useTranslation("landing", { keyPrefix: "advert" });
+
   return (
     <div
       style={style}
@@ -70,7 +73,7 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
 
             {/* Call to action */}
             <Actions align="left" className="mt-6">
-              <Button appearance="filled">ไปที่ร้านค้า</Button>
+              <Button appearance="filled">{t("action.goToShop")}</Button>
             </Actions>
           </div>
         </Columns>

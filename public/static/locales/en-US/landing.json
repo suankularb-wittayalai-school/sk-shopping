@@ -4,6 +4,9 @@
     "note": {
       "desc": "Paid advertisement",
       "link": "Contact us"
+    },
+    "action": {
+      "goToShop": "Go to shop"
     }
   },
   "shops": {
