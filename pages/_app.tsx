@@ -1,4 +1,5 @@
 // Imports
+import BlobDefinitions from "@/components/BlobDefinitions";
 import Layout from "@/components/Layout";
 import AppStateContext from "@/contexts/AppStateContext";
 import SnackbarContext from "@/contexts/SnackbarContext";
@@ -93,6 +94,9 @@ function App({ Component, pageProps }: AppProps) {
             <Layout>
               <Component {...pageProps} />
             </Layout>
+
+            {/* Symbol definitions */}
+            <BlobDefinitions />
           </ThemeProvider>
         </MotionConfig>
       </Contexts>

@@ -1,4 +1,5 @@
 // Imports
+import UseVector from "@/components/UseVector";
 import cn from "@/utils/helpers/cn";
 import { StylableFC } from "@/utils/types/common";
 import { Text } from "@suankularb-components/react";
@@ -13,21 +14,16 @@ const AdvertCard: StylableFC = ({ style, className }) => {
     <div
       style={style}
       className={cn(
-        `z-10 grid aspect-[5/2] place-content-center rounded-xl border-1
-        border-outline-variant bg-surface text-center`,
+        `relative z-10 grid aspect-[5/2] place-content-center overflow-hidden
+        rounded-xl border-1 border-outline-variant bg-surface text-center`,
         className,
       )}
     >
-      <Text type="body-medium">
-        <a
-          href="https://forms.gle/"
-          target="_blank"
-          rel="noreferrer"
-          className="link"
-        >
-          ติดต่อโฆษณา
-        </a>
-      </Text>
+      <UseVector
+        href="blob-card-full"
+        className="absolute inset-0 -z-10 h-full w-full"
+      />
+      <Text type="body-medium">พื้นที่โฆษณา</Text>
     </div>
   );
 };
