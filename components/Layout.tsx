@@ -1,5 +1,5 @@
 // Imports
-import cn from "@/utils/helpers/cn";
+import LogoImage from "@/public/images/logo.svg";
 import usePageIsLoading from "@/utils/helpers/usePageIsLoading";
 import { useSnackbar } from "@/utils/helpers/useSnackbar";
 import {
@@ -13,14 +13,12 @@ import {
   Progress,
   RootLayout,
   Snackbar,
-  Text,
 } from "@suankularb-components/react";
-import { Trans, useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, ReactNode, useState } from "react";
-import LogoImage from "@/public/images/logo.svg";
 
 /**
  * A Root Layout with persistent components.
@@ -90,6 +88,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
       <NavBar
         brand={
           <Interactive
+            shadowEffect
             href="/"
             element={Link}
             className="dark block rounded-sm"
