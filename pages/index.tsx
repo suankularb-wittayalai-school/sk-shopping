@@ -1,10 +1,15 @@
 // Imports
 import AdvertBanner from "@/components/landing/AdvertBanner";
 import AdvertCard from "@/components/landing/AdvertCard";
+import ShopCard from "@/components/landing/ShopCard";
+import createJimmy from "@/utils/helpers/createJimmy";
+import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
+import { CompactShop } from "@/utils/types/shop";
 import {
   Columns,
   ContentLayout,
+  Header,
   Section,
   Text,
 } from "@suankularb-components/react";
@@ -13,7 +18,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 
-const LandingPage: NextPage = () => {
+const LandingPage: NextPage<{ shops: CompactShop[] }> = ({ shops }) => {
   const { t } = useTranslation("landing");
   const { t: tx } = useTranslation("common");
 
@@ -45,18 +50,36 @@ const LandingPage: NextPage = () => {
             </a>
           </Text>
         </Section>
+        <Section>
+          <Header>ร้านค้าชุมนุม/องค์กร</Header>
+          <Columns columns={4}>
+            {shops.map((shop) => (
+              <ShopCard key={shop.id} shop={shop} />
+            ))}
+          </Columns>
+        </Section>
       </ContentLayout>
     </>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-  props: {
-    ...(await serverSideTranslations(locale as LangCode, [
-      "common",
-      "landing",
-    ])),
-  },
-});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const jimmy = await createJimmy();
+  const { data: shops, error } = await jimmy.fetch("/shops", {
+    query: { fetch_level: "compact" },
+  });
+  if (error) logError("index getStaticProps", error);
+
+  return {
+    props: {
+      ...(await serverSideTranslations(locale as LangCode, [
+        "common",
+        "landing",
+      ])),
+      shops,
+    },
+    revalidate: 300,
+  };
+};
 
 export default LandingPage;
