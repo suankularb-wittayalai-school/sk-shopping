@@ -56,8 +56,8 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
           <NavDrawerItem
             icon={<MaterialIcon icon="category" />}
             label={t("navigation.categories")}
-            selected={router.asPath.startsWith("/categories")}
-            href="/categories"
+            selected={router.asPath.startsWith("/category")}
+            href="/category/t-shirt"
             element={Link}
           />
           <NavDrawerItem
@@ -113,8 +113,8 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
         <NavBarItem
           icon={<MaterialIcon icon="category" />}
           label={t("navigation.categories")}
-          selected={router.asPath.startsWith("/categories")}
-          href="/categories"
+          selected={router.asPath.startsWith("/category")}
+          href="/category/t-shirt"
           element={Link}
         />
         <NavBarItem
