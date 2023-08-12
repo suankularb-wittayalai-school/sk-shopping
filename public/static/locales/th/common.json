@@ -1,6 +1,6 @@
 {
   "appName": "SK Shopping",
-  "tabName": "{tabName} - SK Shopping",
+  "tabName": "{{tabName}} - SK Shopping",
   "navigation": {
     "landing": "ร้านค้า",
     "categories": "ตามประเภท",
