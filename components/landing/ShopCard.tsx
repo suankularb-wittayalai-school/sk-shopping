@@ -1,5 +1,5 @@
 // Imports
-import ShopLogo from "@/components/shop/ShopLogo";
+import ShopLogo from "@/components/landing/ShopLogo";
 import cn from "@/utils/helpers/cn";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import { StylableFC } from "@/utils/types/common";
@@ -54,7 +54,7 @@ const ShopCard: StylableFC<{
         <CardHeader
           avatar={<ShopLogo shop={shop} />}
           title={getLocaleString(shop.name)}
-          className="grow"
+          className="grow !grid grid-cols-[2.5rem,1fr]"
         />
       </Card>
     </li>
