@@ -143,13 +143,15 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const jimmy = await createJimmy();
+  const { fromUUID } = shortUUID();
+
   const { data: shops } = await jimmy.fetch<IDOnly[]>("/shops", {
     query: { fetch_level: "id_only" },
   });
 
   return {
     paths: insertLocaleIntoStaticPaths(
-      shops!.map((shop) => ({ params: { shopID: shop.id } })),
+      shops!.map((shop) => ({ params: { shopID: fromUUID(shop.id) } })),
     ),
     fallback: "blocking",
   };
