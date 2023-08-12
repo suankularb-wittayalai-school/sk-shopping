@@ -44,7 +44,7 @@ const CollectionCard: StylableFC<{
           className="absolute inset-0 -z-10 h-full w-full"
         />
       )}
-      <Columns columns={2} className="h-full">
+      <Columns columns={collection.foreground_url ? 2 : 3} className="h-full">
         {/* Foreground image */}
         {collection.foreground_url && (
           <Image
@@ -57,7 +57,9 @@ const CollectionCard: StylableFC<{
         <div
           className={cn(
             `flex flex-col gap-1 self-stretch p-5`,
-            collection.foreground_url ? `sm:pl-0` : `pl-7 sm:pr-0`,
+            collection.foreground_url
+              ? `sm:pl-0`
+              : `pl-7 sm:col-span-2 sm:pr-0`,
           )}
         >
           {/* Text */}
