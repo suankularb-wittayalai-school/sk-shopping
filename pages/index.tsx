@@ -23,6 +23,13 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { group } from "radash";
 
+/**
+ * The Landing page displays some paid advertisements and the list of all Shops
+ * and Collections to browse through.
+ * 
+ * @param shops All Shops.
+ * @param collectionGroups All Collections grouped by Shop ID.
+ */
 const LandingPage: NextPage<{
   shops: CompactShop[];
   collectionGroups: { [key: Shop["id"]]: Collection[] };
