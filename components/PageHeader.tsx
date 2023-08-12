@@ -15,7 +15,7 @@ import { FC, useContext } from "react";
  * the only `<h1>` on the page), the back Button for navigating up, and
  * the App Drawer.
  *
- * @see {@link PageHeader Page Header}
+ * @see {@link BasePageHeader Page Header}
  *
  * @returns A Page Header.
  */
