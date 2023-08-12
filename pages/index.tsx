@@ -3,7 +3,7 @@ import AdvertBanner from "@/components/landing/AdvertBanner";
 import AdvertCard from "@/components/landing/AdvertCard";
 import CollectionCard from "@/components/landing/CollectionCard";
 import ShopCard from "@/components/landing/ShopCard";
-import ShopLogo from "@/components/shop/ShopLogo";
+import ShopLogo from "@/components/landing/ShopLogo";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -47,24 +47,24 @@ const LandingPage: NextPage<{
       <ContentLayout className="!pt-0">
         {/* Advertisements */}
         <Section>
-          <Columns columns={2} className="!grid-cols-1 md:!grid-cols-2">
+          {/* <Columns columns={2} className="!grid-cols-1 md:!grid-cols-2">
             <AdvertCard />
             <AdvertCard />
-          </Columns>
+          </Columns> */}
           <Text
             type="body-small"
             element="p"
             className="text-end text-on-surface-variant"
           >
             {t("advert.note.desc")}&nbsp;&nbsp;
-            <a
+            {/* <a
               href="https://forms.gle/"
               target="_blank"
               rel="noreferrer"
               className="link"
             >
               {t("advert.note.link")}
-            </a>
+            </a> */}
           </Text>
         </Section>
 

@@ -13,7 +13,13 @@ const ShopLogo: StylableFC<{
   shop: Pick<Shop, "logo_url" | "accent_color">;
 }> = ({ shop, style, className }) =>
   shop.logo_url ? (
-    <Image src={shop.logo_url} alt="" width={40} height={40} />
+    <Image
+      src={shop.logo_url}
+      width={40}
+      height={40}
+      alt=""
+      className="h-10 w-10"
+    />
   ) : (
     <div
       style={{
