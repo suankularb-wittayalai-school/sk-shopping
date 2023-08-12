@@ -5,8 +5,8 @@ import { Shop } from "@/utils/types/shop";
 
 export type Listing = {
   id: string;
-  name: String;
-  description: String;
+  name: string;
+  description: string;
   shop: Shop;
   thumbnail_url: string | null;
   preorder_start: string | null;
