@@ -33,6 +33,13 @@ export default async function fetchJimmy<Data extends {} | unknown = unknown>(
     },
   });
 
+  if (process.env.NODE_ENV === "development")
+    console.log(
+      typeof window !== "undefined"
+        ? `[Fetch] ${source}`
+        : `\x1b[0m- \x1b[35mevent\x1b[0m fetched from ${source}`,
+    );
+
   // If the response was successful with no error, return the JSON version of the
   // response
   if (response.ok) return response.json();
