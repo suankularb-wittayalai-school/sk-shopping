@@ -53,3 +53,8 @@ export type MultiLangString = {
   th: string;
   "en-US"?: string;
 };
+
+/**
+ * The return type of a fetch with `fetch_level` of `id_only`.
+ */
+export type IDOnly = { id: string }
