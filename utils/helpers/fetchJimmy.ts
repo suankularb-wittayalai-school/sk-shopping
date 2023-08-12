@@ -7,13 +7,10 @@ import { sift } from "radash";
 /**
  * @private Use `useJimmy` or `createJimmy` instead.
  */
-export default async function fetchJimmy<Data extends {}>(
+export default async function fetchJimmy<Data extends {} | unknown = unknown>(
   path: string,
   session: Session | null,
-  options?: Partial<{
-    query: Query<Data>;
-    [key: string]: any;
-  }>,
+  options?: Partial<{ query: Query; [key: string]: any }>,
 ): Promise<FetchReturn<Data>> {
   /**
    * The path to make the fetch request to.

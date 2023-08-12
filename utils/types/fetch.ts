@@ -1,11 +1,11 @@
 export type FetchLevel = "id_only" | "compact" | "default" | "detailed";
 
-export type FilterConfig<Data extends {}> = Partial<{
+export type FilterConfig<Data extends {} | unknown = unknown> = Partial<{
   data: Data;
   q: string;
 }>;
 
-export type SortingConfig<Data extends {}> = {
+export type SortingConfig<Data extends {} | unknown = unknown> = {
   by: Data[];
   ascending?: boolean;
 };
@@ -15,7 +15,7 @@ export type PaginationConfig = {
   size?: number;
 };
 
-export type Query<Data extends {}> = {
+export type Query<Data extends {} | unknown = unknown> = {
   pagination?: PaginationConfig;
   filter?: FilterConfig<Data>;
   sorting?: SortingConfig<Data>;
@@ -30,7 +30,7 @@ export type FetchError = {
   source: string;
 };
 
-export type FetchReturn<Data extends {}> = {
+export type FetchReturn<Data extends {} | unknown = unknown> = {
   api_version: string;
   meta: { timestamp: string; pagination: null } | null;
 } & ({ data: Data; error: null } | { data: null; error: FetchError });

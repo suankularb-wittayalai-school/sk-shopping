@@ -6,10 +6,10 @@ export default function useJimmy() {
   const session = useSession();
 
   return {
-    fetch: async (
+    fetch: async <Data extends {} | unknown = unknown>(
       path: Parameters<typeof fetchJimmy>["0"],
       options?: Parameters<typeof fetchJimmy>["2"],
-    ) => fetchJimmy(path, session, options),
+    ) => fetchJimmy<Data>(path, session, options),
     session,
   };
 }

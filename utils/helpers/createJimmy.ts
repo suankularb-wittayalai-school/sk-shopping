@@ -1,8 +1,8 @@
 // Imports
 import fetchJimmy from "@/utils/helpers/fetchJimmy";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
-import { NextApiRequest, NextApiResponse } from "next";
 import { Session } from "@supabase/supabase-js";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function createJimmy(
   req?: NextApiRequest,
@@ -20,10 +20,10 @@ export default async function createJimmy(
   }
 
   return {
-    fetch: async (
+    fetch: async <Data extends {} | unknown = unknown>(
       path: Parameters<typeof fetchJimmy>["0"],
       options?: Parameters<typeof fetchJimmy>["2"],
-    ) => fetchJimmy(path, session, options),
+    ) => fetchJimmy<Data>(path, session, options),
     session,
   };
 }
