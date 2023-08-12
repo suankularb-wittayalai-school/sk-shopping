@@ -1,7 +1,8 @@
 // Imports
+import cn from "@/utils/helpers/cn";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import { StylableFC } from "@/utils/types/common";
-import { ListingCompact } from "@/utils/types/listing";
+import { HybridListing, ListingCompact } from "@/utils/types/listing";
 import { CompactShop } from "@/utils/types/shop";
 import {
   Card,
@@ -52,27 +53,41 @@ const ShopTag: FC<{ shop: CompactShop }> = ({ shop }) => {
 const LargeListingCard: StylableFC<{
   listing: ListingCompact;
   showShop?: boolean;
-}> = ({ listing, showShop }) => (
+  selected?: boolean;
+  onClick?: () => void;
+}> = ({ listing, showShop, selected, onClick }) => (
   <Card
     appearance="outlined"
     stateLayerEffect
-    href={createListingURL(listing)}
-    element={Link}
-    className="overflow-hidden"
+    onClick={onClick}
+    href={!onClick ? createListingURL(listing) : undefined}
+    element={onClick ? "button" : Link}
+    className={cn(
+      `items-stretch overflow-hidden`,
+      selected && `!bg-primary-container !text-on-primary-container`,
+    )}
   >
-    <div className="aspect-[4/3] rounded-sm bg-surface-variant">
-      {listing.thumbnail_url && <Image src={listing.thumbnail_url} alt="" />}
+    <div className="grid aspect-[4/3] w-full place-content-center overflow-hidden rounded-sm bg-surface-variant">
+      {listing.thumbnail_url && (
+        <Image src={listing.thumbnail_url} width={326} height={245} alt="" />
+      )}
     </div>
     <CardContent>
       <div className="flex flex-col gap-0.5">
-        <Text type="title-large" element="h3">
+        <Text
+          type="title-large"
+          element={(props) => <h3 {...props} title={listing.name} />}
+          className="truncate"
+        >
           {listing.name}
         </Text>
         <Text type="body-large" className="text-on-surface-variant">
           <PriceDisplay listing={listing} />
         </Text>
       </div>
-      <Text type="body-medium">{listing.description}</Text>
+      <Text type="body-medium" className="h-20 overflow-hidden text-ellipsis">
+        {listing.description}
+      </Text>
       {showShop && <ShopTag shop={listing.shop} />}
     </CardContent>
   </Card>
@@ -111,6 +126,8 @@ const ListingCard: StylableFC<{
   size: "large" | "small" | "mini";
   listing: ListingCompact;
   showShop?: boolean;
+  selected?: boolean;
+  onClick?: () => void;
 }> = (props) => {
   const { size } = props;
   return {
