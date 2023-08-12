@@ -1,12 +1,33 @@
 {
   "appName": "SK Shopping",
-  "tabName": "{tabName} - SK Shopping",
+  "tabName": "{{tabName}} - SK Shopping",
   "navigation": {
     "landing": "ร้านค้า",
     "categories": "ตามประเภท",
     "cart": "รถเข็น",
     "favorites": "สินค้าโปรด",
     "account": "บัญชี"
+  },
+  "appDrawer": {
+    "mysk": {
+      "title": "แอพ MySK",
+      "mysk": "MySK",
+      "clubRegistry": "ทะเบียนชุมนุม",
+      "shopping": "SK Shopping"
+    },
+    "school": {
+      "title": "แอพโรงเรียน",
+      "skAcTh": "sk.ac.th",
+      "kularbFah": "กุหลาบฟ้า",
+      "kularbLuang": "กุหลาบหลวง",
+      "library": "ห้องสมุด",
+      "libraryEBook": "Library eBook",
+      "libraryOPAC": "Library OPAC"
+    },
+    "other": {
+      "title": "แอพอื่น ๆ",
+      "schoolICT": "School ICT"
+    }
   },
   "pageIsLoading": "หน้ากำลังโหลด…"
 }

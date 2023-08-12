@@ -2,6 +2,12 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       /**
+       * The base URL of the SK Shopping API (referred in this codebase as
+       * Jimmy).
+       */
+      NEXT_PUBLIC_API_URL: string;
+
+      /**
        * The Google Client ID of this application, retrieved from Google Cloud
        * Console > APIs and Service > Credentials > OAuth 2.0 Client ID.
        */
