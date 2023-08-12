@@ -20,7 +20,7 @@ export type Listing = {
   is_hidden: boolean;
 };
 
-export type CompactListing = Omit<
+export type ListingCompact = Omit<
   Listing,
   | "preorder_start"
   | "preorder_end"
@@ -29,4 +29,4 @@ export type CompactListing = Omit<
   | "variants"
   | "categories"
 > & { is_sold_out: boolean };
-export type DetailedListing = Listing;
+export type ListingDetailed = Listing;
