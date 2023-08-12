@@ -1,6 +1,5 @@
 // Imports
 import AppDrawer from "@/components/AppDrawer";
-import ListingCard from "@/components/shop/ListingCard";
 import cn from "@/utils/helpers/cn";
 import { StylableFC } from "@/utils/types/common";
 import {
@@ -11,6 +10,7 @@ import {
   Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
+import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
 /**
@@ -73,7 +73,13 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
 
             {/* Call to action */}
             <Actions align="left" className="mt-6">
-              <Button appearance="filled">{t("action.goToShop")}</Button>
+              <Button
+                appearance="filled"
+                href="/shop/9gWHTbYWpBHPAEziRH4S5K#qjXCTJNpeU3tpadSNtVmNP"
+                element={Link}
+              >
+                {t("action.goToShop")}
+              </Button>
             </Actions>
           </div>
         </Columns>
