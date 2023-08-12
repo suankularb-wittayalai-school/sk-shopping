@@ -17,8 +17,9 @@ const AdvertCard: StylableFC = ({ style, className }) => {
     <div
       style={style}
       className={cn(
-        `relative z-10 grid aspect-[5/2] place-content-center overflow-hidden
-        rounded-xl border-1 border-outline-variant bg-surface text-center`,
+        `relative z-10 grid place-content-center overflow-hidden rounded-xl
+        border-1 border-outline-variant bg-surface text-center
+        sm:aspect-[5/2]`,
         className,
       )}
     >
