@@ -156,6 +156,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
       ...(await serverSideTranslations(locale as LangCode, [
         "common",
         "categories",
+        "shop",
       ])),
       categories,
       selectedCategory,
