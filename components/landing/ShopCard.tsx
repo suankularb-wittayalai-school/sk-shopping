@@ -1,6 +1,7 @@
 // Imports
 import ShopLogo from "@/components/landing/ShopLogo";
 import cn from "@/utils/helpers/cn";
+import getSchemeFromBackgroundColor from "@/utils/helpers/getSchemeFromBackgroundColor";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import { StylableFC } from "@/utils/types/common";
 import { ShopCompact } from "@/utils/types/shop";
@@ -10,7 +11,7 @@ import shortUUID from "short-uuid";
 
 /**
  * A small Card in a list representing a Shop.
- * 
+ *
  * @param shop A compact Shop.
  */
 const ShopCard: StylableFC<{
@@ -30,6 +31,8 @@ const ShopCard: StylableFC<{
         element={Link}
         className={cn(
           `relative isolate min-h-[5rem] overflow-hidden`,
+          shop.background_color &&
+            getSchemeFromBackgroundColor(shop.background_color),
           className,
         )}
         style={{
@@ -54,7 +57,7 @@ const ShopCard: StylableFC<{
         <CardHeader
           avatar={<ShopLogo shop={shop} />}
           title={getLocaleString(shop.name)}
-          className="grow !grid grid-cols-[2.5rem,1fr]"
+          className="!grid grow grid-cols-[2.5rem,1fr]"
         />
       </Card>
     </li>
