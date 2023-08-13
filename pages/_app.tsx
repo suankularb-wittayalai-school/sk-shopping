@@ -5,6 +5,7 @@ import Layout from "@/components/Layout";
 import AppStateContext from "@/contexts/AppStateContext";
 import SnackbarContext from "@/contexts/SnackbarContext";
 import "@/styles/globals.css";
+import { TopLevelPageName } from "@/utils/types/common";
 import { ThemeProvider } from "@suankularb-components/react";
 import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
@@ -58,11 +59,12 @@ const Contexts: FC<{ children: ReactNode }> = ({ children }) => {
   const [supabase] = useState(() => createPagesBrowserClient());
   const [snackbar, setSnackbar] = useState<JSX.Element | null>(null);
   const [navOpen, setNavOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState<TopLevelPageName>("landing");
 
   return (
     <SessionContextProvider supabaseClient={supabase}>
       <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
-        <AppStateContext.Provider value={{ navOpen, setNavOpen }}>
+        <AppStateContext.Provider value={{ navOpen, setNavOpen, activeNav, setActiveNav }}>
           <BalancerProvider>{children}</BalancerProvider>
         </AppStateContext.Provider>
       </SnackbarContext.Provider>

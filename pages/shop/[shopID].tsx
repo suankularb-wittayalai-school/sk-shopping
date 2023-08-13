@@ -3,6 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import CollectionSection from "@/components/shop/CollectionSection";
 import ListingDetailsSection from "@/components/shop/details/ListingDetailsSection";
 import NoCollectionSection from "@/components/shop/NoCollectionSection";
+import AppStateContext from "@/contexts/AppStateContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
 import { logError } from "@/utils/helpers/logError";
@@ -17,7 +18,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { omit } from "radash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 const ShopPage: NextPage<{
@@ -29,6 +30,8 @@ const ShopPage: NextPage<{
   const getLocaleString = useGetLocaleString();
 
   const { fromUUID } = shortUUID();
+
+  const { activeNav } = useContext(AppStateContext);
 
   const [selected, setSelected] = useState<ListingCompact>();
   const [scrolled, setScrolled] = useState(false);
@@ -52,13 +55,8 @@ const ShopPage: NextPage<{
     }
   }
 
-  /**
-   * Set the `scrolled` state.
-   */
-  function handleScroll() {
-    setScrolled(window.scrollY > 0);
-  }
   useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 0);
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -66,7 +64,18 @@ const ShopPage: NextPage<{
 
   return (
     <>
-      <PageHeader parentURL="/" className="inset-0 bottom-auto z-40 md:fixed">
+      <PageHeader
+        parentURL={
+          {
+            landing: "/",
+            categories: "/category/t-shirt",
+            cart: "/cart",
+            favorites: "/favorites",
+            account: "/account",
+          }[activeNav]
+        }
+        className="inset-0 bottom-auto z-40 md:fixed"
+      >
         ร้านค้า{getLocaleString(shop.name)}
       </PageHeader>
 
