@@ -17,11 +17,23 @@ import Link from "next/link";
 import { FC } from "react";
 import shortUUID from "short-uuid";
 
+/**
+ * Create an internal URL to a Listing in its Shop.
+ *
+ * @param listing The Listing to create a URL to.
+ *
+ * @returns A URL string.
+ */
 function createListingURL(listing: Pick<ListingCompact, "id" | "shop">) {
   const { fromUUID } = shortUUID();
   return `/shop/${fromUUID(listing.shop.id)}?selected=${fromUUID(listing.id)}`;
 }
 
+/**
+ * A small logo and text identifying the Shop this Listing belongs to.
+ * 
+ * @param shop A compact Shop.
+ */
 const ShopTag: FC<{ shop: ShopCompact }> = ({ shop }) => {
   const getLocaleString = useGetLocaleString();
 
@@ -33,6 +45,11 @@ const ShopTag: FC<{ shop: ShopCompact }> = ({ shop }) => {
   );
 };
 
+/**
+ * The large configuration of Listing Card.
+ * 
+ * @see {@link ListingCard Listing Card}
+ */
 const LargeListingCard: StylableFC<{
   listing: ListingCompact;
   showShop?: boolean;
@@ -85,12 +102,12 @@ const LargeListingCard: StylableFC<{
   </Card>
 );
 
+/**
+ * The small configuration of Listing Card.
+ * 
+ * @see {@link ListingCard Listing Card}
+ */
 const SmallListingCard: StylableFC<{
-  listing: ListingCompact;
-  showShop?: boolean;
-}> = ({ listing, showShop }) => null;
-
-const MiniListingCard: StylableFC<{
   listing: ListingCompact;
 }> = ({ listing }) => {
   return (
@@ -114,8 +131,17 @@ const MiniListingCard: StylableFC<{
   );
 };
 
+/**
+ * A Card representing a Listing.
+ *
+ * @param size The size configuration of the Card, `large` or `small`. The `large` configuration shows more information.
+ * @param listing A compact Listing.
+ * @param showShop If the {@link ShopTag Shop Tag} is shown. Useful for when a Listing is outside the Shop page.
+ * @param selected If the Listing is selected in a list.
+ * @param onClick Triggers when the Card is pressed.
+ */
 const ListingCard: StylableFC<{
-  size: "large" | "small" | "mini";
+  size: "large" | "small";
   listing: ListingCompact;
   showShop?: boolean;
   selected?: boolean;
@@ -125,7 +151,6 @@ const ListingCard: StylableFC<{
   return {
     large: <LargeListingCard {...props} />,
     small: <SmallListingCard {...props} />,
-    mini: <MiniListingCard {...props} />,
   }[size];
 };
 

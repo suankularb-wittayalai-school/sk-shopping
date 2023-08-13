@@ -67,8 +67,8 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
 
             {/* Featured Listings */}
             {/* <Columns columns={2} className="mt-4">
-              <ListingCard size="mini" />
-              <ListingCard size="mini" />
+              <ListingCard size="small" />
+              <ListingCard size="small" />
             </Columns> */}
 
             {/* Call to action */}
