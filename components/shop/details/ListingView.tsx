@@ -24,6 +24,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
+import { list } from "radash";
 import { useEffect, useRef, useState } from "react";
 
 const ListingView: StylableFC<{
@@ -180,37 +181,52 @@ const ListingView: StylableFC<{
               sm:flex-col`)}
           >
             <AnimatePresence mode="popLayout" initial={false}>
-              {selectedVariant?.image_urls?.map((image) => (
-                <motion.li
-                  key={image}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={
-                    selectedImage === image
-                      ? { opacity: 0.8, scale: 0.95 }
-                      : { opacity: 1, scale: 1 }
-                  }
-                  exit={{ opacity: 0, scale: 0 }}
-                  transition={transition(duration.medium2, easing.standard)}
-                  style={{ backgroundColor: `#${shop.accent_color}33` }}
-                  className={cn(
-                    `aspect-[4/3] overflow-hidden transition-[border-radius]`,
-                    selectedImage === image ? `rounded-full` : `rounded-md`,
-                  )}
-                >
-                  <Interactive
-                    onClick={() => setSelectedImage(image)}
-                    className="block w-full"
-                  >
-                    <Image
-                      src={image}
-                      width={115}
-                      height={86}
-                      alt=""
-                      className="w-full object-cover"
+              {selectedVariant?.image_urls?.length
+                ? // If there are images, show those images
+                  selectedVariant.image_urls.map((image) => (
+                    <motion.li
+                      key={image}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={
+                        selectedImage === image
+                          ? { opacity: 0.8, scale: 0.95 }
+                          : { opacity: 1, scale: 1 }
+                      }
+                      exit={{ opacity: 0, scale: 0 }}
+                      transition={transition(duration.medium2, easing.standard)}
+                      style={{ backgroundColor: `#${shop.accent_color}33` }}
+                      className={cn(
+                        `aspect-[4/3] overflow-hidden transition-[border-radius]`,
+                        selectedImage === image ? `rounded-full` : `rounded-md`,
+                      )}
+                    >
+                      <Interactive
+                        onClick={() => setSelectedImage(image)}
+                        className="block w-full"
+                      >
+                        <Image
+                          src={image}
+                          width={115}
+                          height={86}
+                          alt=""
+                          className="w-full object-cover"
+                        />
+                      </Interactive>
+                    </motion.li>
+                  ))
+                : // If the list hasn’t been loaded or is empty, show some
+                  // placeholder rectangles
+                  list(1).map((i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      transition={transition(duration.medium2, easing.standard)}
+                      style={{ backgroundColor: `#${shop.accent_color}33` }}
+                      className="aspect-[4/3] rounded-md"
                     />
-                  </Interactive>
-                </motion.li>
-              ))}
+                  ))}
             </AnimatePresence>
           </ul>
         </div>
@@ -291,6 +307,7 @@ const ListingView: StylableFC<{
           <Button
             appearance="filled"
             icon={<MaterialIcon icon="add" />}
+            // Prevent adding a sold out Listing Option to cart
             disabled={listing.is_sold_out}
           >
             เพิ่มใส่รถเข็น
