@@ -18,7 +18,7 @@ export type Shop = {
   accept_cod: boolean;
 };
 
-export type CompactShop = Omit<
+export type ShopCompact = Omit<
   Shop,
   | "is_school_pickup_allowed"
   | "pickup_location"
@@ -27,7 +27,7 @@ export type CompactShop = Omit<
   | "promptpay_number"
   | "accept_cod"
 >;
-export type DetailedShop = Shop & {
+export type ShopDetailed = Shop & {
   listings: Listing[];
   collections: Collection[];
   items: ListingOption[];

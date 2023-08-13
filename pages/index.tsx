@@ -1,6 +1,5 @@
 // Imports
 import AdvertBanner from "@/components/landing/AdvertBanner";
-import AdvertCard from "@/components/landing/AdvertCard";
 import CollectionCard from "@/components/landing/CollectionCard";
 import ShopCard from "@/components/landing/ShopCard";
 import ShopLogo from "@/components/landing/ShopLogo";
@@ -9,7 +8,7 @@ import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import { Collection } from "@/utils/types/collection";
 import { LangCode } from "@/utils/types/common";
-import { CompactShop, Shop } from "@/utils/types/shop";
+import { Shop, ShopCompact } from "@/utils/types/shop";
 import {
   Columns,
   ContentLayout,
@@ -26,12 +25,12 @@ import { group } from "radash";
 /**
  * The Landing page displays some paid advertisements and the list of all Shops
  * and Collections to browse through.
- * 
+ *
  * @param shops All Shops.
  * @param collectionGroups All Collections grouped by Shop ID.
  */
 const LandingPage: NextPage<{
-  shops: CompactShop[];
+  shops: ShopCompact[];
   collectionGroups: { [key: Shop["id"]]: Collection[] };
 }> = ({ shops, collectionGroups }) => {
   const getLocaleString = useGetLocaleString();
@@ -91,7 +90,11 @@ const LandingPage: NextPage<{
                 >
                   {getLocaleString(shop.name)}
                 </Header>
-                <Columns columns={2} element="ul" className="!grid-cols-1 md:!grid-cols-2">
+                <Columns
+                  columns={2}
+                  element="ul"
+                  className="!grid-cols-1 md:!grid-cols-2"
+                >
                   {collectionGroups[shopID].map((collection) => (
                     <CollectionCard
                       key={collection.id}
@@ -112,18 +115,19 @@ const LandingPage: NextPage<{
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const jimmy = await createJimmy();
 
-  const { data: shops, error: shopsError } = await jimmy.fetch("/shops", {
-    query: { fetch_level: "compact" },
-  });
+  const { data: shops, error: shopsError } = await jimmy.fetch<ShopCompact[]>(
+    "/shops",
+    { query: { fetch_level: "compact" } },
+  );
   if (shopsError) logError("index getStaticProps (shops)", shopsError);
 
-  const { data: collections, error: collectionsError } = await jimmy.fetch(
-    "/collections",
-  );
+  const { data: collections, error: collectionsError } = await jimmy.fetch<
+    Collection[]
+  >("/collections");
   if (collectionsError)
     logError("index getStaticProps (collections)", collectionsError);
   const collectionGroups = group(
-    collections as Collection[],
+    collections!,
     (collection) => collection.shop.id,
   );
 

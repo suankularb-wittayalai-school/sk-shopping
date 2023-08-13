@@ -3,7 +3,7 @@ import ShopLogo from "@/components/landing/ShopLogo";
 import cn from "@/utils/helpers/cn";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import { StylableFC } from "@/utils/types/common";
-import { CompactShop } from "@/utils/types/shop";
+import { ShopCompact } from "@/utils/types/shop";
 import { Card, CardHeader } from "@suankularb-components/react";
 import Link from "next/link";
 import shortUUID from "short-uuid";
@@ -14,7 +14,7 @@ import shortUUID from "short-uuid";
  * @param shop A compact Shop.
  */
 const ShopCard: StylableFC<{
-  shop: CompactShop;
+  shop: ShopCompact;
 }> = ({ shop, style, className }) => {
   const getLocaleString = useGetLocaleString();
 

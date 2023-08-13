@@ -1,13 +1,13 @@
 // Imports
 import ListingCard from "@/components/shop/ListingCard";
 import { StylableFC } from "@/utils/types/common";
-import { HybridListing } from "@/utils/types/listing";
+import { ListingCompact } from "@/utils/types/listing";
 import { Columns, Header, Section } from "@suankularb-components/react";
 
 const NoCollectionSection: StylableFC<{
-  listings: HybridListing[];
-  selected?: HybridListing;
-  onCardClick: (listing: HybridListing) => void;
+  listings: ListingCompact[];
+  selected?: ListingCompact;
+  onCardClick: (listing: ListingCompact) => void;
 }> = ({ listings, selected, onCardClick, style, className }) =>
   listings.length ? (
     <Section style={style} className={className}>

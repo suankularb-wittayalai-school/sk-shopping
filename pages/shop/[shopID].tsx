@@ -1,35 +1,44 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
 import CollectionSection from "@/components/shop/CollectionSection";
-import ListingDetailsSection from "@/components/shop/ListingDetailsSection";
+import ListingDetailsSection from "@/components/shop/details/ListingDetailsSection";
 import NoCollectionSection from "@/components/shop/NoCollectionSection";
 import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
+import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
+import { Collection, CollectionDetailed } from "@/utils/types/collection";
 import { IDOnly, LangCode } from "@/utils/types/common";
-import { HybridListing, Listing } from "@/utils/types/listing";
-import { DetailedShop } from "@/utils/types/shop";
+import { ListingCompact, ListingDetailed } from "@/utils/types/listing";
+import { ListingOptionDetailed } from "@/utils/types/listing-option";
+import { Shop } from "@/utils/types/shop";
 import { Columns, ContentLayout, Section } from "@suankularb-components/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { omit } from "radash";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 const ShopPage: NextPage<{
-  shop: Omit<DetailedShop, "listings"> & {
-    listings: HybridListing[];
-  };
-}> = ({ shop }) => {
+  shop: Shop;
+  collections: { collection: Collection; listings: ListingCompact[] }[];
+  orphanListings: ListingCompact[];
+}> = ({ shop, collections, orphanListings }) => {
   const router = useRouter();
   const getLocaleString = useGetLocaleString();
 
   const { fromUUID } = shortUUID();
 
-  const [selected, setSelected] = useState<HybridListing>();
+  const [selected, setSelected] = useState<ListingCompact>();
+  const [scrolled, setScrolled] = useState(false);
 
-  function handleCardClick(listing: HybridListing) {
+  /**
+   * Set the selected Listing state and update the route to match.
+   *
+   * @param listing The Listing to update the state and route to.
+   */
+  function handleCardClick(listing: ListingCompact) {
     if (selected?.id === listing.id) {
       setSelected(undefined);
       router.push(`/shop/${fromUUID(shop.id)}`, undefined, { shallow: true });
@@ -43,6 +52,18 @@ const ShopPage: NextPage<{
     }
   }
 
+  /**
+   * Set the `scrolled` state.
+   */
+  function handleScroll() {
+    setScrolled(window.scrollY > 0);
+  }
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
       <PageHeader parentURL="/" className="inset-0 bottom-auto z-40 md:fixed">
@@ -52,23 +73,17 @@ const ShopPage: NextPage<{
       <ContentLayout className="md:!mt-[4.25rem]">
         <Columns columns={2} className="sm:!grid-cols-1 md:!grid-cols-2">
           <Section>
-            {shop.collections.map((collection) => (
+            {collections.map(({ collection, listings }) => (
               <CollectionSection
                 key={collection.id}
                 collection={collection}
-                listings={shop.listings.filter((listing) =>
-                  listing.collections.find(
-                    (mapCollection) => collection.id === mapCollection.id,
-                  ),
-                )}
+                listings={listings}
                 selected={selected}
                 onCardClick={handleCardClick}
               />
             ))}
             <NoCollectionSection
-              listings={shop.listings.filter(
-                (listing) => listing.collections.length === 0,
-              )}
+              listings={orphanListings}
               selected={selected}
               onCardClick={handleCardClick}
             />
@@ -85,21 +100,30 @@ const ShopPage: NextPage<{
             <ListingDetailsSection
               shop={shop}
               listing={selected}
+              onClose={() => setSelected(undefined)}
               className="pointer-events-auto h-full"
             />
           </div>
         </Columns>
 
-        <style jsx global>{`
-          @media only screen and (min-width: 905px) {
-            .skc-page-header__blobs.skc-page-header__blobs--desktop {
-              position: fixed;
-              top: 0;
-              z-index: 20;
-              pointer-events: none;
+        {scrolled && (
+          <style jsx global>{`
+            @media only screen and (min-width: 905px) {
+              .skc-page-header__blobs.skc-page-header__blobs--desktop {
+                position: fixed;
+                top: 0;
+                z-index: 20;
+                pointer-events: none;
+              }
             }
-          }
-        `}</style>
+
+            @media only screen and (min-width: 1440px) {
+              .skc-page-header__blobs.skc-page-header__blobs--desktop {
+                top: -5rem;
+              }
+            }
+          `}</style>
+        )}
       </ContentLayout>
     </>
   );
@@ -110,32 +134,77 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const { toUUID } = shortUUID();
 
   const shopID = toUUID(params!.shopID as string);
-  const { data: shop } = await jimmy.fetch<DetailedShop>(`/shops/${shopID}`, {
+  const { data, error } = await jimmy.fetch<
+    Shop & {
+      listings: ListingDetailed[];
+      collections: CollectionDetailed[];
+      items: ListingOptionDetailed[];
+    }
+  >(`/shops/${shopID}`, {
     query: { fetch_level: "detailed", descendant_fetch_level: "detailed" },
   });
+  if (error) {
+    logError("/shop/:id getStaticProps", error);
+    return { notFound: true };
+  }
 
-  shop!.collections = shop!.collections.sort((a, b) =>
-    a.name > b.name ? 1 : -1,
-  );
+  // Convert `ShopDetailed` into `Shop`
+  const shop = omit(data, ["listings", "collections", "items"]) as Shop;
 
-  shop!.listings = shop!.listings
+  data.listings = data.listings
     // Sort Listings by popularity
     .sort((a, b) => a.amount_sold - b.amount_sold)
     // Remove Listings marked as hidden
-    .filter((listing) => !listing.is_hidden)
-    // Transform Listing into Listing Compact but keeping Collections information
-    .map((listing) => ({
-      ...omit(listing, ["lifetime_stock", "amount_sold"]),
-      is_sold_out: listing.lifetime_stock === 0,
-    })) as unknown as Listing[];
+    .filter((listing) => !listing.is_hidden);
 
-  // Blank out Items
-  shop!.items = [];
+  const collections = data.collections
+    // Sort Collections reverse alphabetically
+    // FIXME: This should be sorted by creation date
+    // but `created_at` isn’t fetched so that ain’t gonna happen just yet
+    .sort((a, b) => (a.name > b.name ? 1 : -1))
+    // Package Collection and Listings information together
+    .map((collection) => ({
+      collection,
+      listings: data.listings
+        // Include Listings in this Collection
+        .filter((listing) =>
+          listing.collections.find(
+            (mapCollection) => collection.id === mapCollection.id,
+          ),
+        )
+        // Transform `ListingDetailed` into `ListingCompact`
+        .map(
+          (listing) =>
+            ({
+              // Remove keys not in `ListingCompact`
+              ...omit(listing, [
+                "preorder_start",
+                "preorder_end",
+                "lifetime_stock",
+                "amount_sold",
+                "variants",
+                "categories",
+              ]),
+              // Add `is_sold_out` key to replace `lifetime_stock`
+              is_sold_out: listing.lifetime_stock === 0,
+            }) as ListingCompact,
+        ),
+    }))
+    // Remove Collections with no Listings per @smartwhatt’s request
+    .filter((collection) => collection.listings.length !== 0);
+
+  // All the Listings not in a Collection aren’t included in the `collections`
+  // variable, so we need this
+  const orphanListings = data.listings.filter(
+    (listing) => listing.collections.length === 0,
+  );
 
   return {
     props: {
       ...(await serverSideTranslations(locale as LangCode, ["common", "shop"])),
       shop,
+      collections,
+      orphanListings,
     },
     revalidate: 10,
   };
@@ -145,9 +214,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const jimmy = await createJimmy();
   const { fromUUID } = shortUUID();
 
-  const { data: shops } = await jimmy.fetch<IDOnly[]>("/shops", {
+  const { data: shops, error } = await jimmy.fetch<IDOnly[]>("/shops", {
     query: { fetch_level: "id_only" },
   });
+  if (error) logError("/shop/:id getStaticPaths", error);
 
   return {
     paths: insertLocaleIntoStaticPaths(

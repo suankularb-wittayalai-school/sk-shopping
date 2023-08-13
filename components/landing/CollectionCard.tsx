@@ -3,7 +3,7 @@ import UseVector from "@/components/UseVector";
 import cn from "@/utils/helpers/cn";
 import { Collection } from "@/utils/types/collection";
 import { StylableFC } from "@/utils/types/common";
-import { CompactShop } from "@/utils/types/shop";
+import { ShopCompact } from "@/utils/types/shop";
 import { Actions, Button, Columns, Text } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
@@ -19,7 +19,7 @@ import shortUUID from "short-uuid";
  */
 const CollectionCard: StylableFC<{
   collection: Collection;
-  shop: CompactShop;
+  shop: ShopCompact;
 }> = ({ collection, shop, style, className }) => {
   const { t } = useTranslation("landing", { keyPrefix: "collections" });
 
