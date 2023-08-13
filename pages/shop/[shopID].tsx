@@ -21,6 +21,7 @@ import {
   useBreakpoint,
 } from "@suankularb-components/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { omit } from "radash";
@@ -34,6 +35,7 @@ const ShopPage: NextPage<{
 }> = ({ shop, collections, orphanListings }) => {
   const router = useRouter();
   const getLocaleString = useGetLocaleString();
+  const { t } = useTranslation("shop");
 
   const { fromUUID, toUUID } = shortUUID();
 
@@ -41,7 +43,7 @@ const ShopPage: NextPage<{
   const { activeNav } = useContext(AppStateContext);
 
   const [selected, setSelected] = useState<ListingCompact>();
-  
+
   // If a query is present, set the selected Listing to the one identified in
   // the query
   useEffect(() => {
@@ -109,7 +111,7 @@ const ShopPage: NextPage<{
         }
         className="inset-0 bottom-auto z-40 md:fixed"
       >
-        ร้านค้า{getLocaleString(shop.name)}
+        {t("title", { shop: getLocaleString(shop.name) })}
       </PageHeader>
 
       <ContentLayout className="md:!mt-[4.25rem]">

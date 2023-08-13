@@ -34,7 +34,7 @@ const ListingView: StylableFC<{
   onClose?: () => void;
 }> = ({ shop, listing, variants, onClose, style, className }) => {
   const locale = useLocale();
-  const { t } = useTranslation("shop");
+  const { t } = useTranslation("shop", { keyPrefix: "detail.listing" });
   const { t: tx } = useTranslation("common");
 
   const { atBreakpoint } = useBreakpoint();
@@ -112,6 +112,8 @@ const ListingView: StylableFC<{
             <Button
               appearance="text"
               icon={<MaterialIcon icon="close" />}
+              alt={t("action.close.alt")}
+              tooltip={t("action.close.tooltip")}
               onClick={onClose}
               style={{ color: `#${shop.accent_color}` }}
               className="!-ml-2 state-layer:!bg-on-surface"
@@ -260,6 +262,8 @@ const ListingView: StylableFC<{
             <Button
               appearance="outlined"
               icon={<MaterialIcon icon="share" />}
+              alt={t("action.share.alt")}
+              tooltip={t("action.share.tooltip")}
               onClick={handleShare}
               style={{ color: `#${shop.accent_color}` }}
               className="focus:!border-on-surface state-layer:!bg-on-surface"
@@ -269,8 +273,8 @@ const ListingView: StylableFC<{
             <ToggleButton
               appearance="tonal"
               icon={<MaterialIcon icon="star" />}
-              alt="นำรายการนี้เข้าสู่รายการโปรด"
-              tooltip="นำเข้าสู่รายการโปรด"
+              alt={t("action.favorite.alt")}
+              tooltip={t("action.favorite.tooltip")}
               style={{ backgroundColor: `#${shop.accent_color}33` }}
               className="[&>.skc-icon]:text-on-surface"
             />
@@ -295,7 +299,7 @@ const ListingView: StylableFC<{
         />
         <TextField<string>
           appearance="filled"
-          label="จำนวน"
+          label={t("count")}
           required
           disabled={listing.is_sold_out}
           value={count}
@@ -310,7 +314,7 @@ const ListingView: StylableFC<{
             // Prevent adding a sold out Listing Option to cart
             disabled={listing.is_sold_out}
           >
-            เพิ่มใส่รถเข็น
+            {t("action.addToCart")}
           </Button>
         </Actions>
       </section>

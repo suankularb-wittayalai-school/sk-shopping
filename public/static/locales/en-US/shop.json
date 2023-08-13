@@ -1,0 +1,37 @@
+{
+  "title": "{{shop}} Shop",
+  "list": {
+    "collection": "Collection",
+    "noCollection": "No collection",
+    "item": {
+      "outOfStock": "Currently out of stock"
+    }
+  },
+  "detail": {
+    "default": {
+      "title": "Welcome to the {{shop}} Shop",
+      "desc": "Choose an item from the left to see details here."
+    },
+    "listing": {
+      "variants": {
+        "loading": "Loading variants…"
+      },
+      "count": "Quantity",
+      "action": {
+        "close": {
+          "alt": "Close",
+          "tooltip": "Close"
+        },
+        "share": {
+          "alt": "Share this item",
+          "tooltip": "Share"
+        },
+        "favorite": {
+          "alt": "Favorite this item",
+          "tooltip": "Favorite"
+        },
+        "addToCart": "Add to cart"
+      }
+    }
+  }
+}
