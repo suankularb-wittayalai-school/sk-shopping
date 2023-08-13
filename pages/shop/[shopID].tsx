@@ -35,14 +35,38 @@ const ShopPage: NextPage<{
   const router = useRouter();
   const getLocaleString = useGetLocaleString();
 
-  const { fromUUID } = shortUUID();
+  const { fromUUID, toUUID } = shortUUID();
 
   const { atBreakpoint } = useBreakpoint();
   const { activeNav } = useContext(AppStateContext);
 
   const [selected, setSelected] = useState<ListingCompact>();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  
+  // If a query is present, set the selected Listing to the one identified in
+  // the query
+  useEffect(() => {
+    if (!router.query.selected) return;
+    const selected = collections
+      .map((collection) => collection.listings)
+      .flat()
+      .find(
+        (listing) => toUUID(router.query.selected as string) === listing.id,
+      );
+    if (!selected) return;
+    setSelected(selected);
+  }, [router.query.selected]);
 
+  // Open Listing Details Dialog for mobile users
+  // (Yes, we have to do this weirdness, otherwise `atBreakpoint` will always
+  // be `base` for some reason thus will always open the Dialog)
+  const [breakpointChecked, setBreakpointChecked] = useState<boolean>(false);
+  useEffect(() => {
+    if (atBreakpoint === "base" && !breakpointChecked)
+      setBreakpointChecked(true);
+    else if (selected && atBreakpoint === "base") setDialogOpen(true);
+  }, [breakpointChecked]);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   /**
@@ -57,7 +81,6 @@ const ShopPage: NextPage<{
       router.push(`/shop/${fromUUID(shop.id)}`, undefined, { shallow: true });
       return;
     }
-    setSelected(listing);
     router.push(
       `/shop/${fromUUID(shop.id)}?selected=${fromUUID(listing.id)}`,
       undefined,
