@@ -50,11 +50,22 @@ const ListingView: FC<{
     setSelectedImage(selectedVariant.image_urls[0]);
   }, [selectedVariant]);
 
+  const imageSideRef = useRef<HTMLImageElement>(null);
+  const [imageListHeight, setImageListHeight] = useState(261);
+  useEffect(() => {
+    const imageSideElement = imageSideRef.current!;
+    const handleResize = () =>
+      setImageListHeight(imageSideElement.getBoundingClientRect().height);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Show a fade out effect on the top of the text content when scrolled
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const contentElement = contentRef.current as HTMLDivElement;
+    const contentElement = contentRef.current!;
     const handleScroll = () => setScrolled(contentElement.scrollTop > 0);
     contentElement.addEventListener("scroll", handleScroll);
     return () => contentElement.removeEventListener("scroll", handleScroll);
@@ -65,8 +76,8 @@ const ListingView: FC<{
 
   return (
     <div className="flex h-full flex-col">
-      <section className="grid grid-cols-3 gap-4 p-4 pb-0">
-        <div className="col-span-2 flex flex-col gap-2">
+      <section className="grid grid-cols-3 items-start gap-4 p-4 pb-0">
+        <div ref={imageSideRef} className="col-span-2 flex flex-col gap-2">
           <div className="grid grid-cols-[2rem,1fr] gap-2">
             {/* Close button */}
             <Button
@@ -124,22 +135,28 @@ const ListingView: FC<{
         </div>
 
         {/* Image list */}
-        <div className="h-[16.25rem] overflow-auto">
+        <div
+          style={{ height: `${imageListHeight}px` }}
+          className="overflow-auto"
+        >
           <ul className="flex flex-col gap-2">
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence mode="popLayout" initial={false}>
               {selectedVariant?.image_urls?.map((image) => (
                 <motion.li
                   key={image}
                   initial={{ opacity: 0, scale: 0 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    borderRadius: selectedImage === image ? 100 : 12,
-                  }}
+                  animate={
+                    selectedImage === image
+                      ? { opacity: 0.8, scale: 0.95 }
+                      : { opacity: 1, scale: 1 }
+                  }
                   exit={{ opacity: 0, scale: 0 }}
                   transition={transition(duration.medium2, easing.standard)}
                   style={{ backgroundColor: `#${shop.accent_color}33` }}
-                  className="overflow-hidden rounded-md"
+                  className={cn(
+                    `overflow-hidden transition-[border-radius]`,
+                    selectedImage === image ? `rounded-full` : `rounded-md`,
+                  )}
                 >
                   <Interactive
                     onClick={() => setSelectedImage(image)}
