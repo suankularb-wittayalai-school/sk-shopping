@@ -31,9 +31,3 @@ export type ListingCompact = Omit<
   | "categories"
 > & { is_sold_out: boolean };
 export type ListingDetailed = Listing & { collections: Collection[] };
-
-export type HybridListing = Omit<
-  ListingDetailed,
-  "lifetime_stock" | "amount_sold"
-> &
-  Pick<ListingCompact, "is_sold_out">;
