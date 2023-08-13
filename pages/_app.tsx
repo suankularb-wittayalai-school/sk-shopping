@@ -11,6 +11,7 @@ import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { MotionConfig } from "framer-motion";
 import { appWithTranslation } from "next-i18next";
+import PlausibleProvider from "next-plausible";
 import { AppProps } from "next/app";
 import {
   Fira_Code,
@@ -64,7 +65,9 @@ const Contexts: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <SessionContextProvider supabaseClient={supabase}>
       <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
-        <AppStateContext.Provider value={{ navOpen, setNavOpen, activeNav, setActiveNav }}>
+        <AppStateContext.Provider
+          value={{ navOpen, setNavOpen, activeNav, setActiveNav }}
+        >
           <BalancerProvider>{children}</BalancerProvider>
         </AppStateContext.Provider>
       </SnackbarContext.Provider>
@@ -91,17 +94,18 @@ function App({ Component, pageProps }: AppProps) {
       <Contexts>
         {/* Framer Motion a11y */}
         <MotionConfig reducedMotion="user">
-          {/* SKCom variables */}
-          <ThemeProvider>
-            {/* Rendered app */}
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-
-            {/* Symbol definitions */}
-            <BlobDefinitions />
-            <IconDefinitions />
-          </ThemeProvider>
+          <PlausibleProvider domain="shopping.skkornor.org,preview.shopping.skkornor.org">
+            {/* SKCom variables */}
+            <ThemeProvider>
+              {/* Rendered app */}
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+              {/* Symbol definitions */}
+              <BlobDefinitions />
+              <IconDefinitions />
+            </ThemeProvider>
+          </PlausibleProvider>
         </MotionConfig>
       </Contexts>
     </>
