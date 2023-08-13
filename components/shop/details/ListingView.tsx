@@ -19,6 +19,7 @@ import {
   useAnimationConfig,
 } from "@suankularb-components/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { FC, useEffect, useRef, useState } from "react";
 
@@ -29,6 +30,8 @@ const ListingView: FC<{
   onClose?: () => void;
 }> = ({ shop, listing, variants, onClose }) => {
   const locale = useLocale();
+  const { t } = useTranslation("shop");
+  const { t: tx } = useTranslation("common");
 
   const { duration, easing } = useAnimationConfig();
 
@@ -73,6 +76,17 @@ const ListingView: FC<{
 
   // The number of items to add to cart
   const [count, setCount] = useState("1");
+
+  async function handleShare() {
+    const shareData: ShareData = {
+      title: tx("tabName", { tabName: listing.name }),
+      text: listing.description,
+      url: window.location.href,
+    };
+    if (navigator.canShare && navigator.canShare(shareData))
+      await navigator.share(shareData);
+    return;
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -205,6 +219,7 @@ const ListingView: FC<{
             <Button
               appearance="outlined"
               icon={<MaterialIcon icon="share" />}
+              onClick={handleShare}
               style={{ color: `#${shop.accent_color}` }}
               className="focus:!border-on-surface state-layer:!bg-on-surface"
             />
