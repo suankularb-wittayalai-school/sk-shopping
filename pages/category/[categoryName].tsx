@@ -163,11 +163,11 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const jimmy = await createJimmy();
-  const { data: categories } = await jimmy.fetch("/categories");
+  const { data: categories } = await jimmy.fetch<Category[]>("/categories");
 
   return {
     paths: insertLocaleIntoStaticPaths(
-      (categories as Category[]).map((category) => ({
+      categories!.map((category) => ({
         params: { categoryName: dash(category.name["en-US"]!) },
       })),
     ),
