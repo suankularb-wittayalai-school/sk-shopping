@@ -1,6 +1,7 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
 import CollectionSection from "@/components/shop/CollectionSection";
+import ListingDetailsDialog from "@/components/shop/details/ListingDetailsDialog";
 import ListingDetailsSection from "@/components/shop/details/ListingDetailsSection";
 import NoCollectionSection from "@/components/shop/NoCollectionSection";
 import AppStateContext from "@/contexts/AppStateContext";
@@ -13,7 +14,12 @@ import { IDOnly, LangCode } from "@/utils/types/common";
 import { ListingCompact, ListingDetailed } from "@/utils/types/listing";
 import { ListingOptionDetailed } from "@/utils/types/listing-option";
 import { Shop } from "@/utils/types/shop";
-import { Columns, ContentLayout, Section } from "@suankularb-components/react";
+import {
+  Columns,
+  ContentLayout,
+  Section,
+  useBreakpoint,
+} from "@suankularb-components/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
@@ -31,9 +37,12 @@ const ShopPage: NextPage<{
 
   const { fromUUID } = shortUUID();
 
+  const { atBreakpoint } = useBreakpoint();
   const { activeNav } = useContext(AppStateContext);
 
   const [selected, setSelected] = useState<ListingCompact>();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const [scrolled, setScrolled] = useState(false);
 
   /**
@@ -42,17 +51,18 @@ const ShopPage: NextPage<{
    * @param listing The Listing to update the state and route to.
    */
   function handleCardClick(listing: ListingCompact) {
-    if (selected?.id === listing.id) {
+    if (["base", "sm"].includes(atBreakpoint)) setDialogOpen(true);
+    else if (selected?.id === listing.id) {
       setSelected(undefined);
       router.push(`/shop/${fromUUID(shop.id)}`, undefined, { shallow: true });
-    } else {
-      setSelected(listing);
-      router.push(
-        `/shop/${fromUUID(shop.id)}?selected=${fromUUID(listing.id)}`,
-        undefined,
-        { shallow: true },
-      );
+      return;
     }
+    setSelected(listing);
+    router.push(
+      `/shop/${fromUUID(shop.id)}?selected=${fromUUID(listing.id)}`,
+      undefined,
+      { shallow: true },
+    );
   }
 
   useEffect(() => {
@@ -134,6 +144,15 @@ const ShopPage: NextPage<{
           `}</style>
         )}
       </ContentLayout>
+
+      {selected && (
+        <ListingDetailsDialog
+          shop={shop}
+          listing={selected}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+        />
+      )}
     </>
   );
 };

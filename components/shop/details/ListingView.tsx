@@ -2,6 +2,7 @@ import PriceDisplay from "@/components/shop/PriceDisplay";
 import VariantChip from "@/components/shop/details/VariantChip";
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
+import { StylableFC } from "@/utils/types/common";
 import { ListingCompact } from "@/utils/types/listing";
 import { ListingOption } from "@/utils/types/listing-option";
 import { Shop } from "@/utils/types/shop";
@@ -17,22 +18,24 @@ import {
   ToggleButton,
   transition,
   useAnimationConfig,
+  useBreakpoint,
 } from "@suankularb-components/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
-import { FC, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const ListingView: FC<{
+const ListingView: StylableFC<{
   shop: Shop;
   listing: ListingCompact;
   variants?: ListingOption[];
   onClose?: () => void;
-}> = ({ shop, listing, variants, onClose }) => {
+}> = ({ shop, listing, variants, onClose, style, className }) => {
   const locale = useLocale();
   const { t } = useTranslation("shop");
   const { t: tx } = useTranslation("common");
 
+  const { atBreakpoint } = useBreakpoint();
   const { duration, easing } = useAnimationConfig();
 
   // Keep track of the selected variant
@@ -59,9 +62,15 @@ const ListingView: FC<{
     const imageSideElement = imageSideRef.current!;
     const handleResize = () =>
       setImageListHeight(imageSideElement.getBoundingClientRect().height);
-    handleResize();
+    const timeout = setTimeout(
+      () => handleResize(),
+      ["base", "sm"].includes(atBreakpoint) ? duration.medium2 * 1000 : 0,
+    );
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeout);
+    };
   }, []);
 
   // Show a fade out effect on the top of the text content when scrolled
@@ -77,20 +86,21 @@ const ListingView: FC<{
   // The number of items to add to cart
   const [count, setCount] = useState("1");
 
+  /**
+   * Opens the native share dialog for the link to this Listing.
+   */
   async function handleShare() {
     const shareData: ShareData = {
       title: tx("tabName", { tabName: listing.name }),
-      text: listing.description,
       url: window.location.href,
     };
     if (navigator.canShare && navigator.canShare(shareData))
       await navigator.share(shareData);
-    return;
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <section className="grid grid-cols-3 items-start gap-4 p-4 pb-0">
+    <div style={style} className={cn(`flex h-full flex-col`, className)}>
+      <section className="flex flex-col gap-4 p-4 pb-0 sm:grid sm:grid-cols-3 sm:items-start">
         <div ref={imageSideRef} className="col-span-2 flex flex-col gap-2">
           <div className="grid grid-cols-[2rem,1fr] gap-2">
             {/* Close button */}
@@ -150,10 +160,14 @@ const ListingView: FC<{
 
         {/* Image list */}
         <div
-          style={{ height: `${imageListHeight}px` }}
+          style={
+            atBreakpoint !== "base"
+              ? { height: `${imageListHeight}px` }
+              : undefined
+          }
           className="overflow-auto"
         >
-          <ul className="flex flex-col gap-2">
+          <ul className="flex h-16 flex-row gap-2 sm:h-fit sm:flex-col">
             <AnimatePresence mode="popLayout" initial={false}>
               {selectedVariant?.image_urls?.map((image) => (
                 <motion.li
@@ -168,7 +182,7 @@ const ListingView: FC<{
                   transition={transition(duration.medium2, easing.standard)}
                   style={{ backgroundColor: `#${shop.accent_color}33` }}
                   className={cn(
-                    `overflow-hidden transition-[border-radius]`,
+                    `aspect-[4/3] overflow-hidden transition-[border-radius]`,
                     selectedImage === image ? `rounded-full` : `rounded-md`,
                   )}
                 >
@@ -181,7 +195,7 @@ const ListingView: FC<{
                       width={115}
                       height={86}
                       alt=""
-                      className="aspect-[4/3] w-full object-cover"
+                      className="w-full object-cover"
                     />
                   </Interactive>
                 </motion.li>
@@ -244,11 +258,12 @@ const ListingView: FC<{
 
       {/* Add to Cart section */}
       <section
-        className="absolute inset-0 top-auto isolate grid grid-cols-2 items-end gap-4 rounded-xl p-6"
+        className={cn(`absolute inset-0 top-auto isolate grid grid-cols-2
+          items-end gap-4 rounded-t-xl p-6 md:rounded-xl`)}
         style={{ backgroundColor: `#${shop.accent_color}66` }}
       >
         <div
-          className="absolute inset-0 -z-10 rounded-xl backdrop-blur-md"
+          className="absolute inset-0 -z-10 rounded-[inherit] backdrop-blur-md"
           style={{ backgroundColor: `#${shop.background_color}80` }}
         />
         <TextField<string>
