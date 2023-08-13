@@ -1,3 +1,4 @@
+import OutOfStockBanner from "@/components/shop/OutOfStockBanner";
 import PriceDisplay from "@/components/shop/PriceDisplay";
 import VariantChip from "@/components/shop/details/VariantChip";
 import cn from "@/utils/helpers/cn";
@@ -145,7 +146,7 @@ const ListingView: StylableFC<{
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
               transition={transition(duration.medium2, easing.standard)}
-              className="aspect-[4/3] rounded-md"
+              className="relative aspect-[4/3] rounded-md"
               style={{ backgroundColor: `#${shop.accent_color}33` }}
             >
               {selectedImage && (
@@ -156,6 +157,10 @@ const ListingView: StylableFC<{
                   alt=""
                   className="aspect-[4/3] w-full rounded-md object-cover"
                 />
+              )}
+              {(selectedVariant?.lifetime_stock === 0 ||
+                listing.is_sold_out) && (
+                <OutOfStockBanner className="!rounded-b-md" />
               )}
             </motion.div>
           </AnimatePresence>
@@ -170,7 +175,10 @@ const ListingView: StylableFC<{
           }
           className="overflow-auto"
         >
-          <ul className="flex h-16 w-fit flex-row gap-2 sm:h-fit sm:flex-col">
+          <ul
+            className={cn(`flex h-16 w-fit flex-row gap-2 sm:h-fit sm:w-full
+              sm:flex-col`)}
+          >
             <AnimatePresence mode="popLayout" initial={false}>
               {selectedVariant?.image_urls?.map((image) => (
                 <motion.li

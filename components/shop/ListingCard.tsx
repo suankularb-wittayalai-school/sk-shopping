@@ -1,5 +1,6 @@
 // Imports
 import ShopLogo from "@/components/landing/ShopLogo";
+import OutOfStockBanner from "@/components/shop/OutOfStockBanner";
 import PriceDisplay from "@/components/shop/PriceDisplay";
 import cn from "@/utils/helpers/cn";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -31,7 +32,7 @@ function createListingURL(listing: Pick<ListingCompact, "id" | "shop">) {
 
 /**
  * A small logo and text identifying the Shop this Listing belongs to.
- * 
+ *
  * @param shop A compact Shop.
  */
 const ShopTag: FC<{ shop: ShopCompact }> = ({ shop }) => {
@@ -47,7 +48,7 @@ const ShopTag: FC<{ shop: ShopCompact }> = ({ shop }) => {
 
 /**
  * The large configuration of Listing Card.
- * 
+ *
  * @see {@link ListingCard Listing Card}
  */
 const LargeListingCard: StylableFC<{
@@ -68,7 +69,7 @@ const LargeListingCard: StylableFC<{
     )}
   >
     <div
-      className={cn(`grid aspect-[4/3] w-full place-content-center
+      className={cn(`relative grid aspect-[4/3] w-full place-content-center
         overflow-hidden rounded-sm bg-surface-variant`)}
     >
       {listing.thumbnail_url && (
@@ -80,6 +81,7 @@ const LargeListingCard: StylableFC<{
           className="rounded-sm"
         />
       )}
+      {listing.is_sold_out && <OutOfStockBanner />}
     </div>
     <CardContent>
       <div className="flex flex-col gap-0.5">
@@ -104,28 +106,42 @@ const LargeListingCard: StylableFC<{
 
 /**
  * The small configuration of Listing Card.
- * 
+ *
  * @see {@link ListingCard Listing Card}
  */
 const SmallListingCard: StylableFC<{
   listing: ListingCompact;
-}> = ({ listing }) => {
+  selected?: boolean;
+  onClick?: () => void;
+}> = ({ listing, selected, onClick }) => {
   return (
     <Card
       appearance="outlined"
       direction="row"
       stateLayerEffect
-      href={createListingURL(listing)}
-      element={Link}
-      className="overflow-hidden"
+      onClick={onClick}
+      href={!onClick ? createListingURL(listing) : undefined}
+      element={onClick ? "button" : Link}
+      className={cn(
+        `overflow-hidden`,
+        selected && `!bg-primary-container !text-on-primary-container`,
+      )}
     >
-      <div className="aspect-square h-[4.75rem] bg-surface-variant">
-        {listing.thumbnail_url && <Image src={listing.thumbnail_url} alt="" />}
+      <div className="relative aspect-square h-[4.75rem] bg-surface-variant">
+        {listing.thumbnail_url && (
+          <Image
+            src={listing.thumbnail_url}
+            width={76}
+            height={76}
+            alt=""
+            className="h-full object-cover"
+          />
+        )}
       </div>
       <CardHeader
         title={listing.name}
         subtitle={<PriceDisplay listing={listing} />}
-        className="grow"
+        className="grow overflow-hidden [&_*]:truncate"
       />
     </Card>
   );
