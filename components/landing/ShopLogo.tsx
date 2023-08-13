@@ -10,16 +10,26 @@ import Image from "next/image";
  * @param shop A Shop.
  */
 const ShopLogo: StylableFC<{
-  shop: Pick<Shop, "logo_url" | "accent_color">;
-}> = ({ shop, style, className }) =>
+  shop: Pick<Shop, "logo_url" | "background_color" | "accent_color">;
+  showBackground?: boolean;
+}> = ({ shop, showBackground, style, className }) =>
   shop.logo_url ? (
-    <Image
-      src={shop.logo_url}
-      width={40}
-      height={40}
-      alt=""
-      className="h-10 w-10"
-    />
+    <div
+      style={
+        showBackground
+          ? { backgroundColor: `#${shop.background_color}` }
+          : undefined
+      }
+      className={cn(`h-10 w-10 rounded-full`, className)}
+    >
+      <Image
+        src={shop.logo_url}
+        width={40}
+        height={40}
+        alt=""
+        className="h-full w-full object-contain"
+      />
+    </div>
   ) : (
     <div
       style={{

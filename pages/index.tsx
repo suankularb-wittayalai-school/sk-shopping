@@ -86,7 +86,7 @@ const LandingPage: NextPage<{
               <Section key={shopID}>
                 <Header
                   level={3}
-                  icon={<ShopLogo shop={shop} className="h-7 w-7" />}
+                  icon={<ShopLogo shop={shop} showBackground className="h-7 w-7" />}
                 >
                   {getLocaleString(shop.name)}
                 </Header>

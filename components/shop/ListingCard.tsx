@@ -1,4 +1,5 @@
 // Imports
+import ShopLogo from "@/components/landing/ShopLogo";
 import PriceDisplay from "@/components/shop/PriceDisplay";
 import cn from "@/utils/helpers/cn";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -26,11 +27,7 @@ const ShopTag: FC<{ shop: ShopCompact }> = ({ shop }) => {
 
   return (
     <div className="grid grid-cols-[1rem,1fr] items-start gap-1">
-      <div className="bg-surface-variant">
-        {shop.logo_url && (
-          <Image src={shop.logo_url} width={16} height={16} alt="" />
-        )}
-      </div>
+      <ShopLogo shop={shop} showBackground className="h-4 w-4" />
       <Text type="body-small">{getLocaleString(shop.name)}</Text>
     </div>
   );
