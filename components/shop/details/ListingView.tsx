@@ -100,7 +100,10 @@ const ListingView: StylableFC<{
 
   return (
     <div style={style} className={cn(`flex h-full flex-col`, className)}>
-      <section className="flex flex-col gap-4 p-4 pb-0 sm:grid sm:grid-cols-3 sm:items-start">
+      <section
+        className={cn(`flex flex-col gap-4 p-4 pb-0 sm:grid sm:grid-cols-3
+          sm:items-start`)}
+      >
         <div ref={imageSideRef} className="col-span-2 flex flex-col gap-2">
           <div className="grid grid-cols-[2rem,1fr] gap-2">
             {/* Close button */}
@@ -167,7 +170,7 @@ const ListingView: StylableFC<{
           }
           className="overflow-auto"
         >
-          <ul className="flex h-16 flex-row gap-2 sm:h-fit sm:flex-col">
+          <ul className="flex h-16 w-fit flex-row gap-2 sm:h-fit sm:flex-col">
             <AnimatePresence mode="popLayout" initial={false}>
               {selectedVariant?.image_urls?.map((image) => (
                 <motion.li
