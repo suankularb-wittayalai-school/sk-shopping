@@ -10,6 +10,7 @@ import {
   Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
+import Image from "next/image";
 import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
@@ -29,14 +30,19 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
   return (
     <div
       style={style}
-      className={cn(`relative -mb-[10rem] pb-[10rem]`, className)}
+      className={cn(`light relative -mb-[10rem] pb-[10rem]`, className)}
     >
       {/* Background image */}
-      <div
-        className={cn(`absolute inset-0 -z-10 bg-primary-container
+      <Image
+        src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/adverts/banner/background.png`}
+        width={1194}
+        height={570}
+        alt=""
+        className={cn(`pointer-events-none absolute inset-0 -z-10 h-full w-full
+          bg-surface-variant object-cover
           [mask-image:linear-gradient(to_top,transparent,black_21.5rem)]`)}
       />
-      <ContentLayout>
+      <ContentLayout className="text-on-surface">
         <Columns columns={2} className="!grid-cols-1 !gap-y-4 md:!grid-cols-2">
           {/* Foreground image */}
           <div className="aspect-[4/3] rounded-sm border-4 border-dashed border-inverse-primary"></div>
