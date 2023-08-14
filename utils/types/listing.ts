@@ -1,5 +1,6 @@
 // Imports
 import { Category } from "@/utils/types/category";
+import { Collection } from "@/utils/types/collection";
 import { ListingOption } from "@/utils/types/listing-option";
 import { Shop } from "@/utils/types/shop";
 
@@ -29,4 +30,4 @@ export type ListingCompact = Omit<
   | "variants"
   | "categories"
 > & { is_sold_out: boolean };
-export type ListingDetailed = Listing;
+export type ListingDetailed = Listing & { collections: Collection[] };

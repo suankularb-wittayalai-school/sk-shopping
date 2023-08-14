@@ -14,7 +14,7 @@ export type ListingOption = {
   preorder_start: string | null;
   preorder_end: string | null;
   colors: string[];
-  images_url: string[];
+  image_urls: string[];
 };
 
 export type ListingOptionCompact = Omit<

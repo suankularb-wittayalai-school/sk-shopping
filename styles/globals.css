@@ -46,3 +46,13 @@
     text-decoration-color: var(--tertiary);
   }
 }
+
+.skc-page-header__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skc-page-header__text + * > .skc-button {
+  white-space: nowrap;
+}

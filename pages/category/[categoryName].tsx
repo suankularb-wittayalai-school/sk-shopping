@@ -2,6 +2,7 @@
 import PageHeader from "@/components/PageHeader";
 import UseIcon from "@/components/icon/UseIcon";
 import ListingCard from "@/components/shop/ListingCard";
+import AppStateContext from "@/contexts/AppStateContext";
 import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
@@ -25,7 +26,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
 import { dash } from "radash";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const CategoryPage: NextPage<{
   categories: Category[];
@@ -35,6 +36,9 @@ const CategoryPage: NextPage<{
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("categories");
   const { t: tx } = useTranslation("common");
+
+  const { setActiveNav } = useContext(AppStateContext);
+  useEffect(() => setActiveNav("categories"), []);
 
   const [selectedTab, setSelectedTab] = useState(selectedCategory.id);
 
@@ -152,6 +156,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
       ...(await serverSideTranslations(locale as LangCode, [
         "common",
         "categories",
+        "shop",
       ])),
       categories,
       selectedCategory,
@@ -163,11 +168,11 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const jimmy = await createJimmy();
-  const { data: categories } = await jimmy.fetch("/categories");
+  const { data: categories } = await jimmy.fetch<Category[]>("/categories");
 
   return {
     paths: insertLocaleIntoStaticPaths(
-      (categories as Category[]).map((category) => ({
+      categories!.map((category) => ({
         params: { categoryName: dash(category.name["en-US"]!) },
       })),
     ),

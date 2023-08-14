@@ -1,9 +1,8 @@
 // Imports
+import AppDrawer from "@/components/AppDrawer";
 import AppStateContext from "@/contexts/AppStateContext";
 import useLocale from "@/utils/helpers/useLocale";
 import {
-  AppDrawer,
-  AppDrawerSegment,
   PageHeader as BasePageHeader,
   PageHeaderProps,
 } from "@suankularb-components/react";
@@ -15,7 +14,7 @@ import { FC, useContext } from "react";
  * the only `<h1>` on the page), the back Button for navigating up, and
  * the App Drawer.
  *
- * @see {@link PageHeader Page Header}
+ * @see {@link BasePageHeader Page Header}
  *
  * @returns A Page Header.
  */
@@ -27,13 +26,7 @@ const PageHeader: FC<
 
   return (
     <BasePageHeader
-      appDrawer={
-        <AppDrawer locale={locale}>
-          <AppDrawerSegment title="TODO">
-            {/* If this app belongs to a family of apps, add them here */}
-          </AppDrawerSegment>
-        </AppDrawer>
-      }
+      appDrawer={<AppDrawer />}
       locale={locale}
       buttonElement={Link}
       onNavToggle={() => setNavOpen(true)}

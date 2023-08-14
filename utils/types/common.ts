@@ -8,6 +8,11 @@ import { CSSProperties, FC } from "react";
 export type LangCode = "en-US" | "th";
 
 /**
+ * The page name of a top-level page.
+ */
+export type TopLevelPageName = "landing" | "categories" | "cart" | "favorites" | "account"
+
+/**
  * A function component stylable through `className` and `style`.
  */
 export type StylableFC<Props extends {} = {}> = FC<
@@ -53,3 +58,8 @@ export type MultiLangString = {
   th: string;
   "en-US"?: string;
 };
+
+/**
+ * The return type of a fetch with `fetch_level` of `id_only`.
+ */
+export type IDOnly = { id: string }

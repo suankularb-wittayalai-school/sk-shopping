@@ -1,4 +1,5 @@
 // Imports
+import AppStateContext from "@/contexts/AppStateContext";
 import LogoImage from "@/public/images/logo.svg";
 import usePageIsLoading from "@/utils/helpers/usePageIsLoading";
 import { useSnackbar } from "@/utils/helpers/useSnackbar";
@@ -18,7 +19,7 @@ import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useContext, useState } from "react";
 
 /**
  * A Root Layout with persistent components.
@@ -32,7 +33,8 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
 
   // Navigation Bar and Drawer
   const router = useRouter();
-  const [navOpen, setNavOpen] = useState(false);
+  const { navOpen, setNavOpen, activeNav, setActiveNav } =
+    useContext(AppStateContext);
 
   // Root Layout
   const pageIsLoading = usePageIsLoading();
@@ -49,35 +51,40 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
           <NavDrawerItem
             icon={<MaterialIcon icon="storefront" />}
             label={t("navigation.landing")}
-            selected={router.asPath === "/"}
+            selected={activeNav === "landing"}
+            onClick={() => setActiveNav("landing")}
             href="/"
             element={Link}
           />
           <NavDrawerItem
             icon={<MaterialIcon icon="category" />}
             label={t("navigation.categories")}
-            selected={router.asPath.startsWith("/category")}
+            selected={activeNav === "categories"}
+            onClick={() => setActiveNav("categories")}
             href="/category/t-shirt"
             element={Link}
           />
           <NavDrawerItem
             icon={<MaterialIcon icon="shopping_cart" />}
             label={t("navigation.cart")}
-            selected={router.asPath.startsWith("/cart")}
+            selected={activeNav === "cart"}
+            onClick={() => setActiveNav("cart")}
             href="/cart"
             element={Link}
           />
           <NavDrawerItem
             icon={<MaterialIcon icon="star" />}
             label={t("navigation.favorites")}
-            selected={router.asPath.startsWith("/favorites")}
+            selected={activeNav === "favorites"}
+            onClick={() => setActiveNav("favorites")}
             href="/favorites"
             element={Link}
           />
           <NavDrawerItem
             icon={<MaterialIcon icon="account_circle" />}
             label={t("navigation.account")}
-            selected={router.asPath.startsWith("/account")}
+            selected={activeNav === "account"}
+            onClick={() => setActiveNav("account")}
             href="/account"
             element={Link}
           />
@@ -106,35 +113,40 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
         <NavBarItem
           icon={<MaterialIcon icon="storefront" />}
           label={t("navigation.landing")}
-          selected={router.asPath === "/"}
+          selected={activeNav === "landing"}
+          onClick={() => setActiveNav("landing")}
           href="/"
           element={Link}
         />
         <NavBarItem
           icon={<MaterialIcon icon="category" />}
           label={t("navigation.categories")}
-          selected={router.asPath.startsWith("/category")}
+          selected={activeNav === "categories"}
+          onClick={() => setActiveNav("categories")}
           href="/category/t-shirt"
           element={Link}
         />
         <NavBarItem
           icon={<MaterialIcon icon="shopping_cart" />}
           label={t("navigation.cart")}
-          selected={router.asPath.startsWith("/cart")}
+          selected={activeNav === "cart"}
+          onClick={() => setActiveNav("cart")}
           href="/cart"
           element={Link}
         />
         <NavBarItem
           icon={<MaterialIcon icon="star" />}
           label={t("navigation.favorites")}
-          selected={router.asPath.startsWith("/favorites")}
+          selected={activeNav === "favorites"}
+          onClick={() => setActiveNav("favorites")}
           href="/favorites"
           element={Link}
         />
         <NavBarItem
           icon={<MaterialIcon icon="account_circle" />}
           label={t("navigation.account")}
-          selected={router.asPath.startsWith("/account")}
+          selected={activeNav === "account"}
+          onClick={() => setActiveNav("account")}
           href="/account"
           element={Link}
         />
