@@ -92,14 +92,14 @@ function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
 
-      {/* Plausible */}
-      <PlausibleProvider domain="shopping.skkornor.org">
+      {/* Context providers */}
+      <Contexts>
         {/* Framer Motion a11y */}
         <MotionConfig reducedMotion="user">
-          {/* SKCom variables */}
-          <ThemeProvider>
-            {/* Context providers */}
-            <Contexts>
+          {/* Plausible */}
+          <PlausibleProvider domain="shopping.skkornor.org">
+            {/* SKCom variables */}
+            <ThemeProvider>
               {/* Rendered app */}
               <Layout>
                 {/* Client-side error handling */}
@@ -107,13 +107,13 @@ function App({ Component, pageProps }: AppProps) {
                   <Component {...pageProps} />
                 </ErrorBoundary>
               </Layout>
-            </Contexts>
-            {/* Symbol definitions */}
-            <BlobDefinitions />
-            <IconDefinitions />
-          </ThemeProvider>
+              {/* Symbol definitions */}
+              <BlobDefinitions />
+              <IconDefinitions />
+            </ThemeProvider>
+          </PlausibleProvider>
         </MotionConfig>
-      </PlausibleProvider>
+      </Contexts>
     </>
   );
 }
