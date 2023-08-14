@@ -109,6 +109,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
           </Interactive>
         }
         onNavToggle={() => setNavOpen(true)}
+        className="!backdrop-blur-lg"
       >
         <NavBarItem
           icon={<MaterialIcon icon="storefront" />}

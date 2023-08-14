@@ -1,5 +1,7 @@
 // Imports
 import BlobDefinitions from "@/components/BlobDefinitions";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
+import PageFallback from "@/components/error/PageFallback";
 import IconDefinitions from "@/components/icon/IconDefintions";
 import Layout from "@/components/Layout";
 import AppStateContext from "@/contexts/AppStateContext";
@@ -94,12 +96,16 @@ function App({ Component, pageProps }: AppProps) {
       <Contexts>
         {/* Framer Motion a11y */}
         <MotionConfig reducedMotion="user">
-          <PlausibleProvider domain="shopping.skkornor.org,preview.shopping.skkornor.org">
+          {/* Plausible */}
+          <PlausibleProvider domain="shopping.skkornor.org">
             {/* SKCom variables */}
             <ThemeProvider>
               {/* Rendered app */}
               <Layout>
-                <Component {...pageProps} />
+                {/* Client-side error handling */}
+                <ErrorBoundary fallback={PageFallback}>
+                  <Component {...pageProps} />
+                </ErrorBoundary>
               </Layout>
               {/* Symbol definitions */}
               <BlobDefinitions />
