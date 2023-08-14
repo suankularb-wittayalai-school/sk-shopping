@@ -10,6 +10,7 @@ export type OrderItem = {
 
 export type OrderStatus = "not_shipped_out" | "pending" | "delivered";
 export type DeliveryType = "school_pickup" | "delivery";
+export type PaymentMethod = "cod" | "prompt_pay";
 
 export type Order = {
   id: string;
@@ -23,7 +24,7 @@ export type Order = {
   zip_code: string | null;
   province: string | null;
   district: string | null;
-  pickup_location: String[] | null;
+  pickup_location: string[] | null;
   buyer: User | null;
   receiver_name: string;
 };
