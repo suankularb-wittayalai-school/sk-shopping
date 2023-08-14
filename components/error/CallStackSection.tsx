@@ -1,4 +1,5 @@
 // Imports
+import { Text } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 import { FC } from "react";
 
@@ -15,12 +16,19 @@ const CallStackSection: FC<{ error: Error }> = ({ error }) => {
       aria-labelledby="header-call-stack"
       className="flex flex-col gap-1"
     >
-      <h2 id="header-call-stack" className="skc-title-medium">
+      <Text
+        type="title-medium"
+        element={(props) => <h3 id="header-call-stack" {...props} />}
+      >
         {t("error.client.callStack")}
-      </h2>
-      <pre className="skc-body-small overflow-x-auto pb-2 !font-mono">
+      </Text>
+      <Text
+        type="body-small"
+        element="pre"
+        className="overflow-x-auto pb-2 !font-mono sm:max-h-[20rem]"
+      >
         {error.stack || error.message}
-      </pre>
+      </Text>
     </section>
   );
 };
