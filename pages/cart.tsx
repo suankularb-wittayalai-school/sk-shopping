@@ -19,7 +19,7 @@ const CartPage: NextPage = () => {
     <>
       <PageHeader>รถเข็นของคุณ</PageHeader>
       <ContentLayout>
-        <Section>
+        <Section element="ul">
           {carts ? (
             carts.map((cart) => <ShopCart key={cart.shop.id} cart={cart} />)
           ) : (

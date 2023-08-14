@@ -10,7 +10,7 @@ const CartsContext = createContext<ReturnType<typeof useCarts>>({
   totalItemCount: undefined,
   addItem: () => {},
   removeItem: () => {},
-  // setItemAmount: () => {},
+  setItemAmount: () => {},
   removeCart: () => {},
   removeAllCarts: () => {},
 });

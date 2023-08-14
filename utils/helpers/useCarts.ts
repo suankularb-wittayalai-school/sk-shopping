@@ -14,8 +14,9 @@ export default function useCarts() {
     if (data) setCarts(JSON.parse(data));
     else setCarts([]);
   }, []);
+
+  // Update localStorage to match React state
   if (typeof window !== "undefined" && carts) {
-    console.log()
     window.localStorage.setItem(CART_LOCAL_STORAGE_KEY, JSON.stringify(carts));
   }
 
@@ -24,6 +25,7 @@ export default function useCarts() {
     (cum, { items }) => cum + items.length,
     0,
   );
+
 
   function addItem(item: ListingOption, amount: number, shop: ShopCompact) {
     if (!carts) return;
@@ -52,27 +54,45 @@ export default function useCarts() {
     else setCarts([...carts, { items: [{ item, amount }], shop }]);
   }
 
-  function removeItem(itemID: string, shopID: string) {}
+  function removeItem(itemID: string, shopID: string) {
+    if (!carts) return;
+    setCarts(
+      carts
+        .map((cart) =>
+          shopID === cart.shop.id
+            ? {
+                ...cart,
+                items: cart.items.filter(
+                  (mapItem) => itemID !== mapItem.item.id,
+                ),
+              }
+            : cart,
+        )
+        .filter(({ items }) => items.length !== 0),
+    );
+  }
 
-  // function setItemAmount(item: ListingOption, amount: number, shopID: string) {
-  //   if (!carts) return;
-  //   setCarts(
-  //     carts.map((cart) =>
-  //       shopID === cart.shop.id
-  //         ? {
-  //             ...cart,
-  //             items: cart.items.map((mapItem) =>
-  //               item.id === mapItem.item.id
-  //                 ? { ...mapItem, item: { ...mapItem.item, amount } }
-  //                 : d,
-  //             ),
-  //           }
-  //         : cart,
-  //     ),
-  //   );
-  // }
+  function setItemAmount(item: ListingOption, amount: number, shopID: string) {
+    if (!carts) return;
+    if (amount === 0) {
+      removeItem(item.id, shopID);
+      return;
+    }
+    setCarts(
+      carts.map((cart) =>
+        shopID === cart.shop.id
+          ? {
+              ...cart,
+              items: cart.items.map((mapItem) =>
+                item.id === mapItem.item.id ? { ...mapItem, amount } : mapItem,
+              ),
+            }
+          : cart,
+      ),
+    );
+  }
 
-  function removeCart(item: ListingOption, amount: number, shopID: string) {
+  function removeCart(shopID: string) {
     if (!carts) return;
     setCarts(carts.filter((cart) => shopID !== cart.shop.id));
   }
@@ -86,7 +106,7 @@ export default function useCarts() {
     totalItemCount,
     addItem,
     removeItem,
-    // setItemAmount,
+    setItemAmount,
     removeCart,
     removeAllCarts,
   };

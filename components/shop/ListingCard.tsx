@@ -64,7 +64,7 @@ const LargeListingCard: StylableFC<{
     href={!onClick ? createListingURL(listing) : undefined}
     element={onClick ? "button" : Link}
     className={cn(
-      `items-stretch overflow-hidden transition-colors`,
+      `group items-stretch overflow-hidden transition-colors`,
       selected && `!bg-primary-container !text-on-primary-container`,
     )}
   >
@@ -96,7 +96,17 @@ const LargeListingCard: StylableFC<{
           <PriceDisplay listing={listing} />
         </Text>
       </div>
-      <Text type="body-medium" className="h-20 overflow-hidden text-ellipsis">
+      <Text
+        type="body-medium"
+        className={cn(
+          `relative h-20 overflow-hidden text-ellipsis after:absolute
+          after:bottom-0 after:right-0 after:h-5 after:w-1/2
+          after:bg-gradient-to-l after:from-surface after:to-transparent
+          after:transition-opacity group-hover:after:opacity-0
+          group-focus:after:opacity-0`,
+          selected && `after:from-primary-container`,
+        )}
+      >
         {listing.description}
       </Text>
       {showShop && <ShopTag shop={listing.shop} />}
