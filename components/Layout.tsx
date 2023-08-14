@@ -1,5 +1,6 @@
 // Imports
 import AppStateContext from "@/contexts/AppStateContext";
+import CartsContext from "@/contexts/CartsContext";
 import LogoImage from "@/public/images/logo.svg";
 import usePageIsLoading from "@/utils/helpers/usePageIsLoading";
 import { useSnackbar } from "@/utils/helpers/useSnackbar";
@@ -18,8 +19,7 @@ import {
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { FC, ReactNode, useContext, useState } from "react";
+import { FC, ReactNode, useContext } from "react";
 
 /**
  * A Root Layout with persistent components.
@@ -32,7 +32,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const { t } = useTranslation("common");
 
   // Navigation Bar and Drawer
-  const router = useRouter();
+  const { totalItemCount } = useContext(CartsContext);
   const { navOpen, setNavOpen, activeNav, setActiveNav } =
     useContext(AppStateContext);
 
@@ -130,6 +130,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
         <NavBarItem
           icon={<MaterialIcon icon="shopping_cart" />}
           label={t("navigation.cart")}
+          badge={totalItemCount}
           selected={activeNav === "cart"}
           onClick={() => setActiveNav("cart")}
           href="/cart"

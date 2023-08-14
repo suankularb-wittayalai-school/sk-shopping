@@ -238,8 +238,9 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                 "variants",
                 "categories",
               ]),
-              // Add `is_sold_out` key to replace `lifetime_stock`
-              is_sold_out: listing.lifetime_stock === 0,
+              // Add `is_sold_out` key which is not present in
+              // `ListingDetailed`
+              is_sold_out: listing.lifetime_stock - listing.amount_sold === 0,
             }) as ListingCompact,
         ),
     }))

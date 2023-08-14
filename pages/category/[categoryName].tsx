@@ -144,7 +144,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
         fetch_level: "compact",
         descendant_fetch_level: "compact",
         filter: {
-          data: { category_ids: [selectedCategory.id] },
+          data: { category_ids: [selectedCategory.id], is_hidden: "false" },
         },
       },
     });

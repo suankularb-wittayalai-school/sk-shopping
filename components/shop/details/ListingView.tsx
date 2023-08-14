@@ -1,6 +1,7 @@
 import OutOfStockBanner from "@/components/shop/OutOfStockBanner";
 import PriceDisplay from "@/components/shop/PriceDisplay";
 import VariantChip from "@/components/shop/details/VariantChip";
+import CartsContext from "@/contexts/CartsContext";
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
@@ -25,7 +26,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { list } from "radash";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 const ListingView: StylableFC<{
   shop: Shop;
@@ -48,6 +49,10 @@ const ListingView: StylableFC<{
     if (variants) setSelectedVariant(variants[0]);
     else setSelectedVariant(undefined);
   }, [variants]);
+
+  const variantStock = selectedVariant
+    ? selectedVariant.lifetime_stock - selectedVariant.amount_sold
+    : 0;
 
   // Keep track of the main image
   // When a variant is selected, automatically select the first image
@@ -86,7 +91,9 @@ const ListingView: StylableFC<{
   }, []);
 
   // The number of items to add to cart
-  const [count, setCount] = useState("1");
+  const [amount, setAmount] = useState("1");
+
+  const { addItem } = useContext(CartsContext);
 
   /**
    * Opens the native share dialog for the link to this Listing.
@@ -161,8 +168,11 @@ const ListingView: StylableFC<{
                   className="aspect-[4/3] w-full rounded-md object-cover"
                 />
               )}
-              {(selectedVariant?.lifetime_stock === 0 ||
-                listing.is_sold_out) && (
+              {(selectedVariant
+                ? selectedVariant.lifetime_stock -
+                    selectedVariant.amount_sold ===
+                  0
+                : listing.is_sold_out) && (
                 <OutOfStockBanner className="!rounded-b-md" />
               )}
             </motion.div>
@@ -301,9 +311,9 @@ const ListingView: StylableFC<{
           appearance="filled"
           label={t("count")}
           required
-          disabled={listing.is_sold_out}
-          value={count}
-          onChange={setCount}
+          disabled={variantStock === 0}
+          value={amount}
+          onChange={setAmount}
           locale={locale}
           inputAttr={{ type: "number", min: 1 }}
         />
@@ -312,7 +322,8 @@ const ListingView: StylableFC<{
             appearance="filled"
             icon={<MaterialIcon icon="add" />}
             // Prevent adding a sold out Listing Option to cart
-            disabled={listing.is_sold_out}
+            disabled={variantStock === 0}
+            onClick={() => addItem(selectedVariant!, Number(amount), shop)}
           >
             {t("action.addToCart")}
           </Button>
