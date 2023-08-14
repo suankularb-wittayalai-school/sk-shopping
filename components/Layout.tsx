@@ -15,11 +15,14 @@ import {
   Progress,
   RootLayout,
   Snackbar,
+  transition,
+  useAnimationConfig,
 } from "@suankularb-components/react";
+import { motion, useAnimationControls } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
-import { FC, ReactNode, useContext } from "react";
+import { FC, ReactNode, useContext, useEffect } from "react";
 
 /**
  * A Root Layout with persistent components.
@@ -31,10 +34,22 @@ import { FC, ReactNode, useContext } from "react";
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const { t } = useTranslation("common");
 
+  const { duration, easing } = useAnimationConfig();
+
   // Navigation Bar and Drawer
-  const { totalItemCount } = useContext(CartsContext);
   const { navOpen, setNavOpen, activeNav, setActiveNav } =
     useContext(AppStateContext);
+  const { carts, totalItemCount } = useContext(CartsContext);
+  const cartNavItemControls = useAnimationControls();
+  useEffect(() => {
+    if (activeNav === "cart") return;
+    cartNavItemControls.start({
+      scaleX: [2, 1],
+      scaleY: [0.8, 1],
+      opacity: [0, 1],
+      transition: transition(duration.medium4, easing.standardDecelerate),
+    });
+  }, [carts]);
 
   // Root Layout
   const pageIsLoading = usePageIsLoading();
@@ -127,15 +142,17 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
           href="/category/t-shirt"
           element={Link}
         />
-        <NavBarItem
-          icon={<MaterialIcon icon="shopping_cart" />}
-          label={t("navigation.cart")}
-          badge={totalItemCount}
-          selected={activeNav === "cart"}
-          onClick={() => setActiveNav("cart")}
-          href="/cart"
-          element={Link}
-        />
+        <motion.div animate={cartNavItemControls}>
+          <NavBarItem
+            icon={<MaterialIcon icon="shopping_cart" />}
+            label={t("navigation.cart")}
+            badge={totalItemCount || undefined}
+            selected={activeNav === "cart"}
+            onClick={() => setActiveNav("cart")}
+            href="/cart"
+            element={Link}
+          />
+        </motion.div>
         <NavBarItem
           icon={<MaterialIcon icon="star" />}
           label={t("navigation.favorites")}
