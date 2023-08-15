@@ -15,7 +15,10 @@ import {
   Columns,
   ContentLayout,
   Text,
+  transition,
+  useAnimationConfig,
 } from "@suankularb-components/react";
+import { LayoutGroup, motion } from "framer-motion";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -28,6 +31,8 @@ const FLAT_SHIPPING_COST_THB = 70;
 const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const getLocaleString = useGetLocaleString();
   const { t: tx } = useTranslation("common");
+
+  const { duration, easing } = useAnimationConfig();
 
   const { carts } = useContext(CartsContext);
   const cart = carts?.find((cart) => shop.id === cart.shop.id);
@@ -53,26 +58,33 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
         <Text type="title-large" className="-mt-8 mb-4 ml-10">
           ร้านค้า{getLocaleString(shop.name)}
         </Text>
-        <DeliveryTypeCard
-          value={deliveryType}
-          onChange={setDeliveryType}
-          shop={shop}
-          shippingCost={FLAT_SHIPPING_COST_THB}
-        />
-        <Columns columns={3} className="!items-stretch !gap-y-8">
-          <CostCard
-            items={cart?.items || []}
-            deliveryType={"school_pickup"}
+        <LayoutGroup>
+          <DeliveryTypeCard
+            value={deliveryType}
+            onChange={setDeliveryType}
+            shop={shop}
             shippingCost={FLAT_SHIPPING_COST_THB}
-            total={total}
-            className="sm:col-span-2"
           />
-          <PaymentMethodCard
-            value={paymentMethod}
-            onChange={setPaymentMethod}
-            onSubmit={handleSubmit}
-          />
-        </Columns>
+          <motion.div
+            layout="position"
+            transition={transition(duration.medium4, easing.standard)}
+          >
+            <Columns columns={3} className="!items-stretch !gap-y-8">
+              <CostCard
+                items={cart?.items || []}
+                deliveryType={deliveryType}
+                shippingCost={FLAT_SHIPPING_COST_THB}
+                total={total}
+                className="sm:col-span-2"
+              />
+              <PaymentMethodCard
+                value={paymentMethod}
+                onChange={setPaymentMethod}
+                onSubmit={handleSubmit}
+              />
+            </Columns>
+          </motion.div>
+        </LayoutGroup>
       </ContentLayout>
     </>
   );
