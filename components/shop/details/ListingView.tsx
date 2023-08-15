@@ -35,8 +35,17 @@ const ListingView: StylableFC<{
   shop: Shop;
   listing: ListingCompact;
   variants?: ListingOption[];
+  setFullscreenImage: (image: string) => void;
   onClose?: () => void;
-}> = ({ shop, listing, variants, onClose, style, className }) => {
+}> = ({
+  shop,
+  listing,
+  variants,
+  setFullscreenImage,
+  onClose,
+  style,
+  className,
+}) => {
   const locale = useLocale();
   const { t } = useTranslation("shop", { keyPrefix: "detail.listing" });
   const { t: tx } = useTranslation("common");
@@ -184,21 +193,30 @@ const ListingView: StylableFC<{
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={selectedImage}
+              layoutId={`main-image-${selectedImage}`}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
               transition={transition(duration.medium2, easing.standard)}
-              className="relative aspect-[4/3] rounded-md"
-              style={{ backgroundColor: `#${shop.accent_color}33` }}
+              className="relative aspect-[4/3] w-full overflow-hidden rounded-md"
+              style={{
+                backgroundColor: `#${shop.accent_color}33`,
+                borderRadius: 18,
+              }}
             >
               {selectedImage && (
-                <Image
-                  src={selectedImage}
-                  width={326}
-                  height={245}
-                  alt=""
-                  className="aspect-[4/3] w-full rounded-md object-cover"
-                />
+                <Interactive
+                  onClick={() => setFullscreenImage(selectedImage)}
+                  className="h-full w-full"
+                >
+                  <Image
+                    src={selectedImage}
+                    width={326}
+                    height={245}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </Interactive>
               )}
               {(selectedVariant
                 ? selectedVariant.lifetime_stock -

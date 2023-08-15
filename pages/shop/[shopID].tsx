@@ -1,6 +1,7 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
 import CollectionSection from "@/components/shop/CollectionSection";
+import FullscreenImageDialog from "@/components/shop/details/FullscreenImageDialog";
 import ListingDetailsDialog from "@/components/shop/details/ListingDetailsDialog";
 import ListingDetailsSection from "@/components/shop/details/ListingDetailsSection";
 import NoCollectionSection from "@/components/shop/NoCollectionSection";
@@ -20,6 +21,7 @@ import {
   Section,
   useBreakpoint,
 } from "@suankularb-components/react";
+import { LayoutGroup } from "framer-motion";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -97,8 +99,11 @@ const ShopPage: NextPage<{
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [image, setImage] = useState<string>();
+  const [imageOpen, setImageOpen] = useState(false);
+
   return (
-    <>
+    <LayoutGroup>
       <PageHeader
         parentURL={
           {
@@ -144,6 +149,10 @@ const ShopPage: NextPage<{
             <ListingDetailsSection
               shop={shop}
               listing={selected}
+              setFullscreenImage={(image) => {
+                setImage(image);
+                setImageOpen(true);
+              }}
               onClose={() => setSelected(undefined)}
               className="pointer-events-auto h-full"
             />
@@ -175,10 +184,25 @@ const ShopPage: NextPage<{
           shop={shop}
           listing={selected}
           open={dialogOpen}
+          setFullscreenImage={(image) => {
+            setImage(image);
+            setImageOpen(true);
+          }}
           onClose={() => setDialogOpen(false)}
         />
       )}
-    </>
+
+      {image && (
+        <FullscreenImageDialog
+          src={image}
+          width={1112}
+          height={834}
+          alt=""
+          open={imageOpen}
+          onClose={() => setImageOpen(false)}
+        />
+      )}
+    </LayoutGroup>
   );
 };
 

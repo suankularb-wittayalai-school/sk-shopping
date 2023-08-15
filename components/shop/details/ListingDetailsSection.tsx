@@ -20,8 +20,9 @@ import { useEffect, useState } from "react";
 const ListingDetailsSection: StylableFC<{
   shop: Shop;
   listing?: ListingCompact;
+  setFullscreenImage: (image: string) => void;
   onClose: () => void;
-}> = ({ shop, listing, onClose, style, className }) => {
+}> = ({ shop, listing, setFullscreenImage, onClose, style, className }) => {
   const jimmy = useJimmy();
 
   const { duration, easing } = useAnimationConfig();
@@ -88,6 +89,7 @@ const ListingDetailsSection: StylableFC<{
             shop={shop}
             listing={listing}
             variants={variants}
+            setFullscreenImage={setFullscreenImage}
             onClose={onClose}
           />
         ) : (

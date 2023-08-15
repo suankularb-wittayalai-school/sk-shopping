@@ -16,11 +16,22 @@ import { motion, useAnimationControls } from "framer-motion";
 import { ComponentProps, useEffect, useState } from "react";
 
 const ListingDetailsDialog: StylableFC<
-  Pick<ComponentProps<typeof ListingView>, "shop" | "listing"> & {
+  Pick<
+    ComponentProps<typeof ListingView>,
+    "shop" | "listing" | "setFullscreenImage"
+  > & {
     open: boolean;
     onClose: () => void;
   }
-> = ({ shop, listing, open, onClose, style, className }) => {
+> = ({
+  shop,
+  listing,
+  open,
+  setFullscreenImage,
+  onClose,
+  style,
+  className,
+}) => {
   const jimmy = useJimmy();
 
   const { duration, easing } = useAnimationConfig();
@@ -89,6 +100,7 @@ const ListingDetailsDialog: StylableFC<
             shop={shop}
             listing={listing}
             variants={variants}
+            setFullscreenImage={setFullscreenImage}
             onClose={onClose}
           />
         </motion.div>
