@@ -3,7 +3,7 @@ import AddressFields from "@/components/address/AddressFields";
 import cn from "@/utils/helpers/cn";
 import useForm from "@/utils/helpers/useForm";
 import { THAI_ZIPCODE_REGEX } from "@/utils/regex";
-import { StylableFC } from "@/utils/types/common";
+import { FormControlProps, StylableFC } from "@/utils/types/common";
 import { DeliveryType } from "@/utils/types/order";
 import { Shop } from "@/utils/types/shop";
 import {
@@ -25,23 +25,19 @@ const DeliveryTypeCard: StylableFC<{
     Shop,
     "is_school_pickup_allowed" | "pickup_location" | "is_delivery_allowed"
   >;
-}> = ({ value, onChange, shippingCost, shop, style, className }) => {
+  addressProps: FormControlProps<
+    "street_address" | "province" | "district" | "zip_code"
+  >;
+}> = ({
+  value,
+  onChange,
+  shippingCost,
+  shop,
+  addressProps,
+  style,
+  className,
+}) => {
   const { duration, easing } = useAnimationConfig();
-
-  const {
-    form: address,
-    setForm: setAddress,
-    formProps: addressProps,
-  } = useForm<"street_address" | "province" | "district" | "zip_code">([
-    { key: "street_address", required: true },
-    { key: "province", required: true },
-    { key: "district", required: true },
-    {
-      key: "zip_code",
-      validate: (value: string) => THAI_ZIPCODE_REGEX.test(value),
-      required: true,
-    },
-  ]);
 
   return (
     <motion.div

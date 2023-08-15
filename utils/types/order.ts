@@ -10,7 +10,7 @@ export type OrderItem = {
 
 export type OrderStatus = "not_shipped_out" | "pending" | "delivered";
 export type DeliveryType = "school_pickup" | "delivery";
-export type PaymentMethod = "cod" | "prompt_pay";
+export type PaymentMethod = "cod" | "promptpay";
 
 export type Order = {
   id: string;

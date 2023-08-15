@@ -6,12 +6,19 @@ import DeliveryTypeCard from "@/components/cart/checkout/DeliveryTypeCard";
 import PaymentMethodCard from "@/components/cart/checkout/PaymentMethodCard";
 import PromptPayDialog from "@/components/cart/checkout/PromptPayDialog";
 import CartsContext from "@/contexts/CartsContext";
+import SnackbarContext from "@/contexts/SnackbarContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
 import { logError } from "@/utils/helpers/logError";
 import useForm from "@/utils/helpers/useForm";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
-import { EMAIL_REGEX, THAI_PHONE_NUMBER_REGEX } from "@/utils/regex";
+import useJimmy from "@/utils/helpers/useJimmy";
+import {
+  EMAIL_REGEX,
+  THAI_PHONE_NUMBER_REGEX,
+  THAI_ZIPCODE_REGEX,
+} from "@/utils/regex";
+import { Address } from "@/utils/types/address";
 import { IDOnly, LangCode } from "@/utils/types/common";
 import { Shop } from "@/utils/types/shop";
 import {
@@ -26,6 +33,8 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { omit } from "radash";
 import { useContext, useState } from "react";
 import shortUUID from "short-uuid";
 
@@ -35,6 +44,8 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const getLocaleString = useGetLocaleString();
   const { t: tx } = useTranslation("common");
 
+  const router = useRouter();
+  const { setSnackbar } = useContext(SnackbarContext);
   const { duration, easing } = useAnimationConfig();
 
   const { carts } = useContext(CartsContext);
@@ -43,12 +54,25 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const [deliveryType, setDeliveryType] = useState<
     "school_pickup" | "delivery"
   >(shop.is_school_pickup_allowed ? "school_pickup" : "delivery");
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "prompt_pay">(
-    shop.accept_promptpay ? "prompt_pay" : "cod",
+  const { form: address, formProps: addressProps } = useForm<
+    "street_address" | "province" | "district" | "zip_code"
+  >([
+    { key: "street_address", required: true },
+    { key: "province", required: true },
+    { key: "district", required: true },
+    {
+      key: "zip_code",
+      validate: (value: string) => THAI_ZIPCODE_REGEX.test(value),
+      required: true,
+    },
+  ]);
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "promptpay">(
+    shop.accept_promptpay ? "promptpay" : "cod",
   );
   const { form: contactInfo, formProps: contactInfoProps } = useForm<
-    "email" | "tel"
+    "name" | "email" | "tel"
   >([
+    { key: "name", required: true },
     { key: "email", validate: (value: string) => EMAIL_REGEX.test(value) },
     {
       key: "tel",
@@ -56,12 +80,59 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
     },
   ]);
 
+  const jimmy = useJimmy();
+
+  const [promptPaySrc, setPromptPaySrc] = useState<string>();
   const [promptPayOpen, setPromptPayOpen] = useState(false);
 
-  const total = 0;
+  const total =
+    (cart?.items.reduce(
+      (cum, { item, amount }) =>
+        cum + (item.discounted_price || item.price) * amount,
+      0,
+    ) || 0) + (deliveryType === "delivery" ? FLAT_SHIPPING_COST_THB : 0);
 
   async function handleSubmit() {
-    if (paymentMethod === "prompt_pay") setPromptPayOpen(true);
+    if (!cart) return;
+    const { data, error } = await jimmy.fetch("/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data: [
+          {
+            items: cart.items.map(({ item, amount }) => ({
+              item_id: item.id,
+              amount,
+            })),
+            delivery_type: deliveryType,
+            address:
+              deliveryType === "delivery"
+                ? ({
+                    ...omit(address, ["street_address"]),
+                    street_address_line_1:
+                      address.street_address.split("\n")[0],
+                    street_address_line_2: address.street_address
+                      .split("\n")
+                      .slice(1)
+                      .join("\n"),
+                  } as Omit<Address, "id">)
+                : null,
+            receiver_name: contactInfo.name,
+            payment_method: paymentMethod,
+            contact_email: contactInfo.email,
+            contact_phone_number: contactInfo.tel,
+          },
+        ],
+      }),
+    });
+    if (error) {
+      logError("/cart/checkout/:id handleSubmit", error);
+      return;
+    }
+    if (paymentMethod === "promptpay") {
+      setPromptPaySrc((data as any)[0].promptpay_qr_code_url);
+      setPromptPayOpen(true);
+    } else router.push("/cart");
   }
 
   return (
@@ -83,6 +154,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
             onChange={setDeliveryType}
             shop={shop}
             shippingCost={FLAT_SHIPPING_COST_THB}
+            addressProps={addressProps}
             className="mx-4 sm:mx-0"
           />
           <motion.div
@@ -106,10 +178,9 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
                 onChange={setPaymentMethod}
                 onSubmit={handleSubmit}
               />
-              {shop.promptpay_number && (
+              {promptPaySrc && (
                 <PromptPayDialog
-                  total={total}
-                  promptpayNumber={shop.promptpay_number}
+                  src={promptPaySrc}
                   open={promptPayOpen}
                   onClose={() => setPromptPayOpen(false)}
                   onSubmit={() => setPromptPayOpen(false)}

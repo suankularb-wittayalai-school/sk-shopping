@@ -26,8 +26,8 @@ const PaymentMethodCard: StylableFC<{
         >
           <FormItem label="พร้อมเพย์">
             <Radio
-              value={value === "prompt_pay"}
-              onChange={(value) => value && onChange("prompt_pay")}
+              value={value === "promptpay"}
+              onChange={(value) => value && onChange("promptpay")}
             />
           </FormItem>
           <FormItem label="จ่ายเงินสดปลายทาง">
