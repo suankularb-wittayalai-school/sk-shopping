@@ -1,16 +1,17 @@
 // Imports
 import AddressFields from "@/components/address/AddressFields";
+import cn from "@/utils/helpers/cn";
+import useForm from "@/utils/helpers/useForm";
+import { THAI_ZIPCODE_REGEX } from "@/utils/regex";
 import { StylableFC } from "@/utils/types/common";
 import { DeliveryType } from "@/utils/types/order";
 import { Shop } from "@/utils/types/shop";
 import {
-  Card,
-  CardHeader,
   CardContent,
+  CardHeader,
   FormGroup,
   FormItem,
   Radio,
-  TextField,
   transition,
   useAnimationConfig,
 } from "@suankularb-components/react";
@@ -27,14 +28,33 @@ const DeliveryTypeCard: StylableFC<{
 }> = ({ value, onChange, shippingCost, shop, style, className }) => {
   const { duration, easing } = useAnimationConfig();
 
+  const {
+    form: address,
+    setForm: setAddress,
+    formProps: addressProps,
+  } = useForm<"street_address" | "province" | "district" | "zip_code">([
+    { key: "street_address", required: true },
+    { key: "province", required: true },
+    { key: "district", required: true },
+    {
+      key: "zip_code",
+      validate: (value: string) => THAI_ZIPCODE_REGEX.test(value),
+      required: true,
+    },
+  ]);
+
   return (
     <motion.div
       key="delivery-card"
       layout
       layoutId="delivery-card"
       transition={transition(duration.medium4, easing.standard)}
-      style={{ borderRadius: 12 }}
-      className="grid grid-cols-2 overflow-hidden rounded-md border-1 border-outline-variant bg-surface"
+      style={{ borderRadius: 12, ...style }}
+      className={cn(
+        `grid overflow-hidden rounded-md border-1 border-outline-variant
+        bg-surface md:grid-cols-2`,
+        className,
+      )}
     >
       <motion.div layout="position">
         <CardHeader title="รับสินค้าที่…" className="!-mb-2 !pb-0" />
@@ -62,7 +82,7 @@ const DeliveryTypeCard: StylableFC<{
           </FormGroup>
         </CardContent>
       </motion.div>
-      <CardContent className="bg-surface-1">
+      <CardContent className="md:bg-surface-1">
         <AnimatePresence mode="wait" initial={false}>
           {value === "school_pickup" ? (
             <motion.div
@@ -84,9 +104,9 @@ const DeliveryTypeCard: StylableFC<{
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={transition(duration.medium2, easing.standard)}
-              className="grid grid-cols-2 gap-6 [&_.skc-text-field\_\_label]:!bg-surface-1"
+              className="grid grid-cols-2 gap-x-6 gap-y-4"
             >
-              <AddressFields />
+              <AddressFields formProps={addressProps} />
             </motion.div>
           )}
         </AnimatePresence>

@@ -15,14 +15,14 @@ const PaymentMethodCard: StylableFC<{
   value: PaymentMethod;
   onChange: (value: PaymentMethod) => void;
   onSubmit: () => void;
-}> = ({ value, onChange, onSubmit }) => {
+}> = ({ value, onChange, onSubmit, style, className }) => {
   return (
-    <Card appearance="outlined" className="sm:col-span-2 md:col-span-1">
+    <Card appearance="outlined" style={style} className={className}>
       <CardHeader title="จ่ายผ่านวิธี…" className="!-mb-2 !pb-0" />
-      <CardContent>
+      <CardContent className="grow">
         <FormGroup
           label="จ่ายผ่านวิธี…"
-          className="[&>.skc-form-group\_\_label]:sr-only"
+          className="[&>.skc-form-group\_\_label]:sr-only grow"
         >
           <FormItem label="พร้อมเพย์">
             <Radio

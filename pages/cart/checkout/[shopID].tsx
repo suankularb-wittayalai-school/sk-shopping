@@ -1,17 +1,20 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
-import CostCard from "@/components/cart/checkout/CostCard";
+import ContactInfoCard from "@/components/cart/checkout/ContactInfoCard";
+import CostBreakdownCard from "@/components/cart/checkout/CostBreakdownCard";
 import DeliveryTypeCard from "@/components/cart/checkout/DeliveryTypeCard";
 import PaymentMethodCard from "@/components/cart/checkout/PaymentMethodCard";
+import PromptPayDialog from "@/components/cart/checkout/PromptPayDialog";
 import CartsContext from "@/contexts/CartsContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
 import { logError } from "@/utils/helpers/logError";
+import useForm from "@/utils/helpers/useForm";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
+import { EMAIL_REGEX, THAI_PHONE_NUMBER_REGEX } from "@/utils/regex";
 import { IDOnly, LangCode } from "@/utils/types/common";
 import { Shop } from "@/utils/types/shop";
 import {
-  Card,
   Columns,
   ContentLayout,
   Text,
@@ -43,10 +46,23 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "prompt_pay">(
     shop.accept_promptpay ? "prompt_pay" : "cod",
   );
+  const { form: contactInfo, formProps: contactInfoProps } = useForm<
+    "email" | "tel"
+  >([
+    { key: "email", validate: (value: string) => EMAIL_REGEX.test(value) },
+    {
+      key: "tel",
+      validate: (value: string) => THAI_PHONE_NUMBER_REGEX.test(value),
+    },
+  ]);
+
+  const [promptPayOpen, setPromptPayOpen] = useState(false);
 
   const total = 0;
 
-  async function handleSubmit() {}
+  async function handleSubmit() {
+    if (paymentMethod === "prompt_pay") setPromptPayOpen(true);
+  }
 
   return (
     <>
@@ -55,7 +71,10 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       </Head>
       <PageHeader parentURL="/cart">สั่งซื้อสินค้า</PageHeader>
       <ContentLayout>
-        <Text type="title-large" className="-mt-8 mb-4 ml-10">
+        <Text
+          type="title-large"
+          className="-mt-6 mb-4 ml-[3.25rem] sm:-mt-8 sm:ml-10"
+        >
           ร้านค้า{getLocaleString(shop.name)}
         </Text>
         <LayoutGroup>
@@ -64,24 +83,38 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
             onChange={setDeliveryType}
             shop={shop}
             shippingCost={FLAT_SHIPPING_COST_THB}
+            className="mx-4 sm:mx-0"
           />
           <motion.div
             layout="position"
             transition={transition(duration.medium4, easing.standard)}
           >
-            <Columns columns={3} className="!items-stretch !gap-y-8">
-              <CostCard
+            <Columns
+              columns={4}
+              className="mx-4 !items-stretch !gap-y-8 sm:mx-0"
+            >
+              <CostBreakdownCard
                 items={cart?.items || []}
                 deliveryType={deliveryType}
                 shippingCost={FLAT_SHIPPING_COST_THB}
                 total={total}
                 className="sm:col-span-2"
               />
+              <ContactInfoCard formProps={contactInfoProps} />
               <PaymentMethodCard
                 value={paymentMethod}
                 onChange={setPaymentMethod}
                 onSubmit={handleSubmit}
               />
+              {shop.promptpay_number && (
+                <PromptPayDialog
+                  total={total}
+                  promptpayNumber={shop.promptpay_number}
+                  open={promptPayOpen}
+                  onClose={() => setPromptPayOpen(false)}
+                  onSubmit={() => setPromptPayOpen(false)}
+                />
+              )}
             </Columns>
           </motion.div>
         </LayoutGroup>
