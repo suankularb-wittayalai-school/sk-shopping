@@ -101,10 +101,9 @@ const LargeListingCard: StylableFC<{
         className={cn(
           `relative h-20 overflow-hidden text-ellipsis after:absolute
           after:bottom-0 after:right-0 after:h-5 after:w-1/2
-          after:bg-gradient-to-l after:from-surface after:to-transparent
-          after:transition-opacity group-hover:after:opacity-0
-          group-focus:after:opacity-0`,
-          selected && `after:from-primary-container`,
+          after:bg-gradient-to-l after:to-transparent after:transition-opacity
+          group-hover:after:opacity-0 group-focus:after:opacity-0`,
+          selected ? `after:from-primary-container` : `after:from-surface`,
         )}
       >
         {listing.description}
