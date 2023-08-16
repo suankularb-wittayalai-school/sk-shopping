@@ -374,6 +374,10 @@ const ListingView: StylableFC<{
             // Prevent adding a sold out Listing Option to cart
             disabled={variantStock === 0}
             onClick={handleAddToCart}
+            style={{ backgroundColor: `#${shop.accent_color}` }}
+            className={cn(`isolate !text-surface after:absolute after:inset-0
+              after:-z-10 after:bg-on-surface after:opacity-10
+              state-layer:!bg-surface`)}
           >
             {t("action.addToCart")}
           </Button>
