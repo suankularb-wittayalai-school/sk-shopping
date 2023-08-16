@@ -10,7 +10,10 @@ import {
   ContentLayout,
   Section,
   Text,
+  transition,
+  useAnimationConfig,
 } from "@suankularb-components/react";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -24,7 +27,9 @@ const CartPage: NextPage = () => {
 
   const { setActiveNav } = useContext(AppStateContext);
   useEffect(() => setActiveNav("cart"), []);
-
+  
+  const { duration, easing } = useAnimationConfig();
+  
   return (
     <>
       <Head>
@@ -39,23 +44,34 @@ const CartPage: NextPage = () => {
           </Text>
         </Card>
         <Section element="ul">
-          {carts?.length ? (
-            carts.map((cart) => <ShopCartCard key={cart.shop.id} cart={cart} />)
-          ) : (
-            <Card
-              appearance="outlined"
-              className={cn(`relative isolate mx-4 box-content grid h-[13rem]
-                place-content-center overflow-hidden px-4 py-3 sm:mx-0`)}
-            >
-              <Text
-                type="body-medium"
-                element="p"
-                className="text-center text-on-surface-variant"
-              >
-                ยังไม่มีสินค้าในรถเข็น
-              </Text>
-            </Card>
-          )}
+          <LayoutGroup id="shop">
+            <AnimatePresence>
+              {carts?.length ? (
+                carts.map((cart) => (
+                  <ShopCartCard key={cart.shop.id} cart={cart} />
+                ))
+              ) : (
+                <motion.div
+                  layoutId="empty"
+                  initial={{ opacity: 0,  scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0  }}
+                  transition={transition(duration.medium2, easing.standard)}
+                  className={cn(`relative isolate mx-4 box-content grid
+                    h-[13rem] place-content-center overflow-hidden rounded-md
+                    border-1 border-outline-variant px-4 py-3 sm:mx-0`)}
+                >
+                  <Text
+                    type="body-medium"
+                    element="p"
+                    className="text-center text-on-surface-variant"
+                  >
+                    ยังไม่มีสินค้าในรถเข็น
+                  </Text>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </LayoutGroup>
         </Section>
       </ContentLayout>
     </>
