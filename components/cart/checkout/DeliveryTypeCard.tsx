@@ -1,8 +1,7 @@
 // Imports
 import AddressFields from "@/components/address/AddressFields";
 import cn from "@/utils/helpers/cn";
-import useForm from "@/utils/helpers/useForm";
-import { THAI_ZIPCODE_REGEX } from "@/utils/regex";
+import useLocale from "@/utils/helpers/useLocale";
 import { FormControlProps, StylableFC } from "@/utils/types/common";
 import { DeliveryType } from "@/utils/types/order";
 import { Shop } from "@/utils/types/shop";
@@ -37,6 +36,8 @@ const DeliveryTypeCard: StylableFC<{
   style,
   className,
 }) => {
+  const locale = useLocale();
+
   const { duration, easing } = useAnimationConfig();
 
   return (
@@ -68,7 +69,12 @@ const DeliveryTypeCard: StylableFC<{
               </FormItem>
             )}
             {shop.is_delivery_allowed && (
-              <FormItem label={`ที่อยู่อื่น… (เพิ่มค่าส่ง ฿${shippingCost})`}>
+              <FormItem
+                label={`ที่อยู่อื่น… (เพิ่มค่าส่ง ${shippingCost.toLocaleString(
+                  locale,
+                  { style: "currency", currency: "THB" },
+                )})`}
+              >
                 <Radio
                   value={value === "delivery"}
                   onChange={(value) => value && onChange("delivery")}

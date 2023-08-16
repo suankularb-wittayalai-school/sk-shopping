@@ -46,10 +46,20 @@ const CartListingOption: StylableFC<{
         <Text type="title-medium">{item.name}</Text>
       </div>
       <ListItemContent
-        title={`รวม ฿${(
+        title={`รวม ${(
           (item.discounted_price || item.price) * amount
-        ).toLocaleString(locale)}`}
-        desc={`฿${item.discounted_price || item.price} ต่อหน่วย`}
+        ).toLocaleString(locale, {
+          style: "currency",
+          currency: "THB",
+          maximumFractionDigits: 0,
+        })}`}
+        desc={`${(
+          (item.discounted_price || item.price) * amount
+        ).toLocaleString(locale, {
+          style: "currency",
+          currency: "THB",
+          maximumFractionDigits: 0,
+        })} ต่อหน่วย`}
         className="md:col-span-2"
       />
       <div className="flex flex-row gap-6 sm:grid sm:grid-cols-2 md:col-span-2">
