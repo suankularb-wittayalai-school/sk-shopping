@@ -84,11 +84,11 @@ const LargeListingCard: StylableFC<{
       {listing.is_sold_out && <OutOfStockBanner />}
     </div>
     <CardContent>
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col gap-0.5 h-[5.125rem]">
         <Text
           type="title-large"
           element={(props) => <h3 {...props} title={listing.name} />}
-          className="truncate"
+          className="line-clamp-2"
         >
           {listing.name}
         </Text>
@@ -96,18 +96,6 @@ const LargeListingCard: StylableFC<{
           <PriceDisplay listing={listing} />
         </Text>
       </div>
-      <Text
-        type="body-medium"
-        className={cn(
-          `relative h-20 overflow-hidden text-ellipsis after:absolute
-          after:bottom-0 after:right-0 after:h-5 after:w-1/2
-          after:bg-gradient-to-l after:to-transparent after:transition-opacity
-          group-hover:after:opacity-0 group-focus:after:opacity-0`,
-          selected ? `after:from-primary-container` : `after:from-surface`,
-        )}
-      >
-        {listing.description}
-      </Text>
       {showShop && <ShopTag shop={listing.shop} />}
     </CardContent>
   </Card>
