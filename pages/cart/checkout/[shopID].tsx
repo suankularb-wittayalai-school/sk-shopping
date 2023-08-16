@@ -56,9 +56,11 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const [deliveryType, setDeliveryType] = useState<
     "school_pickup" | "delivery"
   >(shop.is_school_pickup_allowed ? "school_pickup" : "delivery");
-  const { form: address, formProps: addressProps } = useForm<
-    "street_address" | "province" | "district" | "zip_code"
-  >([
+  const {
+    form: address,
+    formOK: addressOK,
+    formProps: addressProps,
+  } = useForm<"street_address" | "province" | "district" | "zip_code">([
     { key: "street_address", required: true },
     { key: "province", required: true },
     { key: "district", required: true },
@@ -102,6 +104,13 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
 
   async function handleSubmit() {
     if (!cart) return;
+    if (deliveryType === "delivery" && !addressOK){
+      setSnackbar(
+        <Snackbar>ตรวจสอบข้อมูลที่อยู่ให้ถูกต้องครบถ้วน</Snackbar>,
+      );
+      return;
+    }
+
     if (!contactInfoOK) {
       setSnackbar(
         <Snackbar>ตรวจสอบว่าใส่ชื่อสกุลและที่อยู่อีเมลแล้ว</Snackbar>,
@@ -226,6 +235,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
               <ContactInfoCard formProps={contactInfoProps} />
               <PaymentMethodCard
                 value={paymentMethod}
+                disabled={!cart || cart.items.length === 0}
                 onChange={setPaymentMethod}
                 onSubmit={handleSubmit}
               />

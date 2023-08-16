@@ -13,16 +13,17 @@ import {
 
 const PaymentMethodCard: StylableFC<{
   value: PaymentMethod;
+  disabled: boolean;
   onChange: (value: PaymentMethod) => void;
   onSubmit: () => void;
-}> = ({ value, onChange, onSubmit, style, className }) => {
+}> = ({ value, disabled, onChange, onSubmit, style, className }) => {
   return (
     <Card appearance="outlined" style={style} className={className}>
       <CardHeader title="จ่ายผ่านวิธี…" className="!-mb-2 !pb-0" />
       <CardContent className="grow">
         <FormGroup
           label="จ่ายผ่านวิธี…"
-          className="[&>.skc-form-group\_\_label]:sr-only grow"
+          className="grow [&>.skc-form-group\_\_label]:sr-only"
         >
           <FormItem label="พร้อมเพย์">
             <Radio
@@ -37,7 +38,7 @@ const PaymentMethodCard: StylableFC<{
             />
           </FormItem>
         </FormGroup>
-        <Button appearance="filled" onClick={onSubmit}>
+        <Button appearance="filled" disabled={disabled} onClick={onSubmit}>
           สั่งซื้อ
         </Button>
       </CardContent>
