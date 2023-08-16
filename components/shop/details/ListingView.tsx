@@ -155,7 +155,7 @@ const ListingView: StylableFC<{
           sm:items-start`)}
       >
         <div ref={imageSideRef} className="col-span-5 flex flex-col gap-2">
-          <div className="grid grid-cols-[2rem,1fr] gap-2">
+          <div className="grid grid-cols-[2rem,1fr] items-start gap-2">
             {/* Close button */}
             <Button
               appearance="text"
