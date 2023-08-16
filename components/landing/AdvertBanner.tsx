@@ -45,7 +45,13 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
       <ContentLayout className="text-on-surface">
         <Columns columns={2} className="!grid-cols-1 !gap-y-4 md:!grid-cols-2">
           {/* Foreground image */}
-          <div className="aspect-[4/3] rounded-sm border-4 border-dashed border-inverse-primary"></div>
+          <Image
+            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/adverts/banner/foreground.png`}
+            width={466}
+            height={349.5}
+            className="w-full h-auto"
+            alt=""
+          />
 
           <div className="mx-4 sm:mx-0">
             {/* App Drawer */}
