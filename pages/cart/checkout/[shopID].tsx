@@ -20,10 +20,12 @@ import {
 } from "@/utils/regex";
 import { Address } from "@/utils/types/address";
 import { IDOnly, LangCode } from "@/utils/types/common";
+import { Order } from "@/utils/types/order";
 import { Shop } from "@/utils/types/shop";
 import {
   Columns,
   ContentLayout,
+  Snackbar,
   Text,
   transition,
   useAnimationConfig,
@@ -48,7 +50,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const { setSnackbar } = useContext(SnackbarContext);
   const { duration, easing } = useAnimationConfig();
 
-  const { carts } = useContext(CartsContext);
+  const { carts, removeCart } = useContext(CartsContext);
   const cart = carts?.find((cart) => shop.id === cart.shop.id);
 
   const [deliveryType, setDeliveryType] = useState<
@@ -69,11 +71,17 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "promptpay">(
     shop.accept_promptpay ? "promptpay" : "cod",
   );
-  const { form: contactInfo, formProps: contactInfoProps } = useForm<
-    "name" | "email" | "tel"
-  >([
+  const {
+    form: contactInfo,
+    formOK: contactInfoOK,
+    formProps: contactInfoProps,
+  } = useForm<"name" | "email" | "tel">([
     { key: "name", required: true },
-    { key: "email", validate: (value: string) => EMAIL_REGEX.test(value) },
+    {
+      key: "email",
+      validate: (value: string) => EMAIL_REGEX.test(value),
+      required: true,
+    },
     {
       key: "tel",
       validate: (value: string) => THAI_PHONE_NUMBER_REGEX.test(value),
@@ -82,7 +90,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
 
   const jimmy = useJimmy();
 
-  const [promptPaySrc, setPromptPaySrc] = useState<string>();
+  const [order, setOrder] = useState<Order>();
   const [promptPayOpen, setPromptPayOpen] = useState(false);
 
   const total =
@@ -94,6 +102,13 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
 
   async function handleSubmit() {
     if (!cart) return;
+    if (!contactInfoOK) {
+      setSnackbar(
+        <Snackbar>ตรวจสอบว่าใส่ชื่อสกุลและที่อยู่อีเมลแล้ว</Snackbar>,
+      );
+      return;
+    }
+
     const { data, error } = await jimmy.fetch("/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -126,13 +141,49 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       }),
     });
     if (error) {
-      logError("/cart/checkout/:id handleSubmit", error);
+      logError("handleSubmit", error);
       return;
     }
     if (paymentMethod === "promptpay") {
-      setPromptPaySrc((data as any)[0].promptpay_qr_code_url);
+      setOrder((data as Order[])[0]);
       setPromptPayOpen(true);
     } else router.push("/cart");
+  }
+
+  async function handleSendSlip(file: File) {
+    if (!order) return;
+
+    // Upload slip file to the `orders` bucket on Supabase
+    const filePath = [order.id, file.name.split(".").slice(-1)[0]].join(".");
+    const { error: uploadError } = await jimmy.storage
+      .from("orders")
+      .upload(filePath, file);
+    if (uploadError) {
+      logError("handleSendSlip (upload)", { detail: uploadError.message });
+      return;
+    }
+
+    // Update the Order to include a link to the slip file
+    const { error: updateError } = await jimmy.fetch(
+      `/orders/${order.id}/slip`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: {
+            payment_slip_url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/orders/${filePath}`,
+          },
+        }),
+      },
+    );
+    if (updateError) {
+      logError("handleSendSlip (update)", updateError);
+      return;
+    }
+
+    removeCart(shop.id);
+    await router.push("/cart");
+    setPromptPayOpen(false);
   }
 
   return (
@@ -178,12 +229,12 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
                 onChange={setPaymentMethod}
                 onSubmit={handleSubmit}
               />
-              {promptPaySrc && (
+              {order?.promptpay_qr_code_url && (
                 <PromptPayDialog
-                  src={promptPaySrc}
+                  src={order.promptpay_qr_code_url}
                   open={promptPayOpen}
                   onClose={() => setPromptPayOpen(false)}
-                  onSubmit={() => setPromptPayOpen(false)}
+                  onSubmit={handleSendSlip}
                 />
               )}
             </Columns>

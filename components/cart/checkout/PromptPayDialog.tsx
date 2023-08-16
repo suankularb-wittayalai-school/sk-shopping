@@ -20,6 +20,7 @@ const PromptPayDialog: StylableFC<{
 }> = ({ src, open, onClose, onSubmit, style, className }) => {
   const locale = useLocale();
 
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File>();
 
   return (
@@ -49,7 +50,15 @@ const PromptPayDialog: StylableFC<{
         />
       </DialogContent>
       <Actions align="full">
-        <Button appearance="filled" onClick={() => file && onSubmit(file)}>
+        <Button
+          appearance="filled"
+          loading={loading}
+          onClick={() => {
+            if (!file) return;
+            setLoading(true);
+            onSubmit(file);
+          }}
+        >
           บันทึกสลิป
         </Button>
       </Actions>
