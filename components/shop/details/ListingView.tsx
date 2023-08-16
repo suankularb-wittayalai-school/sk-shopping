@@ -342,7 +342,7 @@ const ListingView: StylableFC<{
         </div>
 
         {/* Listing description */}
-        <Text type="body-medium" element="p" className="text-on-surface">
+        <Text type="body-large" element="p" className="text-on-surface">
           {listing.description}
         </Text>
       </section>
