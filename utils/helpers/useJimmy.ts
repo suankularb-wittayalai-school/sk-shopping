@@ -1,9 +1,10 @@
 // Imports
 import fetchJimmy from "@/utils/helpers/fetchJimmy";
-import { useSession } from "@supabase/auth-helpers-react";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 
 export default function useJimmy() {
   const session = useSession();
+  const { storage } = useSupabaseClient();
 
   return {
     fetch: async <Data extends {} | unknown = unknown>(
@@ -11,5 +12,6 @@ export default function useJimmy() {
       options?: Parameters<typeof fetchJimmy>["2"],
     ) => fetchJimmy<Data>(path, session, options),
     session,
+    storage,
   };
 }
