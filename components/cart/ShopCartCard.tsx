@@ -20,7 +20,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import shortUUID from "short-uuid";
 
-const ShopCart: StylableFC<{ cart: Cart }> = ({ cart, style, className }) => {
+const ShopCartCard: StylableFC<{ cart: Cart }> = ({ cart, style, className }) => {
   const { items, shop } = cart;
 
   const getLocaleString = useGetLocaleString();
@@ -77,4 +77,4 @@ const ShopCart: StylableFC<{ cart: Cart }> = ({ cart, style, className }) => {
   );
 };
 
-export default ShopCart;
+export default ShopCartCard;

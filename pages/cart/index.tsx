@@ -1,6 +1,6 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
-import ShopCart from "@/components/cart/ShopCart";
+import ShopCartCard from "@/components/cart/ShopCartCard";
 import AppStateContext from "@/contexts/AppStateContext";
 import CartsContext from "@/contexts/CartsContext";
 import cn from "@/utils/helpers/cn";
@@ -40,7 +40,7 @@ const CartPage: NextPage = () => {
         </Card>
         <Section element="ul">
           {carts?.length ? (
-            carts.map((cart) => <ShopCart key={cart.shop.id} cart={cart} />)
+            carts.map((cart) => <ShopCartCard key={cart.shop.id} cart={cart} />)
           ) : (
             <Card
               appearance="outlined"
