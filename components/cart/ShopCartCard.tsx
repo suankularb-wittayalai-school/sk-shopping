@@ -1,6 +1,7 @@
 // Imports
 import CartListingOption from "@/components/cart/CartListingOption";
 import ShopLogo from "@/components/landing/ShopLogo";
+import cn from "@/utils/helpers/cn";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import { Cart } from "@/utils/types/cart";
 import { StylableFC } from "@/utils/types/common";
@@ -36,8 +37,12 @@ const ShopCartCard: StylableFC<{
       animate={{ opacity: 1, scaleY: 1, y: "0%" }}
       exit={{ opacity: 0, scaleY: 0.8, y: "-20%" }}
       transition={transition(duration.medium2, easing.standard)}
-      style={{ borderRadius: 28, ...style }}
-      className="overflow-hidden border-1 border-outline-variant bg-surface-variant"
+      style={style}
+      className={cn(
+        `overflow-hidden rounded-xl border-1 border-outline-variant
+        bg-surface-variant`,
+        className,
+      )}
     >
       <CardHeader
         avatar={<ShopLogo shop={shop} showBackground />}
