@@ -14,6 +14,7 @@ export type PaymentMethod = "cod" | "promptpay";
 
 export type Order = {
   id: string;
+  ref_id: string;
   is_paid: boolean;
   is_verified: boolean;
   shipment_status: OrderStatus;
@@ -31,6 +32,7 @@ export type Order = {
   payment_method: PaymentMethod;
   payment_slip_url: string | null;
   promptpay_qr_code_url: string | null;
+  qr_code_file: string;
   contact_email: string;
   contact_phone_number: string | null;
 };
