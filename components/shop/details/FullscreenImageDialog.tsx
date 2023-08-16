@@ -25,6 +25,7 @@ const FullscreenImageDialog: StylableFC<
     <AnimatePresence>
       {open && (
         <>
+          {/* Scrim */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
@@ -32,6 +33,8 @@ const FullscreenImageDialog: StylableFC<
             onClick={onClose}
             className="skc-scrim"
           />
+
+          {/* Image */}
           <div
             style={style}
             className={cn(
@@ -44,22 +47,46 @@ const FullscreenImageDialog: StylableFC<
               layout="preserve-aspect"
               layoutId={`main-image-${src}`}
               transition={transition(duration.medium2, easing.standard)}
-              className={cn(`pointer-events-auto relative aspect-[4/3] h-auto
-                w-[100dvh] max-w-[100dvw] md:h-[100dvh] md:w-auto`)}
+              className={cn(
+                `pointer-events-auto relative aspect-[4/3] overflow-hidden
+                object-cover before:absolute before:inset-0 before:-z-10
+                before:rounded-sm before:bg-outline after:absolute
+                after:inset-0 after:-z-10 after:animate-pulse after:rounded-sm
+                after:bg-surface-variant`,
+              )}
             >
-              <Button
-                appearance="outlined"
-                icon={<MaterialIcon icon="close" />}
-                onClick={onClose}
-                className="!absolute !left-2 !top-2 z-[95] !border-0 !bg-surface-1 !shadow-1"
-              />
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <Image
                 {...omit(props, ["open", "onClose"])}
-                className="h-full w-full object-contain"
+                className="rounded-sm"
               />
             </motion.div>
           </div>
+
+          {/* Close Button */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{
+              scale: 0,
+              transition: transition(
+                duration.short2,
+                easing.standardAccelerate,
+              ),
+            }}
+            transition={{
+              ...transition(duration.medium2, easing.standardDecelerate),
+              delay: duration.short4,
+            }}
+            className="fixed left-2 top-2 z-[95]"
+          >
+            <Button
+              appearance="outlined"
+              icon={<MaterialIcon icon="close" />}
+              onClick={onClose}
+              className="!border-0 !bg-surface-1"
+            />
+          </motion.div>
         </>
       )}
     </AnimatePresence>
