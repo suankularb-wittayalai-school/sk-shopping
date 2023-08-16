@@ -15,6 +15,7 @@ export type PaymentMethod = "cod" | "promptpay";
 export type Order = {
   id: string;
   is_paid: boolean;
+  is_verified: boolean;
   shipment_status: OrderStatus;
   total_price: number;
   delivery_type: DeliveryType;
@@ -27,16 +28,21 @@ export type Order = {
   pickup_location: string[] | null;
   buyer: User | null;
   receiver_name: string;
+  payment_method: PaymentMethod;
+  payment_slip_url: string | null;
+  promptpay_qr_code_url: string | null;
+  contact_email: string;
+  contact_phone_number: string | null;
 };
 
-export type CompactOrder = Omit<
+export type CompactOrder = Pick<
   Order,
-  | "items"
-  | "street_address_line_1"
-  | "street_address_line_2"
-  | "zip_code"
-  | "province"
-  | "district"
-  | "pickup_location"
-  | "buyer"
+  | "id"
+  | "receiver_name"
+  | "is_paid"
+  | "is_verified"
+  | "shipment_status"
+  | "total_price"
+  | "delivery_type"
+  | "payment_method"
 >;
