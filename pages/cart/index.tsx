@@ -27,9 +27,9 @@ const CartPage: NextPage = () => {
 
   const { setActiveNav } = useContext(AppStateContext);
   useEffect(() => setActiveNav("cart"), []);
-  
+
   const { duration, easing } = useAnimationConfig();
-  
+
   return (
     <>
       <Head>
@@ -45,7 +45,7 @@ const CartPage: NextPage = () => {
         </Card>
         <Section element="ul">
           <LayoutGroup id="shop">
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout" initial={false}>
               {carts?.length ? (
                 carts.map((cart) => (
                   <ShopCartCard key={cart.shop.id} cart={cart} />
@@ -53,9 +53,9 @@ const CartPage: NextPage = () => {
               ) : (
                 <motion.div
                   layoutId="empty"
-                  initial={{ opacity: 0,  scale: 0 }}
+                  initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0  }}
+                  exit={{ opacity: 0, scale: 0 }}
                   transition={transition(duration.medium2, easing.standard)}
                   className={cn(`relative isolate mx-4 box-content grid
                     h-[13rem] place-content-center overflow-hidden rounded-md
