@@ -15,7 +15,7 @@ import {
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 
-const CartListingOption: StylableFC<{
+const ShopCartItem: StylableFC<{
   item: ListingOption;
   amount: number;
   shopID: string;
@@ -123,4 +123,4 @@ const CartListingOption: StylableFC<{
   );
 };
 
-export default CartListingOption;
+export default ShopCartItem;

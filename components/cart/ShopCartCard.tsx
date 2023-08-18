@@ -1,5 +1,5 @@
 // Imports
-import CartListingOption from "@/components/cart/CartListingOption";
+import ShopCartItem from "@/components/cart/ShopCartItem";
 import ShopLogo from "@/components/landing/ShopLogo";
 import cn from "@/utils/helpers/cn";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -50,7 +50,7 @@ const ShopCartCard: StylableFC<{
       />
       <List divided className="!mx-0.5 rounded-md !bg-surface">
         {items.map((item) => (
-          <CartListingOption key={item.item.id} {...item} shopID={shop.id} />
+          <ShopCartItem key={item.item.id} {...item} shopID={shop.id} />
         ))}
       </List>
       <CardContent>
