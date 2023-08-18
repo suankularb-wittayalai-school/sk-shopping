@@ -3,7 +3,7 @@ import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
 import { ListingOption } from "@/utils/types/listing-option";
 import { DeliveryType } from "@/utils/types/order";
-import { Card, Text } from "@suankularb-components/react";
+import { Card, Progress, Text } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 import { sift } from "radash";
 
@@ -31,6 +31,12 @@ const CostBreakdownCard: StylableFC<{
       style={style}
       className={cn(`relative overflow-hidden`, className)}
     >
+      <Progress
+        appearance="linear"
+        alt={t("loading")}
+        visible={!items.length}
+        className="absolute inset-0 bottom-10 top-auto"
+      />
       <table
         className={cn(
           `mb-10 [&>*>*>*:last-child]:text-end [&>*>*>*]:text-start`,
