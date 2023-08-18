@@ -1,0 +1,58 @@
+{
+  "title": "สั่งซื้อสินค้า",
+  "subtitle": "ร้านค้า{{shop}}",
+  "delivery": {
+    "title": "รับสินค้าที่…",
+    "schoolPickup": {
+      "option": "โรงเรียน",
+      "detail": {
+        "desc": "แสดงใบเสร็จที่{{location}}เพื่อรับสินค้า"
+      }
+    },
+    "delivery": {
+      "option": "ที่อยู่อื่น… (เพิ่มค่าส่ง {{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}})"
+    }
+  },
+  "costBreakdown": {
+    "thead": {
+      "amount": "จำนวน",
+      "item": "สินค้า",
+      "price": "ราคา"
+    },
+    "tbody": {
+      "shipping": "ค่าขนส่ง"
+    },
+    "tfoot": {
+      "total": "รวม"
+    }
+  },
+  "contact": {
+    "title": "ช่องทางการติดต่อสำหรับขนส่ง",
+    "name": "ชื่อสกุล",
+    "email": "อีเมล",
+    "tel": "โทร."
+  },
+  "payment": {
+    "title": "จ่ายผ่านวิธี…",
+    "option": {
+      "promptpay": "พร้อมเพย์",
+      "cod": "จ่ายเงินสดปลายทาง"
+    },
+    "action": {
+      "placeOrder": "สั่งซื้อ"
+    },
+    "promptpay": {
+      "desc": "สแกนรหัส QR ด้านล้างเพื่อชำระเงิน เมื่อชำระแล้ว ให้แนบสลิปมาเป็นหลักฐานด้วย",
+      "qrAlt": "รหัส QR พร้อมเพย์",
+      "attachSlip": "แนบสลิป",
+      "action": {
+        "save": "บันทึกสลิป"
+      }
+    }
+  },
+  "snackbar": {
+    "invalidAddress": "ตรวจสอบข้อมูลที่อยู่ให้ถูกต้องครบถ้วน",
+    "invalidContact": "ตรวจสอบว่าใส่ชื่อสกุลและที่อยู่อีเมลแล้ว",
+    "success": "สั่งซื้อเรียบร้อย! คุณสามารถดูใบเสร็จได้ที่ {{email}}"
+  }
+}

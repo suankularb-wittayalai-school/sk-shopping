@@ -1,0 +1,22 @@
+{
+  "title": "Your cart",
+  "pastOrdersNote": "If you placed orders as a guest, you can view your receipts in the email you entered when you placed those orders.",
+  "cart": {
+    "item": {
+      "total": "{{price, currency(currency: THB; maximumFractionDigits: 0;)}} total",
+      "pricePerItem": "{{price, currency(currency: THB; maximumFractionDigits: 0;)}} each",
+      "amount": {
+        "label": "Quantity",
+        "decrease": "Decrease",
+        "increase": "Increase"
+      },
+      "action": {
+        "remove": "Remove"
+      }
+    },
+    "action": {
+      "checkout": "Checkout"
+    },
+    "empty": "No items in cart yet."
+  }
+}

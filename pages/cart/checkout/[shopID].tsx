@@ -49,11 +49,12 @@ const FLAT_SHIPPING_COST_THB = 70;
 /**
  * The Checkout page lets the user double-check Items and choose delivery and
  * payment options before placing the Order.
- * 
+ *
  * @param shop The Shop this Checkout page is for. Used to decide with options to show.
  */
 const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const getLocaleString = useGetLocaleString();
+  const { t } = useTranslation("checkout");
   const { t: tx } = useTranslation("common");
 
   const router = useRouter();
@@ -115,14 +116,12 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   async function handleSubmit() {
     if (!cart) return;
     if (deliveryType === "delivery" && !addressOK) {
-      setSnackbar(<Snackbar>ตรวจสอบข้อมูลที่อยู่ให้ถูกต้องครบถ้วน</Snackbar>);
+      setSnackbar(<Snackbar>{t("snackbar.invalidAddress")}</Snackbar>);
       return;
     }
 
     if (!contactInfoOK) {
-      setSnackbar(
-        <Snackbar>ตรวจสอบว่าใส่ชื่อสกุลและที่อยู่อีเมลแล้ว</Snackbar>,
-      );
+      setSnackbar(<Snackbar>{t("snackbar.invalidContact")}</Snackbar>);
       return;
     }
 
@@ -164,7 +163,14 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
     if (paymentMethod === "promptpay") {
       setOrder((data as Order[])[0]);
       setPromptPayOpen(true);
-    } else router.push("/cart");
+      return;
+    }
+    setSnackbar(
+      <Snackbar>
+        สั่งซื้อเรียบร้อย! คุณสามารถดูใบเสร็จได้ที่ {contactInfo.email}
+      </Snackbar>,
+    );
+    router.push("/cart");
   }
 
   async function handleSendSlip(file: File) {
@@ -206,15 +212,15 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   return (
     <>
       <Head>
-        <title>{tx("tabName", { tabName: "สั่งซื้อสินค้า" })}</title>
+        <title>{tx("tabName", { tabName: t("title") })}</title>
       </Head>
-      <PageHeader parentURL="/cart">สั่งซื้อสินค้า</PageHeader>
+      <PageHeader parentURL="/cart">{t("title")}</PageHeader>
       <ContentLayout>
         <Text
           type="title-large"
           className="-mt-6 mb-4 ml-[3.25rem] sm:-mt-8 sm:ml-10"
         >
-          ร้านค้า{getLocaleString(shop.name)}
+          {t("subtitle", { shop: getLocaleString(shop.name) })}
         </Text>
         <LayoutGroup>
           <DeliveryTypeCard
@@ -279,6 +285,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     props: {
       ...(await serverSideTranslations(locale as LangCode, [
         "common",
+        "address",
         "checkout",
       ])),
       shop,

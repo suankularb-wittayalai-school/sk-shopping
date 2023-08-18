@@ -1,0 +1,22 @@
+{
+  "title": "รถเข็นของคุณ",
+  "pastOrdersNote": "ถ้าคุณสั่งซื้อสินค้าไปแล้วโดยที่ไม่ได้เข้าสู่ระบบ คุณจะสามารถดูใบเสร็จได้ที่อีเมลที่คุณกรอกไว้เมื่อสั่งซื้อ",
+  "cart": {
+    "item": {
+      "total": "รวม {{price, currency(currency: THB; maximumFractionDigits: 0;)}}",
+      "pricePerItem": "{{price, currency(currency: THB; maximumFractionDigits: 0;)}} ต่อหน่วย",
+      "amount": {
+        "label": "จำนวน",
+        "decrease": "ลดจำนวน",
+        "increase": "เพิ่มจำนวน"
+      },
+      "action": {
+        "remove": "นำออก"
+      }
+    },
+    "action": {
+      "checkout": "สั่งซื้อ"
+    },
+    "empty": "ยังไม่มีสินค้าในรถเข็น"
+  }
+}

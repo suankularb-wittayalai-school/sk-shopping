@@ -11,6 +11,7 @@ import {
   FormItem,
   Radio,
 } from "@suankularb-components/react";
+import { useTranslation } from "next-i18next";
 
 /**
  * A Card letting the user choose their payment method.
@@ -28,16 +29,18 @@ const PaymentMethodCard: StylableFC<{
   onChange: (value: PaymentMethod) => void;
   onSubmit: () => void;
 }> = ({ value, shop, disabled, onChange, onSubmit, style, className }) => {
+  const { t } = useTranslation("checkout", { keyPrefix: "payment" });
+
   return (
     <Card appearance="outlined" style={style} className={className}>
-      <CardHeader title="จ่ายผ่านวิธี…" className="!-mb-2 !pb-0" />
+      <CardHeader title={t("title")} className="!-mb-2 !pb-0" />
       <CardContent className="grow">
         <FormGroup
-          label="จ่ายผ่านวิธี…"
+          label={t("title")}
           className="grow [&>.skc-form-group\_\_label]:sr-only"
         >
           {shop.accept_promptpay && (
-            <FormItem label="พร้อมเพย์">
+            <FormItem label={t("option.promptpay")}>
               <Radio
                 value={value === "promptpay"}
                 onChange={(value) => value && onChange("promptpay")}
@@ -45,7 +48,7 @@ const PaymentMethodCard: StylableFC<{
             </FormItem>
           )}
           {shop.accept_cod && (
-            <FormItem label="จ่ายเงินสดปลายทาง">
+            <FormItem label={t("option.cod")}>
               <Radio
                 value={value === "cod"}
                 onChange={(value) => value && onChange("cod")}
@@ -54,7 +57,7 @@ const PaymentMethodCard: StylableFC<{
           )}
         </FormGroup>
         <Button appearance="filled" disabled={disabled} onClick={onSubmit}>
-          สั่งซื้อ
+          {t("action.placeOrder")}
         </Button>
       </CardContent>
     </Card>

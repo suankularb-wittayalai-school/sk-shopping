@@ -9,13 +9,14 @@ import {
   DialogHeader,
   TextField,
 } from "@suankularb-components/react";
+import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useState } from "react";
 
 /**
  * A Dialog shown to the user when as PromptPay Order has been successfully
  * initiated.
- * 
+ *
  * @param src The source URL of the PromptPay QR code image.
  * @param open If the Dialog is open and shown.
  * @param onClose Triggers when the Dialog is closed.
@@ -28,6 +29,7 @@ const PromptPayDialog: StylableFC<{
   onSubmit: (file: File) => void;
 }> = ({ src, open, onClose, onSubmit, style, className }) => {
   const locale = useLocale();
+  const { t } = useTranslation("checkout", { keyPrefix: "payment.promptpay" });
 
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File>();
@@ -40,18 +42,18 @@ const PromptPayDialog: StylableFC<{
       style={style}
       className={className}
     >
-      <DialogHeader desc="สแกนรหัส QR ด้านล้างเพื่อชำระเงิน เมื่อชำระแล้ว ให้แนบสลิปมาเป็นหลักฐานด้วย" />
+      <DialogHeader desc={t("desc")} />
       <DialogContent className="flex flex-col gap-6 px-6">
         <Image
           src={src}
           width={222}
           height={222}
-          alt="รหัส QR พร้อมเพย์"
+          alt={t("qrAlt")}
           className="mx-auto aspect-square w-full rounded-md bg-surface"
         />
         <TextField<File>
           appearance="outlined"
-          label="แนบสลิป"
+          label={t("attachSlip")}
           required
           onChange={setFile}
           locale={locale}
@@ -68,7 +70,7 @@ const PromptPayDialog: StylableFC<{
             onSubmit(file);
           }}
         >
-          บันทึกสลิป
+          {t("action.save")}
         </Button>
       </Actions>
     </Dialog>

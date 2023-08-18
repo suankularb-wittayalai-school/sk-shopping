@@ -4,6 +4,7 @@ import { StylableFC } from "@/utils/types/common";
 import { ListingOption } from "@/utils/types/listing-option";
 import { DeliveryType } from "@/utils/types/order";
 import { Card, Text } from "@suankularb-components/react";
+import { useTranslation } from "next-i18next";
 import { sift } from "radash";
 
 /**
@@ -22,6 +23,7 @@ const CostBreakdownCard: StylableFC<{
   total: number;
 }> = ({ items, deliveryType, shippingCost, total, style, className }) => {
   const locale = useLocale();
+  const { t } = useTranslation("checkout", { keyPrefix: "costBreakdown" });
 
   return (
     <Card
@@ -38,13 +40,13 @@ const CostBreakdownCard: StylableFC<{
         <thead>
           <tr className="[&>*]:px-4 [&>*]:pb-1 [&>*]:pt-3">
             <Text type="title-medium" element="th" className="w-20">
-              จำนวน
+              {t("thead.amount")}
             </Text>
             <Text type="title-medium" element="th">
-              สินค้า
+              {t("thead.item")}
             </Text>
             <Text type="title-medium" element="th" className="w-40">
-              ราคา
+              {t("thead.price")}
             </Text>
           </tr>
         </thead>
@@ -54,7 +56,7 @@ const CostBreakdownCard: StylableFC<{
             deliveryType === "delivery" && {
               item: {
                 id: "shipping",
-                name: "ค่าขนส่ง",
+                name: t("tbody.shipping"),
                 price: shippingCost,
               } as ListingOption,
               amount: 1,
@@ -96,7 +98,7 @@ const CostBreakdownCard: StylableFC<{
               element={(props) => <th {...props} scope="row" colSpan={2} />}
               className="w-full"
             >
-              รวม
+              {t("tfoot.total")}
             </Text>
             <Text
               type="body-medium"

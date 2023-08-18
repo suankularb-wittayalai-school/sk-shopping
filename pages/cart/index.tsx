@@ -24,6 +24,7 @@ import { useContext, useEffect } from "react";
  * The Cart page displays the user’s Cart from `localStorage`.
  */
 const CartPage: NextPage = () => {
+  const { t } = useTranslation("cart");
   const { t: tx } = useTranslation("common");
 
   const { carts } = useContext(CartsContext);
@@ -36,14 +37,13 @@ const CartPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{tx("tabName", { tabName: "รถเข็นของคุณ" })}</title>
+        <title>{tx("tabName", { tabName: t("title") })}</title>
       </Head>
-      <PageHeader>รถเข็นของคุณ</PageHeader>
+      <PageHeader>{t("title")}</PageHeader>
       <ContentLayout>
         <Card appearance="outlined" className="mx-4 px-4 py-3 sm:mx-0">
           <Text type="body-medium" element="p">
-            ถ้าคุณสั่งซื้อสินค้าไปแล้วโดยที่ไม่ได้เข้าสู่ระบบ
-            คุณจะสามารถดูใบเสร็จได้ที่อีเมลที่คุณกรอกไว้เมื่อสั่งซื้อ
+            {t("pastOrdersNote")}
           </Text>
         </Card>
         <Section element="ul">
@@ -69,7 +69,7 @@ const CartPage: NextPage = () => {
                     element="p"
                     className="text-center text-on-surface-variant"
                   >
-                    ยังไม่มีสินค้าในรถเข็น
+                    {t("cart.empty")}
                   </Text>
                 </motion.div>
               )}

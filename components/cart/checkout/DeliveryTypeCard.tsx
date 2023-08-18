@@ -15,11 +15,12 @@ import {
   useAnimationConfig,
 } from "@suankularb-components/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "next-i18next";
 
 /**
  * A Card letting the user choose how the Items in their Cart should be
  * delivered, and enter the address if needed.
- * 
+ *
  * @param value Form control value for the delivery type Form Group.
  * @param onChange Form control setter for the delivery type Form Group.
  * @param shippingCost How much the shipping cost.
@@ -47,6 +48,7 @@ const DeliveryTypeCard: StylableFC<{
   className,
 }) => {
   const locale = useLocale();
+  const { t } = useTranslation("checkout", { keyPrefix: "delivery" });
 
   const { duration, easing } = useAnimationConfig();
 
@@ -64,14 +66,16 @@ const DeliveryTypeCard: StylableFC<{
       )}
     >
       <motion.div layout="position">
-        <CardHeader title="รับสินค้าที่…" className="!-mb-2 !pb-0" />
+        <CardHeader title={t("title")} className="!-mb-2 !pb-0" />
         <CardContent>
           <FormGroup
-            label="รับสินค้าที่…"
+            label={t("title")}
             className="[&>.skc-form-group\_\_label]:sr-only"
           >
             {shop.is_school_pickup_allowed && (
-              <FormItem label={shop.pickup_location || "โรงเรียน"}>
+              <FormItem
+                label={shop.pickup_location || t("schoolPickup.option")}
+              >
                 <Radio
                   value={value === "school_pickup"}
                   onChange={(value) => value && onChange("school_pickup")}
@@ -79,12 +83,7 @@ const DeliveryTypeCard: StylableFC<{
               </FormItem>
             )}
             {shop.is_delivery_allowed && (
-              <FormItem
-                label={`ที่อยู่อื่น… (เพิ่มค่าส่ง ${shippingCost.toLocaleString(
-                  locale,
-                  { style: "currency", currency: "THB" },
-                )})`}
-              >
+              <FormItem label={t("delivery.option", { shippingCost })}>
                 <Radio
                   value={value === "delivery"}
                   onChange={(value) => value && onChange("delivery")}
@@ -106,7 +105,11 @@ const DeliveryTypeCard: StylableFC<{
               transition={transition(duration.medium2, easing.standard)}
               className="flex flex-col gap-2"
             >
-              <p>แสดงใบเสร็จที่{shop.pickup_location}เพื่อรับสินค้า</p>
+              <p>
+                {t("schoolPickup.detail.desc", {
+                  location: shop.pickup_location,
+                })}
+              </p>
             </motion.div>
           ) : (
             <motion.div

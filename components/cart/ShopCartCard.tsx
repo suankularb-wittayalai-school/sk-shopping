@@ -16,12 +16,13 @@ import {
   useAnimationConfig,
 } from "@suankularb-components/react";
 import { motion } from "framer-motion";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import shortUUID from "short-uuid";
 
 /**
  * A Card displaying a Cart for a Shop.
- * 
+ *
  * @param cart The Cart to display the information of.
  */
 const ShopCartCard: StylableFC<{
@@ -30,6 +31,7 @@ const ShopCartCard: StylableFC<{
   const { items, shop } = cart;
 
   const getLocaleString = useGetLocaleString();
+  const { t } = useTranslation("cart", { keyPrefix: "cart" });
 
   const { fromUUID } = shortUUID();
   const { duration, easing } = useAnimationConfig();
@@ -66,7 +68,7 @@ const ShopCartCard: StylableFC<{
             href={`/cart/checkout/${fromUUID(shop.id)}`}
             element={Link}
           >
-            สั่งซื้อ
+            {t("action.checkout")}
           </Button>
         </Actions>
       </CardContent>

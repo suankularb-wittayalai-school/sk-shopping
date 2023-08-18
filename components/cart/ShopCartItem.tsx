@@ -1,3 +1,4 @@
+// Imports
 import CartsContext from "@/contexts/CartsContext";
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
@@ -12,13 +13,14 @@ import {
   SegmentedButton,
   Text,
 } from "@suankularb-components/react";
+import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 
 /**
  * A Listing Option inside Shop Cart Card.
- * 
- * @param item The Listion Option to display information of. 
+ *
+ * @param item The Listion Option to display information of.
  * @param amount The quantity of this Listing Option.
  * @param shopID The Shop UUID this Listing Option belongs to. Used for modifying the Cart context.
  */
@@ -28,6 +30,7 @@ const ShopCartItem: StylableFC<{
   shopID: string;
 }> = ({ item, amount, shopID, style, className }) => {
   const locale = useLocale();
+  const { t } = useTranslation("cart", { keyPrefix: "cart.item" });
 
   const { setItemAmount, removeItem } = useContext(CartsContext);
   const [value, setValue] = useState(amount);
@@ -47,39 +50,33 @@ const ShopCartItem: StylableFC<{
             width={56}
             height={56}
             alt=""
-            className="aspect-[1] object-cover"
+            className="aspect-square object-cover"
           />
         )}
         <Text type="title-medium">{item.name}</Text>
       </div>
       <ListItemContent
-        title={`รวม ${(
-          (item.discounted_price || item.price) * amount
-        ).toLocaleString(locale, {
-          style: "currency",
-          currency: "THB",
-          maximumFractionDigits: 0,
-        })}`}
-        desc={`${(
-          (item.discounted_price || item.price) * amount
-        ).toLocaleString(locale, {
-          style: "currency",
-          currency: "THB",
-          maximumFractionDigits: 0,
-        })} ต่อหน่วย`}
+        title={t("total", {
+          price: (item.discounted_price || item.price) * amount,
+        })}
+        desc={t("pricePerItem", { price: item.discounted_price || item.price })}
         className="md:col-span-2"
       />
-      <div className="flex flex-row gap-6 sm:grid sm:grid-cols-2 md:col-span-2">
-        <SegmentedButton alt="จำนวน" className="!grid !grid-cols-3">
+      <div
+        className={cn(`flex flex-row gap-6 sm:grid sm:grid-cols-2
+          md:col-span-2`)}
+      >
+        <SegmentedButton alt={t("amount.label")} className="!grid !grid-cols-3">
           <Button
             appearance="outlined"
             icon={
               <MaterialIcon
                 icon="keyboard_arrow_down"
-                className={`!transition-[font-feature-settings,transform]
-                  group-hover:translate-y-0.5 group-active:translate-y-1.5`}
+                className={cn(`!transition-[font-feature-settings,transform]
+                  group-hover:translate-y-0.5 group-active:translate-y-1.5`)}
               />
             }
+            tooltip={t("amount.decrease")}
             onClick={() => setValue(value - 1)}
             className="group"
           />
@@ -94,7 +91,11 @@ const ShopCartItem: StylableFC<{
                   ),
                 )
               }
-              className="h-full w-full min-w-0 border-1 border-l-0 border-outline bg-transparent text-center transition-[border] hover:border-y-on-surface focus:border-b-2 focus:border-b-primary focus:border-t-outline focus:outline-none"
+              className={cn(`h-full w-full min-w-0 border-1 border-l-0
+                border-outline bg-transparent text-center transition-[border]
+                hover:border-y-on-surface focus:border-b-2
+                focus:border-b-primary focus:border-t-outline
+                focus:outline-none`)}
             />
           </Text>
           <Button
@@ -102,10 +103,11 @@ const ShopCartItem: StylableFC<{
             icon={
               <MaterialIcon
                 icon="keyboard_arrow_up"
-                className={`!transition-[font-feature-settings,transform]
-                  group-hover:-translate-y-0.5 group-active:-translate-y-1.5`}
+                className={cn(`!transition-[font-feature-settings,transform]
+                  group-hover:-translate-y-0.5 group-active:-translate-y-1.5`)}
               />
             }
+            tooltip={t("amount.increase")}
             onClick={() =>
               setValue(
                 Math.min(value + 1, item.lifetime_stock - item.amount_sold),
@@ -122,7 +124,7 @@ const ShopCartItem: StylableFC<{
             onClick={() => removeItem(item.id, shopID)}
             className="[&>span]:whitespace-nowrap"
           >
-            นำออก
+            {t("action.remove")}
           </Button>
         </Actions>
       </div>
