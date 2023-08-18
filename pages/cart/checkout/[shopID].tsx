@@ -243,6 +243,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
               <ContactInfoCard formProps={contactInfoProps} />
               <PaymentMethodCard
                 value={paymentMethod}
+                shop={shop}
                 disabled={!cart || cart.items.length === 0}
                 onChange={setPaymentMethod}
                 onSubmit={handleSubmit}
