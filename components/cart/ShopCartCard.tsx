@@ -19,6 +19,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import shortUUID from "short-uuid";
 
+/**
+ * A Card displaying a Cart for a Shop.
+ * 
+ * @param cart The Cart to display the information of.
+ */
 const ShopCartCard: StylableFC<{
   cart: Cart;
 }> = ({ cart, style, className }) => {

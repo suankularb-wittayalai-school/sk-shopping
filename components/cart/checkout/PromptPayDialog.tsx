@@ -12,6 +12,15 @@ import {
 import Image from "next/image";
 import { useState } from "react";
 
+/**
+ * A Dialog shown to the user when as PromptPay Order has been successfully
+ * initiated.
+ * 
+ * @param src The source URL of the PromptPay QR code image.
+ * @param open If the Dialog is open and shown.
+ * @param onClose Triggers when the Dialog is closed.
+ * @param onSubmit Triggers when the submit Button is pressed.
+ */
 const PromptPayDialog: StylableFC<{
   src: string;
   open: boolean;

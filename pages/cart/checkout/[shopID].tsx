@@ -40,8 +40,18 @@ import { omit } from "radash";
 import { useContext, useState } from "react";
 import shortUUID from "short-uuid";
 
+/**
+ * The amount to add to the total if shipping is needed. This is a flat value
+ * Kornor has decided for Samarnmitr ‘66 to simplify things.
+ */
 const FLAT_SHIPPING_COST_THB = 70;
 
+/**
+ * The Checkout page lets the user double-check Items and choose delivery and
+ * payment options before placing the Order.
+ * 
+ * @param shop The Shop this Checkout page is for. Used to decide with options to show.
+ */
 const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const getLocaleString = useGetLocaleString();
   const { t: tx } = useTranslation("common");
@@ -104,10 +114,8 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
 
   async function handleSubmit() {
     if (!cart) return;
-    if (deliveryType === "delivery" && !addressOK){
-      setSnackbar(
-        <Snackbar>ตรวจสอบข้อมูลที่อยู่ให้ถูกต้องครบถ้วน</Snackbar>,
-      );
+    if (deliveryType === "delivery" && !addressOK) {
+      setSnackbar(<Snackbar>ตรวจสอบข้อมูลที่อยู่ให้ถูกต้องครบถ้วน</Snackbar>);
       return;
     }
 

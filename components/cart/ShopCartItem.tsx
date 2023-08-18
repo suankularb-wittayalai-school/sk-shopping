@@ -15,6 +15,13 @@ import {
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 
+/**
+ * A Listing Option inside Shop Cart Card.
+ * 
+ * @param item The Listion Option to display information of. 
+ * @param amount The quantity of this Listing Option.
+ * @param shopID The Shop UUID this Listing Option belongs to. Used for modifying the Cart context.
+ */
 const ShopCartItem: StylableFC<{
   item: ListingOption;
   amount: number;

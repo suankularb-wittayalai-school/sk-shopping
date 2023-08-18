@@ -16,6 +16,16 @@ import {
 } from "@suankularb-components/react";
 import { AnimatePresence, motion } from "framer-motion";
 
+/**
+ * A Card letting the user choose how the Items in their Cart should be
+ * delivered, and enter the address if needed.
+ * 
+ * @param value Form control value for the delivery type Form Group.
+ * @param onChange Form control setter for the delivery type Form Group.
+ * @param shippingCost How much the shipping cost.
+ * @param shop The Shop this Cart belongs to. This is used to only show options allowed by the Shop.
+ * @param addressProps `formProps` from a `useForm` instance controlling address information.
+ */
 const DeliveryTypeCard: StylableFC<{
   value: DeliveryType;
   onChange: (value: DeliveryType) => void;

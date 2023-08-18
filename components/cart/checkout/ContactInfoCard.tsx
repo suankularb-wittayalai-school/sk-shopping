@@ -6,6 +6,11 @@ import {
   TextField,
 } from "@suankularb-components/react";
 
+/**
+ * A Card with a form for contact information: name, email, and phone number.
+ * 
+ * @param formProps `formProps` from a `useForm` instance controlling contact information.
+ */
 const ContactInfoCard: StylableFC<{
   formProps: FormControlProps<"name" | "email" | "tel">;
 }> = ({ formProps, style, className }) => (

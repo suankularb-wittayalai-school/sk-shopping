@@ -6,6 +6,15 @@ import { DeliveryType } from "@/utils/types/order";
 import { Card, Text } from "@suankularb-components/react";
 import { sift } from "radash";
 
+/**
+ * A Card displaying a table breaking down the total cost of the Cart. Shows
+ * how much each Item is contributing to the total and the shipping cost.
+ *
+ * @param items An array of objects with Item and amount of that Item.
+ * @param deliveryType The delivery type. If this is `delivery`, shipping cost is applied.
+ * @param shippingCost How much the shipping cost.
+ * @param total The total cost.
+ */
 const CostBreakdownCard: StylableFC<{
   items: { item: ListingOption; amount: number }[];
   deliveryType: DeliveryType;

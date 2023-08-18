@@ -1,6 +1,7 @@
 // Imports
 import { StylableFC } from "@/utils/types/common";
 import { PaymentMethod } from "@/utils/types/order";
+import { Shop } from "@/utils/types/shop";
 import {
   Button,
   Card,
@@ -11,6 +12,15 @@ import {
   Radio,
 } from "@suankularb-components/react";
 
+/**
+ * A Card letting the user choose their payment method.
+ *
+ * @param value Form control value for the payment method Form Group.
+ * @param shop The Shop this Cart belongs to. This is used to only show options allowed by the Shop.
+ * @param disabled Whether the place order Button is disabled. This should be used to prevent the user from placing an order when the Cart hasn’t been loaded yet.
+ * @param onChange Form control setter for the payment method Form Group.
+ * @param onSubmit Triggers when the place order Button is pressed.
+ */
 const PaymentMethodCard: StylableFC<{
   value: PaymentMethod;
   disabled: boolean;

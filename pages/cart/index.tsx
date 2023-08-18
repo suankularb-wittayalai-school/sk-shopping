@@ -20,6 +20,9 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useContext, useEffect } from "react";
 
+/**
+ * The Cart page displays the user’s Cart from `localStorage`.
+ */
 const CartPage: NextPage = () => {
   const { t: tx } = useTranslation("common");
 
