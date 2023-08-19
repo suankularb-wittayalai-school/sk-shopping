@@ -3,8 +3,9 @@ import AppStateContext from "@/contexts/AppStateContext";
 import CartsContext from "@/contexts/CartsContext";
 import LogoImage from "@/public/images/logo.svg";
 import useLocale from "@/utils/helpers/useLocale";
+import { useOneTapSignin } from "@/utils/helpers/useOneTapSignin";
 import usePageIsLoading from "@/utils/helpers/usePageIsLoading";
-import { useRefreshProps } from "@/utils/helpers/useRefreshProps";
+import useRefreshProps from "@/utils/helpers/useRefreshProps";
 import { useSnackbar } from "@/utils/helpers/useSnackbar";
 import {
   Interactive,
@@ -39,6 +40,9 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const { t } = useTranslation("common");
 
   const { duration, easing } = useAnimationConfig();
+
+  // Google One Tap
+  useOneTapSignin();
 
   // Navigation Bar and Drawer
   const { navOpen, setNavOpen, activeNav, setActiveNav } =

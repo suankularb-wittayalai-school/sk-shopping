@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
  *
  * @returns A function.
  */
-export function useRefreshProps(
+export default function useRefreshProps(
   options?: Parameters<typeof router.replace>[2],
 ) {
   const router = useRouter();

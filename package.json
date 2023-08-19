@@ -18,6 +18,7 @@
     "autoprefixer": "10.4.14",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.15.1",
+    "google-auth-library": "^9.0.0",
     "i18next": "^23.4.3",
     "next": "13.4.13",
     "next-i18next": "^14.0.0",
@@ -32,6 +33,7 @@
     "short-uuid": "^4.2.2"
   },
   "devDependencies": {
+    "@types/google-one-tap": "^1.2.2",
     "@types/node": "^20.4.9",
     "@types/qs": "^6.9.7",
     "@types/react": "^18.2.19",

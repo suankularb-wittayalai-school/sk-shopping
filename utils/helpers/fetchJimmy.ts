@@ -1,6 +1,5 @@
 // Imports
 import { FetchReturn, Query } from "@/utils/types/fetch";
-import { Session } from "@supabase/supabase-js";
 import qs from "qs";
 import { sift } from "radash";
 
@@ -9,7 +8,7 @@ import { sift } from "radash";
  */
 export default async function fetchJimmy<Data extends {} | unknown = unknown>(
   path: string,
-  session: Session | null,
+  accessToken?: string,
   options?: Partial<RequestInit & { query: Query }>,
 ): Promise<FetchReturn<Data>> {
   /**
@@ -29,7 +28,7 @@ export default async function fetchJimmy<Data extends {} | unknown = unknown>(
     ...options,
     headers: {
       ...options?.headers,
-      ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 
