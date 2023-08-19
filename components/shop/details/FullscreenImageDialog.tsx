@@ -78,7 +78,7 @@ const FullscreenImageDialog: StylableFC<
               ...transition(duration.medium2, easing.standardDecelerate),
               delay: duration.short4,
             }}
-            className="fixed left-2 top-2 z-[95]"
+            className="fixed left-2 top-3.5 sm:top-2 z-[95]"
           >
             <Button
               appearance="outlined"
