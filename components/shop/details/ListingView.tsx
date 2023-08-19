@@ -127,6 +127,9 @@ const ListingView: StylableFC<{
    * Add the specified number of the selected variant to Cart.
    */
   function handleAddToCart() {
+    // Do nothing if the field is empty
+    if (!amount) return;
+
     // Add via context
     addItem(selectedVariant!, Number(amount), shop);
 
