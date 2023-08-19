@@ -47,6 +47,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const cartNavItemControls = useAnimationControls();
   useEffect(() => {
     if (activeNav === "cart") return;
+    if (!carts || carts.length === 0) return;
     cartNavItemControls.start({
       scaleX: [2, 1],
       scaleY: [0.8, 1],
