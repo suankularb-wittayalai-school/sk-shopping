@@ -14,10 +14,12 @@ const VariantChip: StylableFC<{
 }> = ({ variant, shop, selected, onClick, style, className }) => (
   <FilterChip
     icon={
-      <SplitColorsCircle
-        colors={variant.colors.map((color) => `#${color}`)}
-        className="m-[0.0625rem]"
-      />
+      variant.colors.length ? (
+        <SplitColorsCircle
+          colors={variant.colors.map((color) => `#${color}`)}
+          className="m-[0.0625rem]"
+        />
+      ) : undefined
     }
     selected={selected}
     onClick={onClick}
