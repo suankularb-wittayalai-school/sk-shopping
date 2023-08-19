@@ -6,14 +6,14 @@
     "categories": "ตามประเภท",
     "cart": "รถเข็น",
     "favorites": "สินค้าโปรด",
-    "account": "บัญชี"
+    "account": "บัญชี",
+    "language": "English"
   },
   "appDrawer": {
     "mysk": {
       "title": "แอพ MySK",
       "mysk": "MySK",
-      "clubRegistry": "ทะเบียนชุมนุม",
-      "shopping": "SK Shopping"
+      "clubRegistry": "ทะเบียนชุมนุม"
     },
     "school": {
       "title": "แอพโรงเรียน",

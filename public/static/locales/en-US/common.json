@@ -4,14 +4,14 @@
     "categories": "Categories",
     "cart": "Cart",
     "favorites": "Favorites",
-    "account": "Account"
+    "account": "Account",
+    "language": "ภาษาไทย"
   },
   "appDrawer": {
     "mysk": {
       "title": "MySK apps",
       "mysk": "MySK",
-      "clubRegistry": "Club Registry",
-      "shopping": "SK Shopping"
+      "clubRegistry": "Club Registry"
     },
     "school": {
       "title": "School apps",

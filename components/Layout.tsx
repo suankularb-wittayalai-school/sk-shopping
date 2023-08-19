@@ -2,7 +2,9 @@
 import AppStateContext from "@/contexts/AppStateContext";
 import CartsContext from "@/contexts/CartsContext";
 import LogoImage from "@/public/images/logo.svg";
+import useLocale from "@/utils/helpers/useLocale";
 import usePageIsLoading from "@/utils/helpers/usePageIsLoading";
+import { useRefreshProps } from "@/utils/helpers/useRefreshProps";
 import { useSnackbar } from "@/utils/helpers/useSnackbar";
 import {
   Interactive,
@@ -32,6 +34,8 @@ import { FC, ReactNode, useContext, useEffect } from "react";
  * @returns A Root Layout.
  */
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
+  const locale = useLocale();
+  const refreshProps = useRefreshProps();
   const { t } = useTranslation("common");
 
   const { duration, easing } = useAnimationConfig();
@@ -122,6 +126,16 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
               className="rounded-[inherit] transition-[border-radius]"
             />
           </Interactive>
+        }
+        end={
+          <NavBarItem
+            icon={<MaterialIcon icon="translate" />}
+            label={t("navigation.language")}
+            onClick={() => {
+              const newLocale = locale === "en-US" ? "th" : "en-US";
+              refreshProps({ locale: newLocale });
+            }}
+          />
         }
         onNavToggle={() => setNavOpen(true)}
         className="!backdrop-blur-lg"
