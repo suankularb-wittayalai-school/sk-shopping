@@ -1,10 +1,12 @@
+// Imports
+import fetchJimmy from "@/utils/helpers/fetchJimmy";
 import { logError } from "@/utils/helpers/logError";
 import useJimmy from "@/utils/helpers/useJimmy";
 import useLocale from "@/utils/helpers/useLocale";
 import useUser from "@/utils/helpers/useUser";
+import { CredentialResponse } from "google-one-tap";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import fetchJimmy from "./fetchJimmy";
 
 /**
  * Tap into Google Sign in.
@@ -29,6 +31,47 @@ export const useOneTapSignin = (options?: {
   const jimmy = useJimmy();
   const { accessToken, status } = useUser();
 
+  async function handleLogIn(response: CredentialResponse) {
+    const { data, error } = await jimmy.fetch<{
+      access_token: string;
+      expires_in: number;
+      id_token: string;
+      scope: string;
+      token_type: string;
+    }>("/auth/oauth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: response.credential }),
+    });
+    if (error) {
+      logError("useOneTapSignin", error);
+      setLoading(false);
+      return;
+    }
+
+    // We’re not using `jimmy.fetch` here because it is likely that
+    // `useJimmy` haven’t gotten the memo about the new access token yet
+    const { data: user, error: userError } = await fetchJimmy(
+      "/auth/user",
+      data.access_token,
+    );
+    if (userError) {
+      logError("useOneTapSignin", userError);
+      setLoading(false);
+      return;
+    }
+    if (!user) return;
+
+    // Set cookies for session
+    document.cookie = `access_token=${
+      data.access_token
+    }; path=/; expires=${new Date(
+      Date.now() + data.expires_in * 1000,
+    ).toUTCString()}`;
+    router.push("/");
+    setLoading(false);
+  }
+
   useEffect(() => {
     if (status === "loading") return;
     if (accessToken) {
@@ -42,48 +85,10 @@ export const useOneTapSignin = (options?: {
     try {
       google.accounts.id.initialize({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        itp_support: true,
-        callback: async (response) => {
-          const { data, error } = await jimmy.fetch<{
-            access_token: string;
-            expires_in: number;
-            id_token: string;
-            scope: string;
-            token_type: string;
-          }>("/auth/oauth/google", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ credential: response.credential }),
-          });
-          if (error) {
-            logError("useOneTapSignin", error);
-            setLoading(false);
-            return;
-          }
-
-          // We’re not using `jimmy.fetch` here because it is likely that
-          // `useJimmy` haven’t gotten the memo about the new access token yet
-          const { data: user, error: userError } = await fetchJimmy(
-            "/auth/user",
-            data.access_token,
-          );
-          if (userError) {
-            logError("useOneTapSignin", userError);
-            setLoading(false);
-            return;
-          }
-          if (!user) return;
-
-          // Set cookies for session
-          document.cookie = `access_token=${
-            data.access_token
-          }; path=/; expires=${new Date(
-            Date.now() + data.expires_in * 1000,
-          ).toUTCString()}`;
-          router.push("/");
-          setLoading(false);
-        },
+        callback: handleLogIn,
+        cancel_on_tap_outside: false,
         prompt_parent_id: parentContainerID,
+        itp_support: true,
       });
 
       // Google One Tap UI
