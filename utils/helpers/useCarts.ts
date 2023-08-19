@@ -1,23 +1,25 @@
 // Imports
 import { Cart } from "@/utils/types/cart";
 import { ListingOption } from "@/utils/types/listing-option";
+import { Order } from "@/utils/types/order";
 import { ShopCompact } from "@/utils/types/shop";
 import { replace } from "radash";
 import { useEffect, useState } from "react";
 
-const CART_LOCAL_STORAGE_KEY = "carts";
+const CARTS_LOCAL_STORAGE_KEY = "carts";
+const ORDERS_LOCAL_STORAGE_KEY = "orders";
 
 export default function useCarts() {
   const [carts, setCarts] = useState<Cart[]>();
   useEffect(() => {
-    const data = window.localStorage.getItem(CART_LOCAL_STORAGE_KEY);
+    const data = window.localStorage.getItem(CARTS_LOCAL_STORAGE_KEY);
     if (data) setCarts(JSON.parse(data));
     else setCarts([]);
   }, []);
 
   // Update localStorage to match React state
   if (typeof window !== "undefined" && carts) {
-    window.localStorage.setItem(CART_LOCAL_STORAGE_KEY, JSON.stringify(carts));
+    window.localStorage.setItem(CARTS_LOCAL_STORAGE_KEY, JSON.stringify(carts));
   }
 
   // `cum` means “cumulative,” duh
@@ -25,7 +27,6 @@ export default function useCarts() {
     (cum, { items }) => cum + items.length,
     0,
   );
-
 
   function addItem(item: ListingOption, amount: number, shop: ShopCompact) {
     if (!carts) return;
@@ -101,6 +102,18 @@ export default function useCarts() {
     setCarts([]);
   }
 
+  const [orders, setOrders] = useState<Order[]>();
+  useEffect(() => {
+    const data = window.localStorage.getItem(ORDERS_LOCAL_STORAGE_KEY);
+    if (data) setOrders(JSON.parse(data));
+    else setOrders([]);
+  }, []);
+
+  function addOrder(order: Order) {
+    if (!orders) return;
+    setOrders([...orders, order]);
+  }
+
   return {
     carts,
     totalItemCount,
@@ -109,5 +122,7 @@ export default function useCarts() {
     setItemAmount,
     removeCart,
     removeAllCarts,
+    orders,
+    addOrder,
   };
 }

@@ -43,7 +43,7 @@ const LandingPage: NextPage<{
         <title>{tx("appName")}</title>
       </Head>
       <AdvertBanner />
-      <ContentLayout className="!pt-0">
+      <ContentLayout className="relative z-10 !pt-0">
         {/* Advertisements */}
         <Section>
           {/* <Columns columns={2} className="!grid-cols-1 md:!grid-cols-2">
@@ -86,7 +86,9 @@ const LandingPage: NextPage<{
               <Section key={shopID}>
                 <Header
                   level={3}
-                  icon={<ShopLogo shop={shop} showBackground className="h-7 w-7" />}
+                  icon={
+                    <ShopLogo shop={shop} showBackground className="h-7 w-7" />
+                  }
                 >
                   {getLocaleString(shop.name)}
                 </Header>

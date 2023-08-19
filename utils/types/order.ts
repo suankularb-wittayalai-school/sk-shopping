@@ -14,6 +14,7 @@ export type PaymentMethod = "cod" | "promptpay";
 
 export type Order = {
   id: string;
+  created_at: string;
   ref_id: string;
   is_paid: boolean;
   is_verified: boolean;

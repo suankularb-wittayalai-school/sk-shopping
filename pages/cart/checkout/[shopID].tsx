@@ -37,7 +37,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { omit } from "radash";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
@@ -58,10 +58,12 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const { t: tx } = useTranslation("common");
 
   const router = useRouter();
+  const jimmy = useJimmy();
+
   const { setSnackbar } = useContext(SnackbarContext);
   const { duration, easing } = useAnimationConfig();
 
-  const { carts, removeCart } = useContext(CartsContext);
+  const { carts, removeCart, addOrder } = useContext(CartsContext);
   const cart = carts?.find((cart) => shop.id === cart.shop.id);
 
   const [deliveryType, setDeliveryType] = useState<
@@ -81,11 +83,14 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       required: true,
     },
   ]);
+
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "promptpay">(
     shop.accept_promptpay ? "promptpay" : "cod",
   );
+
   const {
     form: contactInfo,
+    setForm: setContactInfo,
     formOK: contactInfoOK,
     formProps: contactInfoProps,
   } = useForm<"name" | "email" | "tel">([
@@ -100,8 +105,18 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       validate: (value: string) => THAI_PHONE_NUMBER_REGEX.test(value),
     },
   ]);
-
-  const jimmy = useJimmy();
+  useEffect(() => {
+    // If the user is authenticated, auto-fill contact information
+    const {
+      user: { user, status },
+    } = jimmy;
+    if (status !== "authenticated" || !user) return;
+    setContactInfo({
+      ...contactInfo,
+      name: [user.first_name, user.last_name].join(" "),
+      email: user.email,
+    });
+  }, [jimmy.user.status]);
 
   const [order, setOrder] = useState<Order>();
   const [promptPayOpen, setPromptPayOpen] = useState(false);
@@ -125,7 +140,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       return;
     }
 
-    const { data, error } = await jimmy.fetch("/orders", {
+    const { data, error } = await jimmy.fetch<Order[]>("/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -161,7 +176,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       return;
     }
     if (paymentMethod === "promptpay") {
-      setOrder((data as Order[])[0]);
+      setOrder(data[0]);
       setPromptPayOpen(true);
       return;
     }
@@ -170,6 +185,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
         {t("snackbar.success", { email: contactInfo.email })}
       </Snackbar>,
     );
+    addOrder(data[0]);
     router.push("/cart");
   }
 
