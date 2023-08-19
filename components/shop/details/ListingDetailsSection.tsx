@@ -67,6 +67,9 @@ const ListingDetailsSection: StylableFC<{
               #${shop.accent_color}66,
               transparent
             )`,
+          colorScheme: shop.background_color
+            ? getSchemeFromBackgroundColor(shop.background_color)
+            : undefined,
           ...style,
         }}
         className={cn(

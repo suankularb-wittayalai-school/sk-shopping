@@ -78,12 +78,15 @@ const ListingDetailsDialog: StylableFC<
         style={{
           backgroundColor: `#${shop.background_color}`,
           backgroundImage:
-            // Left 40%, right 0%, accent color
+            // Top 40%, bottom 0%, accent color
             `linear-gradient(
-            to bottom,
-            #${shop.accent_color}66,
-            transparent
-          )`,
+              to bottom,
+              #${shop.accent_color}66,
+              transparent
+            )`,
+          colorScheme: shop.background_color
+            ? getSchemeFromBackgroundColor(shop.background_color)
+            : undefined,
           ...style,
         }}
         className={cn(
