@@ -37,6 +37,7 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
         src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/adverts/banner/background.png`}
         width={1194}
         height={570}
+        priority
         alt=""
         className={cn(`pointer-events-none absolute inset-0 -z-10 h-full w-full
           bg-surface-variant object-cover
@@ -49,6 +50,7 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/adverts/banner/foreground.png`}
             width={466}
             height={349.5}
+            priority
             className="w-full h-auto"
             alt=""
           />
