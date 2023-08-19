@@ -17,7 +17,7 @@ export default function useUser() {
     const cookies = document.cookie;
     const accessToken = cookies
       .split(";")
-      .find((cookie) => cookie.split("=")[0] === "access_token")
+      .find((cookie) => cookie.split("=")[0].trim() === "access_token")
       ?.split("=")[1];
 
     // If no access token is found, the user is determined to be
