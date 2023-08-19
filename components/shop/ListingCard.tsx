@@ -78,7 +78,7 @@ const LargeListingCard: StylableFC<{
           width={326}
           height={245}
           alt=""
-          className="rounded-sm"
+          className="rounded-sm w-full"
         />
       )}
       {listing.is_sold_out && <OutOfStockBanner />}
