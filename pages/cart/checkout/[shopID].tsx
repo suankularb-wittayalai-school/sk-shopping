@@ -167,7 +167,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
     }
     setSnackbar(
       <Snackbar>
-        สั่งซื้อเรียบร้อย! คุณสามารถดูใบเสร็จได้ที่ {contactInfo.email}
+        {t("snackbar.success", { email: contactInfo.email })}
       </Snackbar>,
     );
     router.push("/cart");
