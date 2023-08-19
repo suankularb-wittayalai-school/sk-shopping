@@ -19,10 +19,7 @@ const ListingDetailsDialog: StylableFC<
   Pick<
     ComponentProps<typeof ListingView>,
     "shop" | "listing" | "setFullscreenImage"
-  > & {
-    open: boolean;
-    onClose: () => void;
-  }
+  > & { open: boolean; onClose: () => void }
 > = ({
   shop,
   listing,
