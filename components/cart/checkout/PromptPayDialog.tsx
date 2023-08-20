@@ -42,7 +42,6 @@ const PromptPayDialog: StylableFC<{
     >
       <DialogHeader desc={t("desc")} />
       <DialogContent className="flex flex-col gap-6 px-6">
-        <p></p>
         <Image
           src={src}
           width={222}
