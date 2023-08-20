@@ -19,15 +19,13 @@ import { useState } from "react";
  *
  * @param src The source URL of the PromptPay QR code image.
  * @param open If the Dialog is open and shown.
- * @param onClose Triggers when the Dialog is closed.
  * @param onSubmit Triggers when the submit Button is pressed.
  */
 const PromptPayDialog: StylableFC<{
   src: string;
   open: boolean;
-  onClose: () => void;
   onSubmit: (file: File) => void;
-}> = ({ src, open, onClose, onSubmit, style, className }) => {
+}> = ({ src, open, onSubmit, style, className }) => {
   const locale = useLocale();
   const { t } = useTranslation("checkout", { keyPrefix: "payment.promptpay" });
 
@@ -38,12 +36,13 @@ const PromptPayDialog: StylableFC<{
     <Dialog
       open={open}
       width={320}
-      onClose={onClose}
+      onClose={() => {}}
       style={style}
       className={className}
     >
       <DialogHeader desc={t("desc")} />
       <DialogContent className="flex flex-col gap-6 px-6">
+        <p></p>
         <Image
           src={src}
           width={222}
