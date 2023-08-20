@@ -303,6 +303,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
         "common",
         "address",
         "checkout",
+        "receipt",
       ])),
       shop,
     },

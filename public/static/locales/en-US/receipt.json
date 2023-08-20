@@ -1,0 +1,16 @@
+{
+  "costBreakdown": {
+    "loading": "Loading your cart…",
+    "thead": {
+      "amount": "Qty",
+      "item": "Item",
+      "price": "Price"
+    },
+    "tbody": {
+      "shipping": "Shipping cost"
+    },
+    "tfoot": {
+      "total": "Total"
+    }
+  }
+}
