@@ -4,20 +4,21 @@
     "categories": "Categories",
     "cart": "Cart",
     "favorites": "Favorites",
-    "account": "Account"
+    "account": "Account",
+    "language": "ภาษาไทย"
   },
   "appDrawer": {
     "mysk": {
       "title": "MySK apps",
       "mysk": "MySK",
-      "clubRegistry": "Club Registry",
-      "shopping": "SK Shopping"
+      "clubRegistry": "Club Registry"
     },
     "school": {
       "title": "School apps",
       "skAcTh": "sk.ac.th",
       "kularbFah": "Kularb Fah",
       "kularbLuang": "Kularb Luang",
+      "shopping": "Shopping",
       "library": "Library",
       "libraryEBook": "Library eBook",
       "libraryOPAC": "Library OPAC"
@@ -27,5 +28,26 @@
       "schoolICT": "School ICT"
     }
   },
-  "pageIsLoading": "Page loading…"
+  "pageIsLoading": "Page loading…",
+  "error": {
+    "404": {
+      "title": "We couldn’t find that.",
+      "tabName": "Not found",
+      "desc": "Check the URL and try again."
+    },
+    "500": {
+      "title": "Something went wrong on the server.",
+      "tabName": "Server-side error",
+      "desc": "We encountered an error on the server. Try again in a few moments."
+    },
+    "client": {
+      "title": "Something went wrong on your client.",
+      "tabName": "Client-side exception",
+      "desc": "We encountered an error while trying to render or perform an action on your browser. Please try again.",
+      "callStack": "Call stack for developers"
+    },
+    "common": {
+      "persistNotice": "If this persists, contact support."
+    }
+  }
 }

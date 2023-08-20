@@ -10,7 +10,12 @@ export type LangCode = "en-US" | "th";
 /**
  * The page name of a top-level page.
  */
-export type TopLevelPageName = "landing" | "categories" | "cart" | "favorites" | "account"
+export type TopLevelPageName =
+  | "landing"
+  | "categories"
+  | "cart"
+  | "favorites"
+  | "account";
 
 /**
  * A function component stylable through `className` and `style`.
@@ -62,4 +67,4 @@ export type MultiLangString = {
 /**
  * The return type of a fetch with `fetch_level` of `id_only`.
  */
-export type IDOnly = { id: string }
+export type IDOnly = { id: string };

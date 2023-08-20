@@ -20,8 +20,9 @@ import { useEffect, useState } from "react";
 const ListingDetailsSection: StylableFC<{
   shop: Shop;
   listing?: ListingCompact;
+  setFullscreenImage: (image: string) => void;
   onClose: () => void;
-}> = ({ shop, listing, onClose, style, className }) => {
+}> = ({ shop, listing, setFullscreenImage, onClose, style, className }) => {
   const jimmy = useJimmy();
 
   const { duration, easing } = useAnimationConfig();
@@ -60,12 +61,15 @@ const ListingDetailsSection: StylableFC<{
         style={{
           backgroundColor: `#${shop.background_color}`,
           backgroundImage:
-            // Left 40%, right 0%, accent color
+            // Top 40%, bpttom 0%, accent color
             `linear-gradient(
-            to bottom,
-            #${shop.accent_color}66,
-            transparent
-          )`,
+              to bottom,
+              #${shop.accent_color}66,
+              transparent
+            )`,
+          colorScheme: shop.background_color
+            ? getSchemeFromBackgroundColor(shop.background_color)
+            : undefined,
           ...style,
         }}
         className={cn(
@@ -88,6 +92,7 @@ const ListingDetailsSection: StylableFC<{
             shop={shop}
             listing={listing}
             variants={variants}
+            setFullscreenImage={setFullscreenImage}
             onClose={onClose}
           />
         ) : (

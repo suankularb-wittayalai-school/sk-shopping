@@ -5,7 +5,7 @@ import { Shop } from "@/utils/types/shop";
 
 export type ListingOption = {
   id: string;
-  name: String;
+  name: string;
   variant_name: string | null;
   price: number;
   discounted_price: number | null;

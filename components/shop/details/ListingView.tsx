@@ -1,6 +1,8 @@
 import OutOfStockBanner from "@/components/shop/OutOfStockBanner";
 import PriceDisplay from "@/components/shop/PriceDisplay";
 import VariantChip from "@/components/shop/details/VariantChip";
+import CartsContext from "@/contexts/CartsContext";
+import SnackbarContext from "@/contexts/SnackbarContext";
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
@@ -14,6 +16,7 @@ import {
   Interactive,
   MaterialIcon,
   Progress,
+  Snackbar,
   Text,
   TextField,
   ToggleButton,
@@ -24,19 +27,30 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
+import Link from "next/link";
 import { list } from "radash";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 const ListingView: StylableFC<{
   shop: Shop;
   listing: ListingCompact;
   variants?: ListingOption[];
+  setFullscreenImage: (image: string) => void;
   onClose?: () => void;
-}> = ({ shop, listing, variants, onClose, style, className }) => {
+}> = ({
+  shop,
+  listing,
+  variants,
+  setFullscreenImage,
+  onClose,
+  style,
+  className,
+}) => {
   const locale = useLocale();
   const { t } = useTranslation("shop", { keyPrefix: "detail.listing" });
   const { t: tx } = useTranslation("common");
 
+  const { setSnackbar } = useContext(SnackbarContext);
   const { atBreakpoint } = useBreakpoint();
   const { duration, easing } = useAnimationConfig();
 
@@ -49,13 +63,23 @@ const ListingView: StylableFC<{
     else setSelectedVariant(undefined);
   }, [variants]);
 
+  const variantStock = selectedVariant
+    ? selectedVariant.lifetime_stock - selectedVariant.amount_sold
+    : 0;
+
   // Keep track of the main image
   // When a variant is selected, automatically select the first image
   // The user can browse through images via the list on the right
   const [selectedImage, setSelectedImage] = useState<string>();
   useEffect(() => {
-    if (!selectedVariant) return;
-    setSelectedImage(selectedVariant.image_urls[0]);
+    if (!selectedVariant) {
+      setSelectedImage(undefined);
+      return;
+    }
+    setSelectedImage(
+      selectedVariant.image_urls.find((url) => url.includes("main")) ||
+        selectedVariant.image_urls[0],
+    );
   }, [selectedVariant]);
 
   const imageSideRef = useRef<HTMLImageElement>(null);
@@ -86,7 +110,9 @@ const ListingView: StylableFC<{
   }, []);
 
   // The number of items to add to cart
-  const [count, setCount] = useState("1");
+  const [amount, setAmount] = useState("1");
+
+  const { addItem } = useContext(CartsContext);
 
   /**
    * Opens the native share dialog for the link to this Listing.
@@ -100,14 +126,42 @@ const ListingView: StylableFC<{
       await navigator.share(shareData);
   }
 
+  /**
+   * Add the specified number of the selected variant to Cart.
+   */
+  function handleAddToCart() {
+    // Do nothing if the field is empty
+    if (!amount) return;
+
+    // Add via context
+    addItem(selectedVariant!, Number(amount), shop);
+
+    // Visual feedback
+    setSnackbar(
+      <Snackbar
+        action={
+          <Button appearance="text" href="/cart" element={Link}>
+            ดูในรถเข็น
+          </Button>
+        }
+        stacked
+      >
+        เพิ่ม “{selectedVariant?.name}” สู่รถเข็นแล้ว
+      </Snackbar>,
+    );
+
+    // Reset form
+    setAmount("1");
+  }
+
   return (
     <div style={style} className={cn(`flex h-full flex-col`, className)}>
       <section
-        className={cn(`flex flex-col gap-4 p-4 pb-0 sm:grid sm:grid-cols-3
+        className={cn(`flex flex-col gap-4 p-4 pb-0 sm:grid sm:grid-cols-6
           sm:items-start`)}
       >
-        <div ref={imageSideRef} className="col-span-2 flex flex-col gap-2">
-          <div className="grid grid-cols-[2rem,1fr] gap-2">
+        <div ref={imageSideRef} className="col-span-5 flex flex-col gap-2">
+          <div className="grid grid-cols-[2rem,1fr] items-start gap-2">
             {/* Close button */}
             <Button
               appearance="text"
@@ -116,16 +170,16 @@ const ListingView: StylableFC<{
               tooltip={t("action.close.tooltip")}
               onClick={onClose}
               style={{ color: `#${shop.accent_color}` }}
-              className="!-ml-2 state-layer:!bg-on-surface"
+              className="!-ml-2 !-mt-[0.1875rem] state-layer:!bg-on-surface"
             />
 
             {/* Variants */}
-            <ChipSet className="relative">
+            <ChipSet className="relative !overflow-y-hidden" scrollable>
               <Progress
                 appearance="circular"
                 alt="Loading variants…"
                 visible={!selectedVariant}
-                className="absolute !h-6 !w-6"
+                className="absolute mt-8 !h-6 !w-6"
               />
               {selectedVariant &&
                 variants!.length > 1 &&
@@ -145,24 +199,36 @@ const ListingView: StylableFC<{
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={selectedImage}
+              layoutId={`main-image-${selectedImage}`}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
               transition={transition(duration.medium2, easing.standard)}
-              className="relative aspect-[4/3] rounded-md"
-              style={{ backgroundColor: `#${shop.accent_color}33` }}
+              className="relative aspect-[4/3] w-full overflow-hidden rounded-md"
+              style={{
+                backgroundColor: `#${shop.accent_color}33`,
+                borderRadius: 18,
+              }}
             >
               {selectedImage && (
-                <Image
-                  src={selectedImage}
-                  width={326}
-                  height={245}
-                  alt=""
-                  className="aspect-[4/3] w-full rounded-md object-cover"
-                />
+                <Interactive
+                  onClick={() => setFullscreenImage(selectedImage)}
+                  className="h-full w-full"
+                >
+                  <Image
+                    src={selectedImage}
+                    width={326}
+                    height={245}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </Interactive>
               )}
-              {(selectedVariant?.lifetime_stock === 0 ||
-                listing.is_sold_out) && (
+              {(selectedVariant
+                ? selectedVariant.lifetime_stock -
+                    selectedVariant.amount_sold ===
+                  0
+                : listing.is_sold_out) && (
                 <OutOfStockBanner className="!rounded-b-md" />
               )}
             </motion.div>
@@ -282,7 +348,7 @@ const ListingView: StylableFC<{
         </div>
 
         {/* Listing description */}
-        <Text type="body-medium" element="p" className="text-on-surface">
+        <Text type="body-large" element="p" className="text-on-surface">
           {listing.description}
         </Text>
       </section>
@@ -301,18 +367,23 @@ const ListingView: StylableFC<{
           appearance="filled"
           label={t("count")}
           required
-          disabled={listing.is_sold_out}
-          value={count}
-          onChange={setCount}
+          disabled={variantStock === 0}
+          value={amount}
+          onChange={setAmount}
           locale={locale}
           inputAttr={{ type: "number", min: 1 }}
         />
-        <Actions>
+        <Actions className="relative">
           <Button
             appearance="filled"
             icon={<MaterialIcon icon="add" />}
             // Prevent adding a sold out Listing Option to cart
-            disabled={listing.is_sold_out}
+            disabled={variantStock === 0 || Number(amount) > variantStock}
+            onClick={handleAddToCart}
+            style={{ backgroundColor: `#${shop.accent_color}` }}
+            className={cn(`isolate !text-surface after:absolute after:inset-0
+              after:-z-10 after:bg-on-surface after:opacity-10
+              state-layer:!bg-surface`)}
           >
             {t("action.addToCart")}
           </Button>

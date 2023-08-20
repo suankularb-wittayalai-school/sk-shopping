@@ -3,6 +3,7 @@ import AdvertBanner from "@/components/landing/AdvertBanner";
 import CollectionCard from "@/components/landing/CollectionCard";
 import ShopCard from "@/components/landing/ShopCard";
 import ShopLogo from "@/components/landing/ShopLogo";
+import AppStateContext from "@/contexts/AppStateContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -21,6 +22,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { group } from "radash";
+import { useContext, useEffect } from "react";
 
 /**
  * The Landing page displays some paid advertisements and the list of all Shops
@@ -37,13 +39,16 @@ const LandingPage: NextPage<{
   const { t } = useTranslation("landing");
   const { t: tx } = useTranslation("common");
 
+  const { setActiveNav } = useContext(AppStateContext);
+  useEffect(() => setActiveNav("landing"), []);
+
   return (
     <>
       <Head>
         <title>{tx("appName")}</title>
       </Head>
       <AdvertBanner />
-      <ContentLayout className="!pt-0">
+      <ContentLayout className="relative z-10 !pt-0">
         {/* Advertisements */}
         <Section>
           {/* <Columns columns={2} className="!grid-cols-1 md:!grid-cols-2">
@@ -86,7 +91,9 @@ const LandingPage: NextPage<{
               <Section key={shopID}>
                 <Header
                   level={3}
-                  icon={<ShopLogo shop={shop} showBackground className="h-7 w-7" />}
+                  icon={
+                    <ShopLogo shop={shop} showBackground className="h-7 w-7" />
+                  }
                 >
                   {getLocaleString(shop.name)}
                 </Header>

@@ -57,7 +57,7 @@ const ShopCard: StylableFC<{
         <CardHeader
           avatar={<ShopLogo shop={shop} />}
           title={getLocaleString(shop.name)}
-          className="!grid grow grid-cols-[2.5rem,1fr]"
+          className="!grid grow grid-cols-[2.5rem,1fr] [&_.skc-card-header\_\_title]:line-clamp-2"
         />
       </Card>
     </li>

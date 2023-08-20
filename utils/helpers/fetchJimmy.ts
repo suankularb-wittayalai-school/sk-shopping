@@ -1,6 +1,5 @@
 // Imports
 import { FetchReturn, Query } from "@/utils/types/fetch";
-import { Session } from "@supabase/supabase-js";
 import qs from "qs";
 import { sift } from "radash";
 
@@ -9,8 +8,8 @@ import { sift } from "radash";
  */
 export default async function fetchJimmy<Data extends {} | unknown = unknown>(
   path: string,
-  session: Session | null,
-  options?: Partial<{ query: Query; [key: string]: any }>,
+  accessToken?: string,
+  options?: Partial<RequestInit & { query: Query }>,
 ): Promise<FetchReturn<Data>> {
   /**
    * The path to make the fetch request to.
@@ -29,15 +28,17 @@ export default async function fetchJimmy<Data extends {} | unknown = unknown>(
     ...options,
     headers: {
       ...options?.headers,
-      Authorization: session ? `Bearer ${session.access_token}` : undefined,
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 
   if (process.env.NODE_ENV === "development")
     console.log(
       typeof window !== "undefined"
-        ? `[Fetch] ${source}`
-        : `\x1b[0m- \x1b[35mevent\x1b[0m fetched from ${source}`,
+        ? `[Fetch] ${options?.method || "GET"} to ${source}`
+        : `\x1b[0m- \x1b[35mevent\x1b[0m [${
+            options?.method || "GET"
+          }] ${source}`,
     );
 
   // If the response was successful with no error, return the JSON version of the
@@ -46,7 +47,7 @@ export default async function fetchJimmy<Data extends {} | unknown = unknown>(
 
   // Otherwise, parse the response into an error object
   return {
-    api_version: "1.0",
+    api_version: "0.1.0",
     data: null,
     error: {
       code: response.status,

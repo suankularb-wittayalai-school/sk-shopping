@@ -7,6 +7,7 @@ import LibraryOPACLogo from "@/public/images/drawer/library-opac.png";
 import LibraryLogo from "@/public/images/drawer/library.png";
 import MySKLogo from "@/public/images/drawer/mysk.png";
 import SchoolICTLogo from "@/public/images/drawer/school-ict.png";
+import ShoppingLogo from "@/public/images/drawer/shopping.png";
 import SKACTHLogo from "@/public/images/drawer/sk-ac-th.png";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
@@ -59,6 +60,11 @@ const AppDrawer: StylableFC = ({ style, className }) => {
           logo={<Image src={KularbLuangLogo} alt="" />}
           name={t("school.kularbLuang")}
           href="https://sites.google.com/sk.ac.th/standard11suan"
+        />
+        <AppDrawerItem
+          logo={<Image src={ShoppingLogo} alt="" />}
+          name={t("school.shopping")}
+          href="https://shopping.skkornor.org/"
         />
         <AppDrawerItem
           logo={<Image src={LibraryLogo} alt="" />}

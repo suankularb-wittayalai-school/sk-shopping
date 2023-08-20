@@ -64,7 +64,7 @@ const LargeListingCard: StylableFC<{
     href={!onClick ? createListingURL(listing) : undefined}
     element={onClick ? "button" : Link}
     className={cn(
-      `items-stretch overflow-hidden transition-colors`,
+      `group items-stretch overflow-hidden transition-colors`,
       selected && `!bg-primary-container !text-on-primary-container`,
     )}
   >
@@ -78,17 +78,17 @@ const LargeListingCard: StylableFC<{
           width={326}
           height={245}
           alt=""
-          className="rounded-sm"
+          className="rounded-sm w-full"
         />
       )}
       {listing.is_sold_out && <OutOfStockBanner />}
     </div>
     <CardContent>
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col gap-0.5 h-[5.125rem]">
         <Text
           type="title-large"
           element={(props) => <h3 {...props} title={listing.name} />}
-          className="truncate"
+          className="line-clamp-2"
         >
           {listing.name}
         </Text>
@@ -96,9 +96,6 @@ const LargeListingCard: StylableFC<{
           <PriceDisplay listing={listing} />
         </Text>
       </div>
-      <Text type="body-medium" className="h-20 overflow-hidden text-ellipsis">
-        {listing.description}
-      </Text>
       {showShop && <ShopTag shop={listing.shop} />}
     </CardContent>
   </Card>

@@ -1,0 +1,40 @@
+{
+  "title": "{{date, datetime(dateStyle: long)}} receipt",
+  "details": {
+    "delivery": {
+      "schoolPickup": "School pickup",
+      "delivery": "Delivery to {{streetAddress}}"
+    },
+    "shipmentStatus": {
+      "notShippedOut": "Not shipped out",
+      "pending": "Shipment in progress",
+      "delivered": "Delivered"
+    },
+    "payment": {
+      "cod": "Cash on delivery",
+      "promptpay": "Paid via PromptPay"
+    },
+    "isPaid": {
+      "true": "Paid",
+      "false": "Pending payment"
+    }
+  },
+  "qrCaption": "Receipt QR code",
+  "costBreakdown": {
+    "loading": "Loading your cart…",
+    "thead": {
+      "amount": "Qty",
+      "item": "Item",
+      "price": "Price"
+    },
+    "tbody": {
+      "shipping": "Shipping cost"
+    },
+    "tfoot": {
+      "total": "Total"
+    }
+  },
+  "action": {
+    "done": "Done"
+  }
+}

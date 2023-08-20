@@ -1,29 +1,43 @@
 // Imports
 import fetchJimmy from "@/utils/helpers/fetchJimmy";
+import { logError } from "@/utils/helpers/logError";
+import { User } from "@/utils/types/user";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
-import { Session } from "@supabase/supabase-js";
-import { NextApiRequest, NextApiResponse } from "next";
+import { SupabaseClient } from "@supabase/supabase-js";
+import {
+  GetServerSidePropsContext,
+  NextApiRequest,
+  NextApiResponse,
+} from "next";
 
 export default async function createJimmy(
-  req?: NextApiRequest,
-  res?: NextApiResponse,
+  req?: GetServerSidePropsContext["req"],
+  res?: GetServerSidePropsContext["res"],
 ) {
-  let session: Session | null = null;
+  const accessToken = req?.cookies["access_token"];
+  let user: User | null = null;
+  let sbStorage: SupabaseClient["storage"] | null = null;
 
   if (req && res) {
-    const supabase = createPagesServerClient({
-      req,
-      res,
+    const { storage } = createPagesServerClient({
+      req: req as NextApiRequest,
+      res: res as NextApiResponse,
     });
-    const { data } = await supabase.auth.getSession();
-    session = data.session;
+    sbStorage = storage;
+  }
+
+  if (accessToken) {
+    const { data, error } = await fetchJimmy<User>("/auth/user", accessToken);
+    if (error) logError("createJimmy (user)", error);
+    else user = data;
   }
 
   return {
     fetch: async <Data extends {} | unknown = unknown>(
       path: Parameters<typeof fetchJimmy>["0"],
       options?: Parameters<typeof fetchJimmy>["2"],
-    ) => fetchJimmy<Data>(path, session, options),
-    session,
+    ) => fetchJimmy<Data>(path, accessToken, options),
+    user,
+    storage: sbStorage,
   };
 }

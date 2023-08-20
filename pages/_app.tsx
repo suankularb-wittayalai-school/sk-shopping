@@ -1,10 +1,14 @@
 // Imports
 import BlobDefinitions from "@/components/BlobDefinitions";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
+import PageFallback from "@/components/error/PageFallback";
 import IconDefinitions from "@/components/icon/IconDefintions";
 import Layout from "@/components/Layout";
 import AppStateContext from "@/contexts/AppStateContext";
+import CartsContext from "@/contexts/CartsContext";
 import SnackbarContext from "@/contexts/SnackbarContext";
 import "@/styles/globals.css";
+import useCarts from "@/utils/helpers/useCarts";
 import { TopLevelPageName } from "@/utils/types/common";
 import { ThemeProvider } from "@suankularb-components/react";
 import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
@@ -61,6 +65,7 @@ const Contexts: FC<{ children: ReactNode }> = ({ children }) => {
   const [snackbar, setSnackbar] = useState<JSX.Element | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const [activeNav, setActiveNav] = useState<TopLevelPageName>("landing");
+  const cartsContextValue = useCarts();
 
   return (
     <SessionContextProvider supabaseClient={supabase}>
@@ -68,7 +73,9 @@ const Contexts: FC<{ children: ReactNode }> = ({ children }) => {
         <AppStateContext.Provider
           value={{ navOpen, setNavOpen, activeNav, setActiveNav }}
         >
-          <BalancerProvider>{children}</BalancerProvider>
+          <CartsContext.Provider value={cartsContextValue}>
+            <BalancerProvider>{children}</BalancerProvider>
+          </CartsContext.Provider>
         </AppStateContext.Provider>
       </SnackbarContext.Provider>
     </SessionContextProvider>
@@ -94,12 +101,16 @@ function App({ Component, pageProps }: AppProps) {
       <Contexts>
         {/* Framer Motion a11y */}
         <MotionConfig reducedMotion="user">
-          <PlausibleProvider domain="shopping.skkornor.org,preview.shopping.skkornor.org">
+          {/* Plausible */}
+          <PlausibleProvider domain="shopping.skkornor.org">
             {/* SKCom variables */}
             <ThemeProvider>
               {/* Rendered app */}
               <Layout>
-                <Component {...pageProps} />
+                {/* Client-side error handling */}
+                <ErrorBoundary fallback={PageFallback}>
+                  <Component {...pageProps} />
+                </ErrorBoundary>
               </Layout>
               {/* Symbol definitions */}
               <BlobDefinitions />

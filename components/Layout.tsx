@@ -1,7 +1,11 @@
 // Imports
 import AppStateContext from "@/contexts/AppStateContext";
+import CartsContext from "@/contexts/CartsContext";
 import LogoImage from "@/public/images/logo.svg";
+import useLocale from "@/utils/helpers/useLocale";
+import { useOneTapSignin } from "@/utils/helpers/useOneTapSignin";
 import usePageIsLoading from "@/utils/helpers/usePageIsLoading";
+import useRefreshProps from "@/utils/helpers/useRefreshProps";
 import { useSnackbar } from "@/utils/helpers/useSnackbar";
 import {
   Interactive,
@@ -14,12 +18,15 @@ import {
   Progress,
   RootLayout,
   Snackbar,
+  Text,
+  transition,
+  useAnimationConfig,
 } from "@suankularb-components/react";
+import { motion, useAnimationControls } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { FC, ReactNode, useContext, useState } from "react";
+import { FC, ReactNode, useContext, useEffect } from "react";
 
 /**
  * A Root Layout with persistent components.
@@ -29,12 +36,30 @@ import { FC, ReactNode, useContext, useState } from "react";
  * @returns A Root Layout.
  */
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
+  const locale = useLocale();
+  const refreshProps = useRefreshProps();
   const { t } = useTranslation("common");
 
+  const { duration, easing } = useAnimationConfig();
+
+  // Google One Tap
+  useOneTapSignin();
+
   // Navigation Bar and Drawer
-  const router = useRouter();
   const { navOpen, setNavOpen, activeNav, setActiveNav } =
     useContext(AppStateContext);
+  const { carts, totalItemCount } = useContext(CartsContext);
+  const cartNavItemControls = useAnimationControls();
+  useEffect(() => {
+    if (activeNav === "cart") return;
+    if (!carts || carts.length === 0) return;
+    cartNavItemControls.start({
+      scaleX: [2, 1],
+      scaleY: [0.8, 1],
+      opacity: [0, 1],
+      transition: transition(duration.medium4, easing.standardDecelerate),
+    });
+  }, [carts]);
 
   // Root Layout
   const pageIsLoading = usePageIsLoading();
@@ -47,7 +72,10 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
       {/* Navigation Drawer */}
       <NavDrawer open={navOpen} onClose={() => setNavOpen(false)}>
         {/* Top-level pages */}
-        <NavDrawerSection header={t("appName")}>
+        <NavDrawerSection
+          header={<Text type="headline-small">{t("appName")}</Text>}
+          alt={t("appName")}
+        >
           <NavDrawerItem
             icon={<MaterialIcon icon="storefront" />}
             label={t("navigation.landing")}
@@ -108,7 +136,18 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
             />
           </Interactive>
         }
+        end={
+          <NavBarItem
+            icon={<MaterialIcon icon="translate" />}
+            label={t("navigation.language")}
+            onClick={() => {
+              const newLocale = locale === "en-US" ? "th" : "en-US";
+              refreshProps({ locale: newLocale });
+            }}
+          />
+        }
         onNavToggle={() => setNavOpen(true)}
+        className="!backdrop-blur-lg"
       >
         <NavBarItem
           icon={<MaterialIcon icon="storefront" />}
@@ -126,14 +165,17 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
           href="/category/t-shirt"
           element={Link}
         />
-        <NavBarItem
-          icon={<MaterialIcon icon="shopping_cart" />}
-          label={t("navigation.cart")}
-          selected={activeNav === "cart"}
-          onClick={() => setActiveNav("cart")}
-          href="/cart"
-          element={Link}
-        />
+        <motion.div animate={cartNavItemControls}>
+          <NavBarItem
+            icon={<MaterialIcon icon="shopping_cart" />}
+            label={t("navigation.cart")}
+            badge={totalItemCount || undefined}
+            selected={activeNav === "cart"}
+            onClick={() => setActiveNav("cart")}
+            href="/cart"
+            element={Link}
+          />
+        </motion.div>
         <NavBarItem
           icon={<MaterialIcon icon="star" />}
           label={t("navigation.favorites")}

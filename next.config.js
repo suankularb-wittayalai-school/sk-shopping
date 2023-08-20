@@ -7,6 +7,9 @@ module.exports = withPlausibleProxy()({
   reactStrictMode: true,
   i18n,
   images: {
-    domains: [process.env.NEXT_PUBLIC_SUPABASE_URL.replace("https://", "")],
+    domains: [
+      process.env.NEXT_PUBLIC_SUPABASE_URL.replace("https://", ""),
+      "promptpay.io",
+    ],
   },
 });

@@ -138,16 +138,17 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   );
   if (!selectedCategory) return { notFound: true };
 
-  const { data: listings, error: listingsError } =
-    await jimmy.fetch<ListingCompact>("/listings", {
-      query: {
-        fetch_level: "compact",
-        descendant_fetch_level: "compact",
-        filter: {
-          data: { category_ids: [selectedCategory.id] },
-        },
+  const { data: listings, error: listingsError } = await jimmy.fetch<
+    ListingCompact[]
+  >("/listings", {
+    query: {
+      fetch_level: "compact",
+      descendant_fetch_level: "compact",
+      filter: {
+        data: { category_ids: [selectedCategory.id], is_hidden: "false" },
       },
-    });
+    },
+  });
   if (listingsError)
     logError("/category/:name getStaticProps (listings)", listingsError);
 
@@ -160,7 +161,13 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
       ])),
       categories,
       selectedCategory,
-      listings,
+      listings: listings!.sort((a, b) =>
+        a.is_sold_out && !b.is_sold_out
+          ? 1
+          : !a.is_sold_out && b.is_sold_out
+          ? -1
+          : 0,
+      ),
     },
     revalidate: 10,
   };

@@ -47,12 +47,20 @@
   }
 }
 
-.skc-page-header__text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* Google One Tap UI */
+
+#credential_picker_iframe {
+  bottom: calc(5rem - 2px) !important;
 }
 
-.skc-page-header__text + * > .skc-button {
-  white-space: nowrap;
+#credential_picker_container {
+  right: 0.5rem !important;
+  top: 0.5rem !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  #credential_picker_container {
+    overflow: hidden;
+    border-radius: var(--rounded-md);
+  }
 }

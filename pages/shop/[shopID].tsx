@@ -1,10 +1,12 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
 import CollectionSection from "@/components/shop/CollectionSection";
+import FullscreenImageDialog from "@/components/shop/details/FullscreenImageDialog";
 import ListingDetailsDialog from "@/components/shop/details/ListingDetailsDialog";
 import ListingDetailsSection from "@/components/shop/details/ListingDetailsSection";
 import NoCollectionSection from "@/components/shop/NoCollectionSection";
 import AppStateContext from "@/contexts/AppStateContext";
+import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
 import { logError } from "@/utils/helpers/logError";
@@ -20,11 +22,13 @@ import {
   Section,
   useBreakpoint,
 } from "@suankularb-components/react";
+import { LayoutGroup } from "framer-motion";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { omit } from "radash";
+import { omit, pick } from "radash";
 import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
@@ -36,6 +40,7 @@ const ShopPage: NextPage<{
   const router = useRouter();
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("shop");
+  const { t: tx } = useTranslation("common");
 
   const { fromUUID, toUUID } = shortUUID();
 
@@ -97,87 +102,134 @@ const ShopPage: NextPage<{
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [image, setImage] = useState<string>();
+  const [imageOpen, setImageOpen] = useState(false);
+
   return (
     <>
-      <PageHeader
-        parentURL={
-          {
-            landing: "/",
-            categories: "/category/t-shirt",
-            cart: "/cart",
-            favorites: "/favorites",
-            account: "/account",
-          }[activeNav]
-        }
-        className="inset-0 bottom-auto z-40 md:fixed"
-      >
-        {t("title", { shop: getLocaleString(shop.name) })}
-      </PageHeader>
+      <Head>
+        <title>
+          {tx("tabName", {
+            tabName: t("title", { shop: getLocaleString(shop.name) }),
+          })}
+        </title>
+        <meta
+          key="og-title"
+          property="og:title"
+          content={t("title", { shop: getLocaleString(shop.name) })}
+        />
+        <meta
+          key="og-image"
+          property="og:image"
+          content={`/api/og/shop?shop=${encodeURIComponent(
+            JSON.stringify(
+              pick(shop, ["logo_url", "accent_color", "background_color"]),
+            ),
+          )}`}
+        />
+      </Head>
 
-      <ContentLayout className="md:!mt-[4.25rem]">
-        <Columns columns={2} className="sm:!grid-cols-1 md:!grid-cols-2">
-          <Section>
-            {collections.map(({ collection, listings }) => (
-              <CollectionSection
-                key={collection.id}
-                collection={collection}
-                listings={listings}
+      <LayoutGroup>
+        <PageHeader
+          parentURL={
+            {
+              landing: "/",
+              categories: "/category/t-shirt",
+              cart: "/cart",
+              favorites: "/favorites",
+              account: "/account",
+            }[activeNav]
+          }
+          className="inset-0 bottom-auto z-40 md:fixed"
+        >
+          {t("title", { shop: getLocaleString(shop.name) })}
+        </PageHeader>
+
+        <ContentLayout className="md:!mt-[4.25rem]">
+          <Columns columns={2} className="sm:!grid-cols-1 md:!grid-cols-2">
+            <Section>
+              {collections.map(({ collection, listings }) => (
+                <CollectionSection
+                  key={collection.id}
+                  collection={collection}
+                  listings={listings}
+                  selected={selected}
+                  onCardClick={handleCardClick}
+                />
+              ))}
+              <NoCollectionSection
+                listings={orphanListings}
                 selected={selected}
                 onCardClick={handleCardClick}
               />
-            ))}
-            <NoCollectionSection
-              listings={orphanListings}
-              selected={selected}
-              onCardClick={handleCardClick}
-            />
-          </Section>
-        </Columns>
-      </ContentLayout>
+            </Section>
+          </Columns>
+        </ContentLayout>
 
-      <ContentLayout
-        element="div"
-        className="pointer-events-none fixed inset-0 top-[4.25rem] z-30 !hidden md:!block"
-      >
-        <Columns columns={2}>
-          <div className="h-[calc(100dvh-8rem)] md:col-start-2">
-            <ListingDetailsSection
-              shop={shop}
-              listing={selected}
-              onClose={() => setSelected(undefined)}
-              className="pointer-events-auto h-full"
-            />
-          </div>
-        </Columns>
+        <ContentLayout
+          element="div"
+          className={cn(`pointer-events-none fixed inset-0 top-[4.25rem] z-30
+            !hidden md:!block`)}
+        >
+          <Columns columns={2}>
+            <div className="h-[calc(100dvh-8rem)] md:col-start-2">
+              <ListingDetailsSection
+                shop={shop}
+                listing={selected}
+                setFullscreenImage={(image) => {
+                  setImage(image);
+                  setImageOpen(true);
+                }}
+                onClose={() => setSelected(undefined)}
+                className="pointer-events-auto h-full"
+              />
+            </div>
+          </Columns>
 
-        {scrolled && (
-          <style jsx global>{`
-            @media only screen and (min-width: 905px) {
-              .skc-page-header__blobs.skc-page-header__blobs--desktop {
-                position: fixed;
-                top: 0;
-                z-index: 20;
-                pointer-events: none;
+          {scrolled && (
+            <style jsx global>{`
+              @media only screen and (min-width: 905px) {
+                .skc-page-header__blobs.skc-page-header__blobs--desktop {
+                  position: fixed;
+                  top: 0;
+                  z-index: 20;
+                  pointer-events: none;
+                }
               }
-            }
 
-            @media only screen and (min-width: 1440px) {
-              .skc-page-header__blobs.skc-page-header__blobs--desktop {
-                top: -5rem;
+              @media only screen and (min-width: 1440px) {
+                .skc-page-header__blobs.skc-page-header__blobs--desktop {
+                  top: -5rem;
+                }
               }
-            }
-          `}</style>
+            `}</style>
+          )}
+        </ContentLayout>
+
+        {selected && (
+          <ListingDetailsDialog
+            shop={shop}
+            listing={selected}
+            open={dialogOpen}
+            setFullscreenImage={(image) => {
+              setImage(image);
+              setImageOpen(true);
+            }}
+            onClose={() => setDialogOpen(false)}
+          />
         )}
-      </ContentLayout>
 
-      {selected && (
-        <ListingDetailsDialog
-          shop={shop}
-          listing={selected}
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-        />
-      )}
+        {image && (
+          <FullscreenImageDialog
+            src={image}
+            width={1112}
+            height={834}
+            alt=""
+            open={imageOpen}
+            onClose={() => setImageOpen(false)}
+          />
+        )}
+      </LayoutGroup>
     </>
   );
 };
@@ -238,9 +290,17 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                 "variants",
                 "categories",
               ]),
-              // Add `is_sold_out` key to replace `lifetime_stock`
-              is_sold_out: listing.lifetime_stock === 0,
+              // Add `is_sold_out` key which is not present in
+              // `ListingDetailed`
+              is_sold_out: listing.lifetime_stock - listing.amount_sold === 0,
             }) as ListingCompact,
+        )
+        .sort((a, b) =>
+          a.is_sold_out && !b.is_sold_out
+            ? 1
+            : !a.is_sold_out && b.is_sold_out
+            ? -1
+            : 0,
         ),
     }))
     // Remove Collections with no Listings per @smartwhatt’s request

@@ -10,6 +10,7 @@ import {
   Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
+import Image from "next/image";
 import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
@@ -29,17 +30,30 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
   return (
     <div
       style={style}
-      className={cn(`relative -mb-[10rem] pb-[10rem]`, className)}
+      className={cn(`light relative -mb-[10rem] pb-[10rem]`, className)}
     >
       {/* Background image */}
-      <div
-        className={cn(`absolute inset-0 -z-10 bg-primary-container
+      <Image
+        src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/adverts/banner/background.png`}
+        width={1194}
+        height={570}
+        priority
+        alt=""
+        className={cn(`pointer-events-none absolute inset-0 -z-10 h-full w-full
+          bg-surface-variant object-cover
           [mask-image:linear-gradient(to_top,transparent,black_21.5rem)]`)}
       />
-      <ContentLayout>
+      <ContentLayout className="text-on-surface">
         <Columns columns={2} className="!grid-cols-1 !gap-y-4 md:!grid-cols-2">
           {/* Foreground image */}
-          <div className="aspect-[4/3] rounded-sm border-4 border-dashed border-inverse-primary"></div>
+          <Image
+            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/adverts/banner/foreground.png`}
+            width={466}
+            height={349.5}
+            priority
+            className="h-auto w-full"
+            alt=""
+          />
 
           <div className="mx-4 sm:mx-0">
             {/* App Drawer */}
@@ -54,14 +68,13 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
 
             {/* Title */}
             <Text type="display-small" element="h2" className="-mt-1">
-              <Balancer>สมานมิตร ‘65</Balancer>
+              <Balancer>สมานมิตร ‘66</Balancer>
             </Text>
 
             {/* Subtitle */}
             <Text type="title-large" element="p" className="mt-2">
               <Balancer>
-                ทุกคนย่อมมีเรื่องราวของตัวเอง
-                คุณยังจำเรื่องในอดีตของตัวเองได้ไหม?
+                ถึงแม้วันจะเปลี่ยนแปลง แต่ความทรงจำไม่เคยเปลี่ยนไป
               </Balancer>
             </Text>
 

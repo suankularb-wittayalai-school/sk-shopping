@@ -32,13 +32,21 @@ const CollectionCard: StylableFC<{
         ...style,
       }}
       className={cn(
-        `relative overflow-hidden rounded-xl border-1 border-outline-variant
-        bg-cover sm:aspect-[5/2]`,
+        `light relative overflow-hidden rounded-xl border-1
+        border-outline-variant bg-cover sm:aspect-[5/2]`,
         className,
       )}
     >
       {/* Default background is shown if no background is specified */}
-      {!collection.background_url && (
+      {collection.background_url ? (
+        <Image
+          src={collection.background_url}
+          width={1000}
+          height={400}
+          alt=""
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+      ) : (
         <UseVector
           href="blob-card-full"
           className="absolute inset-0 -z-10 h-full w-full"
@@ -56,17 +64,17 @@ const CollectionCard: StylableFC<{
 
         <div
           className={cn(
-            `flex flex-col gap-1 self-stretch p-5`,
+            `flex flex-col gap-1 self-stretch p-5 text-on-surface`,
             collection.foreground_url
               ? `sm:pl-0`
               : `pl-7 sm:col-span-2 sm:pr-0`,
           )}
         >
           {/* Text */}
-          <Text type="headline-medium">
+          <Text type="headline-medium" element="h4">
             <Balancer>{collection.name}</Balancer>
           </Text>
-          <Text type="body-medium" className="grow">
+          <Text type="body-medium" element="p" className="grow">
             <Balancer>{collection.description}</Balancer>
           </Text>
 
