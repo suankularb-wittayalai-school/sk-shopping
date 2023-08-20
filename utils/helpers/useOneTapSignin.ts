@@ -3,9 +3,9 @@ import fetchJimmy from "@/utils/helpers/fetchJimmy";
 import { logError } from "@/utils/helpers/logError";
 import useJimmy from "@/utils/helpers/useJimmy";
 import useLocale from "@/utils/helpers/useLocale";
+import useRefreshProps from "@/utils/helpers/useRefreshProps";
 import useUser from "@/utils/helpers/useUser";
 import { CredentialResponse } from "google-one-tap";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 /**
@@ -25,7 +25,7 @@ export const useOneTapSignin = (options?: {
   const { parentContainerID, parentButtonID, buttonWidth } = options || {};
   const [loading, setLoading] = useState(true);
 
-  const router = useRouter();
+  const refreshProps = useRefreshProps();
   const locale = useLocale();
 
   const jimmy = useJimmy();
@@ -68,7 +68,7 @@ export const useOneTapSignin = (options?: {
     }; path=/; expires=${new Date(
       Date.now() + data.expires_in * 1000,
     ).toUTCString()}`;
-    router.push("/");
+    refreshProps();
     setLoading(false);
   }
 
