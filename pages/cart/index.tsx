@@ -140,10 +140,14 @@ export const getServerSideProps: GetServerSideProps = async ({
       query: {
         descendant_fetch_level: "compact",
         filter: { data: { buyer_ids: [jimmy.user.id] } },
+        sorting: { by: ["created_at"], ascending: false },
       },
     });
     if (error) logError("/cart getServerSideProps", error);
-    userOrders = data;
+    userOrders =
+      data?.filter(
+        (order) => !(order.payment_method === "promptpay" && !order.is_paid),
+      ) || null;
   }
 
   return {
