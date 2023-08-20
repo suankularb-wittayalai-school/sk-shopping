@@ -45,17 +45,13 @@ const ShopCartCard: StylableFC<{
       exit={{ opacity: 0, scaleY: 0.8, y: "-20%" }}
       transition={transition(duration.medium2, easing.standard)}
       style={style}
-      className={cn(
-        `overflow-hidden rounded-xl border-1 border-outline-variant
-        bg-surface-variant`,
-        className,
-      )}
+      className={cn(`overflow-hidden rounded-xl bg-surface-variant`, className)}
     >
       <CardHeader
         avatar={<ShopLogo shop={shop} showBackground />}
         title={getLocaleString(shop.name)}
       />
-      <List divided className="!mx-0.5 rounded-md !bg-surface">
+      <List divided className="!mx-1 rounded-md !bg-surface">
         {items.map((item) => (
           <ShopCartItem key={item.item.id} {...item} shopID={shop.id} />
         ))}
