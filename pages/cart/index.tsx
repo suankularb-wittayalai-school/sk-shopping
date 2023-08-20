@@ -7,6 +7,7 @@ import CartsContext from "@/contexts/CartsContext";
 import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
+import useJimmy from "@/utils/helpers/useJimmy";
 import { useOneTapSignin } from "@/utils/helpers/useOneTapSignin";
 import { LangCode } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
@@ -36,6 +37,7 @@ const CartPage: NextPage<{ userOrders: Order[] }> = ({ userOrders }) => {
   const { t } = useTranslation("cart");
   const { t: tx } = useTranslation("common");
 
+  const jimmy = useJimmy();
   useOneTapSignin({ parentButtonID: "button-google-sign-in" });
 
   const { carts, orders } = useContext(CartsContext);
@@ -107,18 +109,23 @@ const CartPage: NextPage<{ userOrders: Order[] }> = ({ userOrders }) => {
               appearance="outlined"
               className="flex min-h-[12.5rem] flex-col items-center justify-center gap-3 px-4 py-3"
             >
-              <Text
-                type="body-medium"
+              <motion.p
+                layout="position"
+                transition={transition(duration.medium4, easing.standard)}
                 className="text-center text-on-surface-variant"
               >
-                <Balancer>{t("order.empty")}</Balancer>
-              </Text>
-              <div
-                id="button-google-sign-in"
-                className="h-[38px] w-56 rounded-full [color-scheme:light]
-                  [&:not(:has(iframe))]:animate-pulse
-                  [&:not(:has(iframe))]:bg-surface-variant"
-              />
+                <Text type="body-medium">
+                  <Balancer>{t("order.empty")}</Balancer>
+                </Text>
+              </motion.p>
+              {jimmy.user.status !== "authenticated" && (
+                <div
+                  id="button-google-sign-in"
+                  className={cn(`h-[38px] w-56 rounded-full
+                    [color-scheme:light] [&:not(:has(iframe))]:animate-pulse
+                    [&:not(:has(iframe))]:bg-surface-variant`)}
+                />
+              )}
             </Card>
           )}
         </Section>
