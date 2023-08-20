@@ -1,7 +1,6 @@
 // Imports
 import CartsContext from "@/contexts/CartsContext";
 import cn from "@/utils/helpers/cn";
-import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
 import { ListingOption } from "@/utils/types/listing-option";
 import {
@@ -29,7 +28,6 @@ const ShopCartItem: StylableFC<{
   amount: number;
   shopID: string;
 }> = ({ item, amount, shopID, style, className }) => {
-  const locale = useLocale();
   const { t } = useTranslation("cart", { keyPrefix: "cart.item" });
 
   const { setItemAmount, removeItem } = useContext(CartsContext);
@@ -91,9 +89,9 @@ const ShopCartItem: StylableFC<{
                   ),
                 )
               }
-              className={cn(`h-full w-full min-w-0 border-1 border-l-0
-                border-outline bg-transparent text-center transition-[border]
-                hover:border-y-on-surface focus:border-b-2
+              className={cn(`h-full w-full min-w-0 rounded-none border-1
+                border-l-0 border-outline bg-transparent text-center
+                transition-[border] hover:border-y-on-surface focus:border-b-2
                 focus:border-b-primary focus:border-t-outline
                 focus:outline-none`)}
             />
