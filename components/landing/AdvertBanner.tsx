@@ -51,7 +51,7 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
             width={466}
             height={349.5}
             priority
-            className="w-full h-auto"
+            className="h-auto w-full"
             alt=""
           />
 
@@ -68,14 +68,13 @@ const AdvertBanner: StylableFC = ({ style, className }) => {
 
             {/* Title */}
             <Text type="display-small" element="h2" className="-mt-1">
-              <Balancer>สมานมิตร ‘65</Balancer>
+              <Balancer>สมานมิตร ‘66</Balancer>
             </Text>
 
             {/* Subtitle */}
             <Text type="title-large" element="p" className="mt-2">
               <Balancer>
-                ทุกคนย่อมมีเรื่องราวของตัวเอง
-                คุณยังจำเรื่องในอดีตของตัวเองได้ไหม?
+                ถึงแม้วันจะเปลี่ยนแปลง แต่ความทรงจำไม่เคยเปลี่ยนไป
               </Balancer>
             </Text>
 
