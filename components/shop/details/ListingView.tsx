@@ -76,7 +76,10 @@ const ListingView: StylableFC<{
       setSelectedImage(undefined);
       return;
     }
-    setSelectedImage(selectedVariant.image_urls[0]);
+    setSelectedImage(
+      selectedVariant.image_urls.find((url) => url.includes("main")) ||
+        selectedVariant.image_urls[0],
+    );
   }, [selectedVariant]);
 
   const imageSideRef = useRef<HTMLImageElement>(null);
