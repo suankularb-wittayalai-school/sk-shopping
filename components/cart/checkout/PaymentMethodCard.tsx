@@ -25,10 +25,20 @@ import { useTranslation } from "next-i18next";
 const PaymentMethodCard: StylableFC<{
   value: PaymentMethod;
   shop: Pick<Shop, "accept_promptpay" | "accept_cod">;
+  loading: boolean;
   disabled: boolean;
   onChange: (value: PaymentMethod) => void;
   onSubmit: () => void;
-}> = ({ value, shop, disabled, onChange, onSubmit, style, className }) => {
+}> = ({
+  value,
+  shop,
+  loading,
+  disabled,
+  onChange,
+  onSubmit,
+  style,
+  className,
+}) => {
   const { t } = useTranslation("checkout", { keyPrefix: "payment" });
 
   return (
@@ -56,7 +66,7 @@ const PaymentMethodCard: StylableFC<{
             </FormItem>
           )}
         </FormGroup>
-        <Button appearance="filled" disabled={disabled} onClick={onSubmit}>
+        <Button appearance="filled" loading={loading} disabled={disabled} onClick={onSubmit}>
           {t("action.placeOrder")}
         </Button>
       </CardContent>

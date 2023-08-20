@@ -43,7 +43,7 @@ import shortUUID from "short-uuid";
 /**
  * The amount to add to the total if shipping is needed. This is a flat value
  * Kornor has decided for Samarnmitr ‘66 to simplify things.
- * 
+ *
  * Note: this constant is also defined in @/components/cart/ReceiptDialog.tsx.
  * Change both if needs be.
  */
@@ -131,17 +131,20 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       0,
     ) || 0) + (deliveryType === "delivery" ? FLAT_SHIPPING_COST_THB : 0);
 
+  const [loading, setLoading] = useState(false);
+
   async function handleSubmit() {
     if (!cart) return;
     if (deliveryType === "delivery" && !addressOK) {
       setSnackbar(<Snackbar>{t("snackbar.invalidAddress")}</Snackbar>);
       return;
     }
-
     if (!contactInfoOK) {
       setSnackbar(<Snackbar>{t("snackbar.invalidContact")}</Snackbar>);
       return;
     }
+
+    setLoading(true);
 
     const { data, error } = await jimmy.fetch<Order[]>("/orders", {
       method: "POST",
@@ -157,13 +160,14 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
             address:
               deliveryType === "delivery"
                 ? ({
-                    ...omit(address, ["street_address"]),
+                    ...omit(address, ["street_address", "zip_code"]),
                     street_address_line_1:
                       address.street_address.split("\n")[0],
                     street_address_line_2: address.street_address
                       .split("\n")
                       .slice(1)
                       .join("\n"),
+                    zip_code: Number(address.zip_code),
                   } as Omit<Address, "id">)
                 : null,
             receiver_name: contactInfo.name,
@@ -176,19 +180,23 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
     });
     if (error) {
       logError("handleSubmit", error);
+      setLoading(false);
       return;
     }
     if (paymentMethod === "promptpay") {
       setOrder(data[0]);
       setPromptPayOpen(true);
+      setLoading(false);
       return;
     }
+
     setSnackbar(
       <Snackbar>
         {t("snackbar.success", { email: contactInfo.email })}
       </Snackbar>,
     );
     addOrder(data[0]);
+    setLoading(false);
     router.push("/cart");
   }
 
@@ -269,7 +277,10 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
               <PaymentMethodCard
                 value={paymentMethod}
                 shop={shop}
-                disabled={!cart || cart.items.length === 0}
+                loading={loading}
+                disabled={
+                  order !== undefined || !cart || cart.items.length === 0
+                }
                 onChange={setPaymentMethod}
                 onSubmit={handleSubmit}
               />
@@ -277,7 +288,6 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
                 <PromptPayDialog
                   src={order.promptpay_qr_code_url}
                   open={promptPayOpen}
-                  onClose={() => setPromptPayOpen(false)}
                   onSubmit={handleSendSlip}
                 />
               )}
