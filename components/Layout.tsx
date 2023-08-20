@@ -18,6 +18,7 @@ import {
   Progress,
   RootLayout,
   Snackbar,
+  Text,
   transition,
   useAnimationConfig,
 } from "@suankularb-components/react";
@@ -71,7 +72,10 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
       {/* Navigation Drawer */}
       <NavDrawer open={navOpen} onClose={() => setNavOpen(false)}>
         {/* Top-level pages */}
-        <NavDrawerSection header={t("appName")}>
+        <NavDrawerSection
+          header={<Text type="headline-small">{t("appName")}</Text>}
+          alt={t("appName")}
+        >
           <NavDrawerItem
             icon={<MaterialIcon icon="storefront" />}
             label={t("navigation.landing")}
