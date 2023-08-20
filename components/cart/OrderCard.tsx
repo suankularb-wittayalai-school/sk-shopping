@@ -17,7 +17,7 @@ import { useState } from "react";
 
 /**
  * A Card in a list of Orders the user has made in the past.
- * 
+ *
  * @param order The Order to display information of.
  */
 const OrderCard: StylableFC<{
@@ -49,11 +49,11 @@ const OrderCard: StylableFC<{
             currency: "THB",
           }),
         ].join(" • ")}
-        className="!pb-0"
+        className="!pb-0 [&_h3]:line-clamp-2"
       />
       <CardContent>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-          <div className="flex flex-row items-center gap-1">
+        <div className="grid grid-cols-2 items-start gap-x-6 gap-y-2">
+          <div className="flex flex-row gap-1">
             <MaterialIcon
               icon="location_on"
               className="text-on-surface-variant"
@@ -66,7 +66,7 @@ const OrderCard: StylableFC<{
                   })}
             </p>
           </div>
-          <div className="flex flex-row items-center gap-1">
+          <div className="flex flex-row gap-1">
             {
               {
                 cod: <MaterialIcon icon="payments" />,
@@ -75,7 +75,7 @@ const OrderCard: StylableFC<{
             }
             <p className="grow">{t(`payment.${order.payment_method}`)}</p>
           </div>
-          <div className="col-span-2 flex flex-row items-center gap-1">
+          <div className="col-span-2 flex flex-row gap-1">
             <MaterialIcon icon="receipt" className="text-on-surface-variant" />
             <p className="grow">
               <Trans
