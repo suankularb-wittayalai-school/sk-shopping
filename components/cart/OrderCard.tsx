@@ -1,4 +1,5 @@
 // Imports
+import ReceiptDialog from "@/components/cart/ReceiptDialog";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
@@ -13,7 +14,6 @@ import {
 import { Trans, useTranslation } from "next-i18next";
 import { camel } from "radash";
 import { useState } from "react";
-import ReceiptDialog from "./ReceiptDialog";
 
 const OrderCard: StylableFC<{
   order: Order;
@@ -89,6 +89,7 @@ const OrderCard: StylableFC<{
             {t("action.showReceipt")}
           </Button>
           <ReceiptDialog
+            order={order}
             open={receiptOpen}
             onClose={() => setReceiptOpen(false)}
           />
