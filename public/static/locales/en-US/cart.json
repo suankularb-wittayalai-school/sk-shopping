@@ -37,6 +37,6 @@
     "action": {
       "showReceipt": "Show receipt"
     },
-    "empty": "You don’t have any past orders. If you had ordered before, log in, or alterantively check your email."
+    "empty": "You don’t have any past orders. If you had ordered before, try logging in or check your email."
   }
 }

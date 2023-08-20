@@ -7,6 +7,7 @@ import CartsContext from "@/contexts/CartsContext";
 import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
+import { useOneTapSignin } from "@/utils/helpers/useOneTapSignin";
 import { LangCode } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
 import {
@@ -26,6 +27,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { unique } from "radash";
 import { useContext, useEffect } from "react";
+import Balancer from "react-wrap-balancer";
 
 /**
  * The Cart page displays the user’s Cart from `localStorage`.
@@ -33,6 +35,8 @@ import { useContext, useEffect } from "react";
 const CartPage: NextPage<{ userOrders: Order[] }> = ({ userOrders }) => {
   const { t } = useTranslation("cart");
   const { t: tx } = useTranslation("common");
+
+  useOneTapSignin({ parentButtonID: "button-google-sign-in" });
 
   const { carts, orders } = useContext(CartsContext);
 
@@ -99,8 +103,22 @@ const CartPage: NextPage<{ userOrders: Order[] }> = ({ userOrders }) => {
               ))}
             </Columns>
           ) : (
-            <Card appearance="outlined" className="px-4 py-3">
-              {t("order.empty")}
+            <Card
+              appearance="outlined"
+              className="flex min-h-[12.5rem] flex-col items-center justify-center gap-3 px-4 py-3"
+            >
+              <Text
+                type="body-medium"
+                className="text-center text-on-surface-variant"
+              >
+                <Balancer>{t("order.empty")}</Balancer>
+              </Text>
+              <div
+                id="button-google-sign-in"
+                className="h-[38px] w-56 rounded-full [color-scheme:light]
+                  [&:not(:has(iframe))]:animate-pulse
+                  [&:not(:has(iframe))]:bg-surface-variant"
+              />
             </Card>
           )}
         </Section>
