@@ -102,7 +102,7 @@ const ReceiptDialog: StylableFC<{
         </div>
         <figure className="light dark:rounded-md dark:bg-surface dark:p-3">
           <QRCode
-            value={`https://shopping.skkornor.org/receipt?id=${fromUUID(
+            value={`https://shopping.skkornor.org/receipt/${fromUUID(
               order.id,
             )}`}
             bgColor="transparent"
