@@ -174,7 +174,7 @@ const ListingView: StylableFC<{
             />
 
             {/* Variants */}
-            <ChipSet className="relative" scrollable>
+            <ChipSet className="relative !overflow-y-hidden" scrollable>
               <Progress
                 appearance="circular"
                 alt="Loading variants…"
