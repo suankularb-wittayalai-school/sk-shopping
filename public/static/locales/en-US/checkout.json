@@ -32,7 +32,7 @@
       "placeOrder": "Place order"
     },
     "promptpay": {
-      "desc": "Scan the QR code below with your mobile banking app to pay. Take a screenshot of the slip it gives you and attach it here as proof of payment.",
+      "desc": "You have 3 minutes. Scan the QR code below with your mobile banking app to pay. Take a screenshot of the slip it gives you and attach it here as proof of payment.",
       "qrAlt": "PromptPay QR code",
       "attachSlip": "Attach slip",
       "action": {
