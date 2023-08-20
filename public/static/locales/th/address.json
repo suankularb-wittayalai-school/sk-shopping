@@ -1,6 +1,6 @@
 {
   "streetAddress": "บ้านเลขที่ ซอย ถนน ตำบล",
-  "province": "อำเภอ",
-  "district": "จังหวัด",
+  "district": "อำเภอ",
+  "province": "จังหวัด",
   "zipCode": "รหัสไปรษณีย์"
 }
