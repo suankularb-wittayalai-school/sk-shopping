@@ -10,6 +10,7 @@ import {
   CardContent,
   CardHeader,
   MaterialIcon,
+  Text,
 } from "@suankularb-components/react";
 import { Trans, useTranslation } from "next-i18next";
 import { camel } from "radash";
@@ -58,13 +59,13 @@ const OrderCard: StylableFC<{
               icon="location_on"
               className="text-on-surface-variant"
             />
-            <p className="grow">
+            <Text type="body-medium" element="p" className="grow py-0.5">
               {order.delivery_type === "school_pickup"
                 ? t("delivery.schoolPickup")
                 : t(`delivery.delivery.${camel(order.shipment_status)}`, {
                     streetAddress: order.street_address_line_1,
                   })}
-            </p>
+            </Text>
           </div>
           <div className="flex flex-row gap-1">
             {
@@ -73,18 +74,20 @@ const OrderCard: StylableFC<{
                 promptpay: <MaterialIcon icon="qr_code_scanner" />,
               }[order.payment_method]
             }
-            <p className="grow">{t(`payment.${order.payment_method}`)}</p>
+            <Text type="body-medium" element="p" className="grow py-0.5">
+              {t(`payment.${order.payment_method}`)}
+            </Text>
           </div>
           <div className="col-span-2 flex flex-row gap-1">
             <MaterialIcon icon="receipt" className="text-on-surface-variant" />
-            <p className="grow">
+            <Text type="body-medium" element="p" className="grow py-0.5">
               <Trans
                 i18nKey="order.ref"
                 ns="cart"
                 values={{ refID: order.ref_id }}
                 components={[<span key={0} className="font-mono" />]}
               />
-            </p>
+            </Text>
           </div>
         </div>
         <Actions className="!mt-0">
