@@ -3,7 +3,7 @@
   "details": {
     "delivery": {
       "schoolPickup": "รับสินค้าที่โรงเรียน",
-      "delivery": "ส่งสินค้าไปที่ {{address}}"
+      "delivery": "ส่งสินค้าไปที่ {{streetAddress}}"
     },
     "shipmentStatus": {
       "notShippedOut": "ยังไม่ได้จัดส่ง",

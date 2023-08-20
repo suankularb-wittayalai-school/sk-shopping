@@ -3,7 +3,7 @@
   "details": {
     "delivery": {
       "schoolPickup": "School pickup",
-      "delivery": "Delivery to {{address}}"
+      "delivery": "Delivery to {{streetAddress}}"
     },
     "shipmentStatus": {
       "notShippedOut": "Not shipped out",

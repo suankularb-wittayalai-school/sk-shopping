@@ -72,7 +72,9 @@ const ReceiptDialog: StylableFC<{
         <div className="grid grid-cols-[1.5rem,1fr] gap-1 [&>i]:text-on-surface-variant [&>p]:py-0.5">
           <MaterialIcon icon="location_on" />
           <Text type="body-medium" element="p">
-            {t(`details.delivery.${camel(order.delivery_type)}`)}
+            {t(`details.delivery.${camel(order.delivery_type)}`, {
+              streetAddress: order.street_address_line_1,
+            })}
           </Text>
           {order.delivery_type === "delivery" && (
             <>
