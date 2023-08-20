@@ -62,7 +62,7 @@ const ReceiptDialog: StylableFC<{
         >
           {new Date(order.created_at).toLocaleString(locale, {
             dateStyle: "short",
-            timeStyle: "short",
+            timeStyle: "medium",
           })}
           {" • "}
           <span className="font-mono">{order.ref_id}</span>
