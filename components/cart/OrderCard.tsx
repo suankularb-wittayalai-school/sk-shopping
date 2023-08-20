@@ -53,12 +53,9 @@ const OrderCard: StylableFC<{
         className="!pb-0 [&_h3]:line-clamp-2"
       />
       <CardContent>
-        <div className="grid grid-cols-2 items-start gap-x-6 gap-y-2">
+        <div className="grid grid-cols-2 items-start gap-x-6 gap-y-2 [&_i]:text-on-surface-variant">
           <div className="flex flex-row gap-1">
-            <MaterialIcon
-              icon="location_on"
-              className="text-on-surface-variant"
-            />
+            <MaterialIcon icon="location_on" />
             <Text type="body-medium" element="p" className="grow py-0.5">
               {order.delivery_type === "school_pickup"
                 ? t("delivery.schoolPickup")
@@ -79,7 +76,7 @@ const OrderCard: StylableFC<{
             </Text>
           </div>
           <div className="col-span-2 flex flex-row gap-1">
-            <MaterialIcon icon="receipt" className="text-on-surface-variant" />
+            <MaterialIcon icon="receipt" />
             <Text type="body-medium" element="p" className="grow py-0.5">
               <Trans
                 i18nKey="order.ref"
