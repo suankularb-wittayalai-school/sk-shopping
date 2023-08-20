@@ -15,6 +15,11 @@ import { Trans, useTranslation } from "next-i18next";
 import { camel } from "radash";
 import { useState } from "react";
 
+/**
+ * A Card in a list of Orders the user has made in the past.
+ * 
+ * @param order The Order to display information of.
+ */
 const OrderCard: StylableFC<{
   order: Order;
 }> = ({ order, style, className }) => {
@@ -62,10 +67,12 @@ const OrderCard: StylableFC<{
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
-            <MaterialIcon
-              icon="account_balance"
-              className="text-on-surface-variant"
-            />
+            {
+              {
+                cod: <MaterialIcon icon="payments" />,
+                promptpay: <MaterialIcon icon="qr_code_scanner" />,
+              }[order.payment_method]
+            }
             <p className="grow">{t(`payment.${order.payment_method}`)}</p>
           </div>
           <div className="col-span-2 flex flex-row items-center gap-1">

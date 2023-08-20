@@ -1,4 +1,24 @@
 {
+  "title": "ใบเสร็จ {{date, datetime(dateStyle: long)}}",
+  "details": {
+    "delivery": {
+      "schoolPickup": "รับสินค้าที่โรงเรียน",
+      "delivery": "ส่งสินค้าไปที่ {{address}}"
+    },
+    "shipmentStatus": {
+      "notShippedOut": "ยังไม่ได้จัดส่ง",
+      "pending": "กำลังจัดส่ง",
+      "delivered": "รับสินค้าแล้ว"
+    },
+    "payment": {
+      "cod": "จ่ายเงินสดปลายทาง",
+      "promptpay": "จ่ายผ่านพร้อมเพย์"
+    },
+    "isPaid": {
+      "true": "จ่ายค่าสินค้าแล้ว",
+      "false": "ยังไม่ได้จ่ายค่าสินค้า"
+    }
+  },
   "costBreakdown": {
     "loading": "กำลังโหลดรถเข็นของคุณ…",
     "thead": {
@@ -12,5 +32,8 @@
     "tfoot": {
       "total": "รวม"
     }
+  },
+  "action": {
+    "done": "เสร็จสิ้น"
   }
 }

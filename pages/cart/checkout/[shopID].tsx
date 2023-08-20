@@ -43,6 +43,9 @@ import shortUUID from "short-uuid";
 /**
  * The amount to add to the total if shipping is needed. This is a flat value
  * Kornor has decided for Samarnmitr ‘66 to simplify things.
+ * 
+ * Note: this constant is also defined in @/components/cart/ReceiptDialog.tsx.
+ * Change both if needs be.
  */
 const FLAT_SHIPPING_COST_THB = 70;
 
