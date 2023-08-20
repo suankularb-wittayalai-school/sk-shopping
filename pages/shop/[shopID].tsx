@@ -294,6 +294,13 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
               // `ListingDetailed`
               is_sold_out: listing.lifetime_stock - listing.amount_sold === 0,
             }) as ListingCompact,
+        )
+        .sort((a, b) =>
+          a.is_sold_out && !b.is_sold_out
+            ? 1
+            : !a.is_sold_out && b.is_sold_out
+            ? -1
+            : 0,
         ),
     }))
     // Remove Collections with no Listings per @smartwhatt’s request
