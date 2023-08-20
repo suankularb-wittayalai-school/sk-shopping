@@ -146,7 +146,11 @@ export const getServerSideProps: GetServerSideProps = async ({
     if (error) logError("/cart getServerSideProps", error);
     userOrders =
       data?.filter(
-        (order) => !(order.payment_method === "promptpay" && !order.is_paid),
+        (order) =>
+          !(
+            order.shipment_status === "canceled" ||
+            (order.payment_method === "promptpay" && !order.is_paid)
+          ),
       ) || null;
   }
 

@@ -8,7 +8,11 @@ export type OrderItem = {
   amount: number;
 };
 
-export type OrderStatus = "not_shipped_out" | "pending" | "delivered";
+export type OrderStatus =
+  | "canceled"
+  | "not_shipped_out"
+  | "pending"
+  | "delivered";
 export type DeliveryType = "school_pickup" | "delivery";
 export type PaymentMethod = "cod" | "promptpay";
 
