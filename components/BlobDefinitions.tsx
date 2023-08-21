@@ -17,6 +17,12 @@ const BlobDefinitions: FC = () =>
           <path d="M486.442 113.028C525.388 113.028 592.681 123.698 574.742 40.6554C556.804 -42.387 425.823 -119.862 385.616 -62.7997C345.409 -5.73705 447.497 113.028 486.442 113.028Z" className="fill-primary-90 dark:fill-primary-20" />
         </g>
       </symbol>
+      <symbol id="blob-card-left" viewBox="0 0 507 169">
+        <g filter="url(#blob-blur)">
+          <path d="M71.5397 113.177C71.5397 152.123 -66.7031 224.828 -105.648 224.828C-144.593 224.828 -192.897 144.7 -192.897 105.755C-192.897 66.8095 -61.4274 -41 -22.4822 -41C16.4629 -41 71.5397 74.2322 71.5397 113.177Z" className="fill-secondary-80 dark:fill-secondary-20" />
+          <path d="M248.14 50.7333C248.14 89.6785 33.1642 104.085 -5.78099 104.085C-44.7261 104.085 -81.0913 36.1726 -81.0913 -2.77258C-81.0913 -41.7177 -9.93185 -47 29.0133 -47C67.9585 -47 248.14 11.7882 248.14 50.7333Z" className="fill-primary-90 dark:fill-primary-20" />
+        </g>
+      </symbol>
       <filter id="blob-blur" x="-275" y="-164" width="934" height="553" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />

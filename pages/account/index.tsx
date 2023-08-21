@@ -1,10 +1,12 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
+import AccountHeader from "@/components/account/AccountHeader";
+import GuestCard from "@/components/account/GuestCard";
 import AppStateContext from "@/contexts/AppStateContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { LangCode } from "@/utils/types/common";
 import { User } from "@/utils/types/user";
-import { ContentLayout } from "@suankularb-components/react";
+import { Columns, ContentLayout } from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -27,7 +29,15 @@ const AccountPage: NextPage<{ user: User }> = ({ user }) => {
         <title>{tx("tabName", { tabName: "บัญชี" })}</title>
       </Head>
       <PageHeader>บัญชี</PageHeader>
-      <ContentLayout>TODO</ContentLayout>
+      <ContentLayout>
+        {user ? (
+          <AccountHeader user={user} />
+        ) : (
+          <Columns columns={4}>
+            <GuestCard className="md:col-span-2 md:col-start-2" />
+          </Columns>
+        )}
+      </ContentLayout>
     </>
   );
 };
@@ -50,4 +60,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default AccountPage;
-
