@@ -14,7 +14,10 @@ import Head from "next/head";
 import { useContext, useEffect } from "react";
 
 /**
- * @todo
+ * The Account page allows the user to log in and add some information about
+ * themselves.
+ *
+ * @param user The user to display/edit information of.
  */
 const AccountPage: NextPage<{ user: User }> = ({ user }) => {
   const { t } = useTranslation("account");
@@ -26,9 +29,9 @@ const AccountPage: NextPage<{ user: User }> = ({ user }) => {
   return (
     <>
       <Head>
-        <title>{tx("tabName", { tabName: "บัญชี" })}</title>
+        <title>{tx("tabName", { tabName: t("title") })}</title>
       </Head>
-      <PageHeader>บัญชี</PageHeader>
+      <PageHeader>{t("title")}</PageHeader>
       <ContentLayout>
         {user ? (
           <AccountHeader user={user} />

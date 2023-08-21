@@ -13,15 +13,20 @@ import {
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 
+/**
+ * Information about the Account and some actions.
+ *
+ * @param user The user to display information of.
+ */
 const AccountHeader: StylableFC<{
-  user: User;
+  user: Pick<User, "first_name" | "last_name" | "profile">;
 }> = ({ user, style, className }) => {
-  const { t } = useTranslation("account");
+  const { t } = useTranslation("account", { keyPrefix: "header" });
 
   const refreshProps = useRefreshProps();
 
   function handleLogOut() {
-    document.cookie = `access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    document.cookie = `access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     refreshProps();
   }
 
@@ -34,7 +39,7 @@ const AccountHeader: StylableFC<{
               src={user.profile}
               width={72}
               height={72}
-              alt="Avatar image"
+              alt={t("avatarAlt")}
             />
           )}
         </Avatar>
@@ -42,7 +47,7 @@ const AccountHeader: StylableFC<{
           <Text type="display-small" element="h2">
             {[user.first_name, user.last_name].join(" ")}
           </Text>
-          <Text type="title-large">บัญชี Google</Text>
+          <Text type="title-large">{t("subtitle")}</Text>
         </div>
       </div>
       <Actions align="left">
@@ -52,11 +57,11 @@ const AccountHeader: StylableFC<{
           dangerous
           onClick={handleLogOut}
         >
-          ออกจากระบบ
+          {t("action.logOut")}
         </Button>
         {/* <Button appearance="outlined" icon={<MaterialIcon icon="add_link" />}>
-          เชื่อมบัญชี MySK
-        </Button> */}
+            {t("action.connectMySK")}
+          </Button> */}
       </Actions>
     </div>
   );
