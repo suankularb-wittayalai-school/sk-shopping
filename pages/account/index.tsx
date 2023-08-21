@@ -2,16 +2,27 @@
 import PageHeader from "@/components/PageHeader";
 import AccountHeader from "@/components/account/AccountHeader";
 import GuestCard from "@/components/account/GuestCard";
+import AddAddressDialog from "@/components/address/AddAddressDialog";
+import AddressCard from "@/components/address/AddressCard";
 import AppStateContext from "@/contexts/AppStateContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { LangCode } from "@/utils/types/common";
-import { User } from "@/utils/types/user";
-import { Columns, ContentLayout } from "@suankularb-components/react";
+import { UserDetailed } from "@/utils/types/user";
+import {
+  Button,
+  Card,
+  Columns,
+  ContentLayout,
+  Header,
+  MaterialIcon,
+  Section,
+  Text,
+} from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 /**
  * The Account page allows the user to log in and add some information about
@@ -19,12 +30,14 @@ import { useContext, useEffect } from "react";
  *
  * @param user The user to display/edit information of.
  */
-const AccountPage: NextPage<{ user: User }> = ({ user }) => {
+const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
   const { t } = useTranslation("account");
   const { t: tx } = useTranslation("common");
 
   const { setActiveNav } = useContext(AppStateContext);
   useEffect(() => setActiveNav("account"), []);
+
+  const [addAddressOpen, setAddAddressOpen] = useState(false);
 
   return (
     <>
@@ -34,7 +47,46 @@ const AccountPage: NextPage<{ user: User }> = ({ user }) => {
       <PageHeader>{t("title")}</PageHeader>
       <ContentLayout>
         {user ? (
-          <AccountHeader user={user} />
+          <>
+            <AccountHeader user={user} />
+            <Section>
+              <div className="flex flex-row gap-6">
+                <Header className="grow">ข้อมูลที่อยู่จัดส่ง</Header>
+                <Button
+                  appearance="filled"
+                  icon={<MaterialIcon icon="add" />}
+                  onClick={() => setAddAddressOpen(true)}
+                >
+                  เพิ่มที่อยู่
+                </Button>
+                <AddAddressDialog
+                  open={addAddressOpen}
+                  onClose={() => setAddAddressOpen(false)}
+                  onSubmit={() => setAddAddressOpen(false)}
+                />
+              </div>
+              {user.addresses.length ? (
+                <Columns columns={2}>
+                  {user.addresses.map((address) => (
+                    <AddressCard key={address.id} address={address} />
+                  ))}
+                </Columns>
+              ) : (
+                <Card
+                  appearance="outlined"
+                  className="grid h-[13.25rem] place-content-center"
+                >
+                  <Text
+                    type="body-medium"
+                    element="p"
+                    className="text-center text-on-surface-variant"
+                  >
+                    ยังไม่ได้เพิ่มข้อมูลที่อยู่
+                  </Text>
+                </Card>
+              )}
+            </Section>
+          </>
         ) : (
           <Columns columns={4}>
             <GuestCard className="md:col-span-2 md:col-start-2" />
@@ -49,13 +101,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   locale,
   req,
 }) => {
-  const { user } = await createJimmy(req);
+  const jimmy = await createJimmy(req);
+  const { data: user } = await jimmy.fetch<UserDetailed>("/auth/user", {
+    query: { fetch_level: "detailed" },
+  });
 
   return {
     props: {
       ...(await serverSideTranslations(locale as LangCode, [
         "common",
         "account",
+        "address",
       ])),
       user,
     },
