@@ -200,42 +200,6 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
     router.push("/cart");
   }
 
-  async function handleSendSlip(file: File) {
-    if (!order) return;
-
-    // Upload slip file to the `orders` bucket on Supabase
-    const filePath = [order.id, file.name.split(".").slice(-1)[0]].join(".");
-    const { error: uploadError } = await jimmy.storage
-      .from("orders")
-      .upload(filePath, file);
-    if (uploadError) {
-      logError("handleSendSlip (upload)", { detail: uploadError.message });
-      return;
-    }
-
-    // Update the Order to include a link to the slip file
-    const { error: updateError } = await jimmy.fetch(
-      `/orders/${order.id}/slip`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: {
-            payment_slip_url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/orders/${filePath}`,
-          },
-        }),
-      },
-    );
-    if (updateError) {
-      logError("handleSendSlip (update)", updateError);
-      return;
-    }
-
-    removeCart(shop.id);
-    await router.push("/cart");
-    setPromptPayOpen(false);
-  }
-
   return (
     <>
       <Head>
@@ -284,12 +248,19 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
                 onChange={setPaymentMethod}
                 onSubmit={handleSubmit}
               />
-              {order?.promptpay_qr_code_url && (
+              {order && (
                 <PromptPayDialog
-                  src={order.promptpay_qr_code_url}
-                  createdAt={new Date(order.created_at)}
+                  order={order}
                   open={promptPayOpen}
-                  onSubmit={handleSendSlip}
+                  onClose={() => {
+                    setPromptPayOpen(false);
+                    router.push("/cart");
+                  }}
+                  onSubmit={() => {
+                    removeCart(shop.id);
+                    setPromptPayOpen(false);
+                    router.push("/cart");
+                  }}
                 />
               )}
             </Columns>
