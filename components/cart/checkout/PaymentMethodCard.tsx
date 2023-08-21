@@ -10,6 +10,7 @@ import {
   FormGroup,
   FormItem,
   Radio,
+  Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 
@@ -66,7 +67,20 @@ const PaymentMethodCard: StylableFC<{
             </FormItem>
           )}
         </FormGroup>
-        <Button appearance="filled" loading={loading} disabled={disabled} onClick={onSubmit}>
+        {value === "promptpay" && (
+          <Text
+            type="label-small"
+            className="text-center text-on-surface-variant"
+          >
+            {t("countdownNote")}
+          </Text>
+        )}
+        <Button
+          appearance="filled"
+          loading={loading}
+          disabled={disabled}
+          onClick={onSubmit}
+        >
           {t("action.placeOrder")}
         </Button>
       </CardContent>
@@ -75,3 +89,4 @@ const PaymentMethodCard: StylableFC<{
 };
 
 export default PaymentMethodCard;
+

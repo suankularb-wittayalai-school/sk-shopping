@@ -28,6 +28,7 @@
       "promptpay": "PromptPay",
       "cod": "Cash on delivery"
     },
+    "countdownNote": "Please pay within 3 minutes.",
     "action": {
       "placeOrder": "Place order"
     },
@@ -46,3 +47,4 @@
     "success": "You’ve placed your order! You’ll get your receipt at {{email}} soon"
   }
 }
+
