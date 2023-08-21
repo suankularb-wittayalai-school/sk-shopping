@@ -254,7 +254,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
                   open={promptPayOpen}
                   onClose={() => {
                     setPromptPayOpen(false);
-                    router.push("/cart");
+                    setOrder(undefined);
                   }}
                   onSubmit={() => {
                     removeCart(shop.id);
@@ -314,4 +314,3 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export default CheckoutPage;
-
