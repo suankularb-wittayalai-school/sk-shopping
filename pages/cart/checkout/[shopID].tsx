@@ -287,6 +287,7 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
               {order?.promptpay_qr_code_url && (
                 <PromptPayDialog
                   src={order.promptpay_qr_code_url}
+                  createdAt={new Date(order.created_at)}
                   open={promptPayOpen}
                   onSubmit={handleSendSlip}
                 />
@@ -342,3 +343,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export default CheckoutPage;
+
