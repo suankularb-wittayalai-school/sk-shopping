@@ -83,21 +83,23 @@ const PromptPayDialog: StylableFC<{
             appearance="circular"
             alt={t("countdownAlt")}
             value={(timeLeft / TIMEOUT_SEC) * 100}
-            visible
+            visible={timeLeft >= 0}
           />
-          <Text
-            type="overline"
-            className={cn(`absolute left-0 right-0 top-1/2 m-auto block
+          {timeLeft >= 0 && (
+            <Text
+              type="overline"
+              className={cn(`absolute left-0 right-0 top-1/2 m-auto block
               -translate-y-1/2 text-center text-primary
               [font-feature-settings:"tnum"on,"lnum"on]`)}
-          >
-            {[
-              Math.floor(timeLeft / 60), // Minutes
-              timeLeft - Math.floor(timeLeft / 60) * 60, // Seconds
-            ]
-              .map((segment) => segment.toString().padStart(2, "0"))
-              .join(":")}
-          </Text>
+            >
+              {[
+                Math.floor(timeLeft / 60), // Minutes
+                timeLeft - Math.floor(timeLeft / 60) * 60, // Seconds
+              ]
+                .map((segment) => segment.toString().padStart(2, "0"))
+                .join(":")}
+            </Text>
+          )}
         </div>
       </div>
       <Image
