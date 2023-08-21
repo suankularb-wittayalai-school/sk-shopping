@@ -74,7 +74,7 @@ const PromptPayDialog: StylableFC<{
         </Text>
         <Progress
           appearance="linear"
-          alt="3-minute timer"
+          alt={t("countdownAlt")}
           value={Math.ceil((timeLeft / TIMEOUT_SEC) * 100)}
           visible
         />
