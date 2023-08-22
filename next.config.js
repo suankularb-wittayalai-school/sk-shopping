@@ -9,7 +9,7 @@ module.exports = withPlausibleProxy()({
   images: {
     domains: [
       process.env.NEXT_PUBLIC_SUPABASE_URL.replace("https://", ""),
-      "promptpay.io",
+      "lh3.googleusercontent.com",
     ],
   },
 });

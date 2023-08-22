@@ -34,11 +34,8 @@
     },
     "promptpay": {
       "desc": "You have 3 minutes. Scan the QR code below with your mobile banking app to pay.",
-      "qrAlt": "PromptPay QR code",
-      "attachSlip": "Attach slip",
-      "action": {
-        "save": "Save slip"
-      }
+      "countdownAlt": "3-minute countdown",
+      "qrAlt": "PromptPay QR code"
     }
   },
   "snackbar": {

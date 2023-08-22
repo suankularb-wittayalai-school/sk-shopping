@@ -1,0 +1,14 @@
+{
+  "title": "บัญชี",
+  "guest": {
+    "title": "เข้าสู่ระบบด้วยบัญชี Google",
+    "desc": "พบกับฟีเจอร์แสนสะดวกสะบาย เช่น การบันทึกสินค้าโปรด และ auto-fill เมื่อคุณใช้บัญชี Google เข้าสู่ระบบ SK Shopping"
+  },
+  "header": {
+    "avatarAlt": "รูปบัญชี",
+    "subtitle": "บัญชี Google",
+    "action": {
+      "logOut": "ออกจากระบบ"
+    }
+  }
+}

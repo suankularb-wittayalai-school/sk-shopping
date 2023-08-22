@@ -100,14 +100,14 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
             href="/cart"
             element={Link}
           />
-          <NavDrawerItem
+          {/* <NavDrawerItem
             icon={<MaterialIcon icon="star" />}
             label={t("navigation.favorites")}
             selected={activeNav === "favorites"}
             onClick={() => setActiveNav("favorites")}
             href="/favorites"
             element={Link}
-          />
+          /> */}
           <NavDrawerItem
             icon={<MaterialIcon icon="account_circle" />}
             label={t("navigation.account")}
@@ -176,14 +176,14 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
             element={Link}
           />
         </motion.div>
-        <NavBarItem
+        {/* <NavBarItem
           icon={<MaterialIcon icon="star" />}
           label={t("navigation.favorites")}
           selected={activeNav === "favorites"}
           onClick={() => setActiveNav("favorites")}
           href="/favorites"
           element={Link}
-        />
+        /> */}
         <NavBarItem
           icon={<MaterialIcon icon="account_circle" />}
           label={t("navigation.account")}
@@ -215,3 +215,4 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 export default Layout;
+
