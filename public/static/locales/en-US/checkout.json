@@ -1,0 +1,47 @@
+{
+  "title": "Checkout",
+  "subtitle": "{{shop}} Shop",
+  "delivery": {
+    "title": "I’ll receive my package at…",
+    "schoolPickup": {
+      "option": "School",
+      "detail": {
+        "desc": "Show your order receipt at {{location}} to get your package."
+      }
+    },
+    "delivery": {
+      "option": "An address… ({{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}} shipping)"
+    }
+  },
+  "costBreakdown": {
+    "loading": "Loading your cart…"
+  },
+  "contact": {
+    "title": "Contact for delivery",
+    "name": "Full name",
+    "email": "Email",
+    "tel": "Tel."
+  },
+  "payment": {
+    "title": "I’ll pay via…",
+    "option": {
+      "promptpay": "PromptPay",
+      "cod": "Cash on delivery"
+    },
+    "countdownNote": "Please pay within 3 minutes.",
+    "action": {
+      "placeOrder": "Place order"
+    },
+    "promptpay": {
+      "desc": "You have 3 minutes. Scan the QR code below with your mobile banking app to pay.",
+      "countdownAlt": "3-minute countdown",
+      "qrAlt": "PromptPay QR code"
+    }
+  },
+  "snackbar": {
+    "invalidAddress": "Check again that you entered your address fully and correctly",
+    "invalidContact": "Check again that you entered your contact information full and correctly",
+    "success": "You’ve placed your order! You’ll get your receipt at {{email}} soon"
+  }
+}
+

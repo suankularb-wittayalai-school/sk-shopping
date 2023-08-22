@@ -1,4 +1,5 @@
 // Imports
+import { TopLevelPageName } from "@/utils/types/common";
 import { createContext } from "react";
 
 /**
@@ -7,6 +8,13 @@ import { createContext } from "react";
 const AppStateContext = createContext<{
   navOpen: boolean;
   setNavOpen: (open: boolean) => void;
-}>({ navOpen: false, setNavOpen: () => {} });
+  activeNav: TopLevelPageName;
+  setActiveNav: (page: TopLevelPageName) => void;
+}>({
+  navOpen: false,
+  setNavOpen: () => {},
+  activeNav: "landing",
+  setActiveNav: () => {},
+});
 
 export default AppStateContext;

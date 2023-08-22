@@ -1,0 +1,14 @@
+{
+  "title": "Account",
+  "guest": {
+    "title": "Log in with Google",
+    "desc": "Enjoy time-saving features such as favorites and auto-fill when you log in to SK Shopping with a Google account."
+  },
+  "header": {
+    "avatarAlt": "Avatar image",
+    "subtitle": "Google account",
+    "action": {
+      "logOut": "Log out"
+    }
+  }
+}

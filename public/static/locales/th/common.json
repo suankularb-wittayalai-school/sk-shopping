@@ -1,13 +1,58 @@
 {
-  "brand": {
-    "name": "แม่แบบ Next.js",
-    "logoText": "<0>SK </0><1>แม่แบบ Next.js</1>",
-    "school": "โรงเรียนสวนกุหลาบวิทยาลัย"
-  },
+  "appName": "SK Shopping",
+  "tabName": "{{tabName}} - SK Shopping",
   "navigation": {
-    "home": "หน้าหลัก",
-    "login": "เข้าสู่ระบบ",
-    "about": "เกี่ยวกับ"
+    "landing": "ร้านค้า",
+    "categories": "ตามประเภท",
+    "cart": "รถเข็น",
+    "favorites": "สินค้าโปรด",
+    "account": "บัญชี",
+    "language": "English"
   },
-  "pageIsLoading": "หน้ากำลังโหลด…"
+  "appDrawer": {
+    "mysk": {
+      "title": "แอพ MySK",
+      "mysk": "MySK",
+      "clubRegistry": "ทะเบียนชุมนุม"
+    },
+    "school": {
+      "title": "แอพโรงเรียน",
+      "skAcTh": "sk.ac.th",
+      "kularbFah": "กุหลาบฟ้า",
+      "kularbLuang": "กุหลาบหลวง",
+      "shopping": "Shopping",
+      "library": "ห้องสมุด",
+      "libraryEBook": "Library eBook",
+      "libraryOPAC": "Library OPAC"
+    },
+    "other": {
+      "title": "แอพอื่น ๆ",
+      "schoolICT": "School ICT"
+    }
+  },
+  "pageIsLoading": "หน้ากำลังโหลด…",
+  "error": {
+    "404": {
+      "title": "ไม่พบข้อมูล",
+      "verbose": "Not Found",
+      "tabName": "ไม่พบข้อมูล",
+      "desc": "ตรวจสอบว่าที่อยู่ URL ถูกต้อง แล้วลองอีกครั้ง"
+    },
+    "500": {
+      "title": "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์",
+      "verbose": "Internal Server Error",
+      "tabName": "ข้อผิดพลาดที่เซิร์ฟเวอร์",
+      "desc": "โปรดลองอีกครั้งภายหลัง ขออภัยในความไม่สะดวก"
+    },
+    "client": {
+      "title": "เกิดข้อผิดพลาดที่ไคลแอนท์",
+      "verbose": "Client-side Exception",
+      "tabName": "ข้อผิดพลาดที่ไคลแอนท์",
+      "desc": "เกิดข้อผิดพลาดขึ้นระหว่างการแสดงผลหรือการกระทำหนึ่ง โปรดลองอีกครั้งภายหลัง",
+      "callStack": "สำหรับผู้พัฒนา"
+    },
+    "common": {
+      "persistNotice": "หากลองอีกครั้งแล้วยังพบปัญหา กรุณาติดต่อเรา"
+    }
+  }
 }

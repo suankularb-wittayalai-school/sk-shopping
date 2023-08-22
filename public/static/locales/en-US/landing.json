@@ -1,0 +1,21 @@
+{
+  "advert": {
+    "empty": "Advertisement",
+    "note": {
+      "desc": "Paid advertisement",
+      "link": "Contact us"
+    },
+    "action": {
+      "goToShop": "Go to shop"
+    }
+  },
+  "shops": {
+    "title": "Club/organization shops"
+  },
+  "collections": {
+    "title": "Browse collections",
+    "action": {
+      "browse": "Browse"
+    }
+  }
+}

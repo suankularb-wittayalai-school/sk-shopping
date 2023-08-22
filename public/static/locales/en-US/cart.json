@@ -1,0 +1,42 @@
+{
+  "title": "Your cart",
+  "pastOrdersNote": "If you placed orders as a guest, you can view your receipts in the email you entered when you placed those orders.",
+  "cart": {
+    "item": {
+      "total": "{{price, currency(currency: THB; maximumFractionDigits: 0;)}} total",
+      "pricePerItem": "{{price, currency(currency: THB; maximumFractionDigits: 0;)}} each",
+      "amount": {
+        "label": "Quantity",
+        "decrease": "Decrease",
+        "increase": "Increase"
+      },
+      "action": {
+        "remove": "Remove"
+      }
+    },
+    "action": {
+      "checkout": "Checkout"
+    },
+    "empty": "No items in cart yet."
+  },
+  "order": {
+    "title": "Order history",
+    "delivery": {
+      "schoolPickup": "Pick up your order at school",
+      "delivery": {
+        "notShippedOut": "Not shipped out (to {{streetAddress}})",
+        "pending": "Now shipping to {{streetAddress}}",
+        "delivered": "Shipped to {{streetAddress}}"
+      }
+    },
+    "payment": {
+      "cod": "Cash on delivery",
+      "promptpay": "Paid via PromptPay"
+    },
+    "ref": "Ref ID: <0>{{refID}}</0>",
+    "action": {
+      "showReceipt": "Show receipt"
+    },
+    "empty": "You don’t have any past orders. If you had ordered before, try logging in or check your email."
+  }
+}

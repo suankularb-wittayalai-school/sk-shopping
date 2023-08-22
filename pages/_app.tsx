@@ -1,11 +1,21 @@
 // Imports
+import BlobDefinitions from "@/components/BlobDefinitions";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
+import PageFallback from "@/components/error/PageFallback";
+import IconDefinitions from "@/components/icon/IconDefintions";
 import Layout from "@/components/Layout";
 import AppStateContext from "@/contexts/AppStateContext";
+import CartsContext from "@/contexts/CartsContext";
 import SnackbarContext from "@/contexts/SnackbarContext";
 import "@/styles/globals.css";
+import useCarts from "@/utils/helpers/useCarts";
+import { TopLevelPageName } from "@/utils/types/common";
 import { ThemeProvider } from "@suankularb-components/react";
+import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { MotionConfig } from "framer-motion";
 import { appWithTranslation } from "next-i18next";
+import PlausibleProvider from "next-plausible";
 import { AppProps } from "next/app";
 import {
   Fira_Code,
@@ -16,6 +26,7 @@ import {
 } from "next/font/google";
 import localFont from "next/font/local";
 import { FC, ReactNode, useState } from "react";
+import { Provider as BalancerProvider } from "react-wrap-balancer";
 
 // English fonts
 const bodyFontEN = Inter({ subsets: ["latin"] });
@@ -50,16 +61,24 @@ const iconFont = localFont({
  * @returns The app wrapped with context providers.
  */
 const Contexts: FC<{ children: ReactNode }> = ({ children }) => {
+  const [supabase] = useState(() => createPagesBrowserClient());
   const [snackbar, setSnackbar] = useState<JSX.Element | null>(null);
   const [navOpen, setNavOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState<TopLevelPageName>("landing");
+  const cartsContextValue = useCarts();
 
   return (
-    // Add more contexts here as your app grows
-    <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
-      <AppStateContext.Provider value={{ navOpen, setNavOpen }}>
-        {children}
-      </AppStateContext.Provider>
-    </SnackbarContext.Provider>
+    <SessionContextProvider supabaseClient={supabase}>
+      <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
+        <AppStateContext.Provider
+          value={{ navOpen, setNavOpen, activeNav, setActiveNav }}
+        >
+          <CartsContext.Provider value={cartsContextValue}>
+            <BalancerProvider>{children}</BalancerProvider>
+          </CartsContext.Provider>
+        </AppStateContext.Provider>
+      </SnackbarContext.Provider>
+    </SessionContextProvider>
   );
 };
 
@@ -82,13 +101,22 @@ function App({ Component, pageProps }: AppProps) {
       <Contexts>
         {/* Framer Motion a11y */}
         <MotionConfig reducedMotion="user">
-          {/* SKCom variables */}
-          <ThemeProvider>
-            {/* Rendered app */}
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </ThemeProvider>
+          {/* Plausible */}
+          <PlausibleProvider domain="shopping.skkornor.org">
+            {/* SKCom variables */}
+            <ThemeProvider>
+              {/* Rendered app */}
+              <Layout>
+                {/* Client-side error handling */}
+                <ErrorBoundary fallback={PageFallback}>
+                  <Component {...pageProps} />
+                </ErrorBoundary>
+              </Layout>
+              {/* Symbol definitions */}
+              <BlobDefinitions />
+              <IconDefinitions />
+            </ThemeProvider>
+          </PlausibleProvider>
         </MotionConfig>
       </Contexts>
     </>
@@ -96,4 +124,3 @@ function App({ Component, pageProps }: AppProps) {
 }
 
 export default appWithTranslation(App);
-
