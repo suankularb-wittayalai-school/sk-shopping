@@ -49,7 +49,7 @@ const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
         {user ? (
           <>
             <AccountHeader user={user} />
-            <Section>
+            {/* <Section>
               <div className="flex flex-row gap-6">
                 <Header className="grow">ข้อมูลที่อยู่จัดส่ง</Header>
                 <Button
@@ -85,7 +85,7 @@ const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
                   </Text>
                 </Card>
               )}
-            </Section>
+            </Section> */}
           </>
         ) : (
           <Columns columns={4}>
@@ -119,3 +119,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default AccountPage;
+

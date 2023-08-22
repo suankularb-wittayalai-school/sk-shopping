@@ -336,14 +336,14 @@ const ListingView: StylableFC<{
             />
 
             {/* Favorite */}
-            <ToggleButton
+            {/* <ToggleButton
               appearance="tonal"
               icon={<MaterialIcon icon="star" />}
               alt={t("action.favorite.alt")}
               tooltip={t("action.favorite.tooltip")}
               style={{ backgroundColor: `#${shop.accent_color}33` }}
               className="[&>.skc-icon]:text-on-surface"
-            />
+            /> */}
           </Actions>
         </div>
 
@@ -394,3 +394,4 @@ const ListingView: StylableFC<{
 };
 
 export default ListingView;
+
