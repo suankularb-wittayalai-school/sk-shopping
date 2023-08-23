@@ -90,7 +90,7 @@ const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
           </>
         ) : (
           <Columns columns={4}>
-            <GuestCard className="md:col-span-2 md:col-start-2" />
+            <GuestCard className="mx-4 sm:col-span-2 sm:mx-0 md:col-start-2" />
           </Columns>
         )}
       </ContentLayout>
@@ -121,4 +121,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default AccountPage;
-

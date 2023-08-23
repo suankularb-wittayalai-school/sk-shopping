@@ -25,13 +25,14 @@ const GuestCard: StylableFC = ({ style, className }) => {
       direction="row"
       style={style}
       className={cn(
-        `relative isolate gap-4 pl-2 pr-4 pb-4 pt-2`,
+        `relative isolate gap-4 overflow-hidden !bg-transparent pb-4 pl-2 pr-4
+        pt-2 sm:!bg-surface`,
         className,
       )}
     >
       <UseVector
         href="blob-card-left"
-        className="absolute inset-0 right-auto -z-10"
+        className="absolute inset-0 right-auto -z-10 hidden sm:block"
       />
       <MaterialIcon icon="account_circle" size={48} className="opacity-80" />
       <div>
@@ -44,8 +45,8 @@ const GuestCard: StylableFC = ({ style, className }) => {
         <Actions className="mt-3">
           <div
             id="button-google-sign-in"
-            className={cn(`h-[38px] min-w-[3.5rem] rounded-full [color-scheme:light]
-              [&:not(:has(iframe))]:animate-pulse
+            className={cn(`h-[38px] min-w-[3.5rem] rounded-full
+              [color-scheme:light] [&:not(:has(iframe))]:animate-pulse
               [&:not(:has(iframe))]:bg-surface-variant`)}
           />
         </Actions>
