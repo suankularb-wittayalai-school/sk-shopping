@@ -33,6 +33,7 @@
   "payment": {
     "title": "I’ll pay via…",
     "option": {
+      "posCash": "Cash",
       "promptpay": "PromptPay",
       "cod": "Cash on delivery"
     },

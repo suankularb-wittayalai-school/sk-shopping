@@ -50,6 +50,12 @@ const PaymentMethodCard: StylableFC<{
           label={t("title")}
           className="grow [&>.skc-form-group\_\_label]:sr-only"
         >
+          <FormItem label={t("option.posCash")}>
+            <Radio
+              value={value === "pos_cash"}
+              onChange={(value) => value && onChange("pos_cash")}
+            />
+          </FormItem>
           {shop.accept_promptpay && (
             <FormItem label={t("option.promptpay")}>
               <Radio
@@ -67,7 +73,7 @@ const PaymentMethodCard: StylableFC<{
             </FormItem>
           )}
         </FormGroup>
-        {value === "promptpay" && (
+        {value !== "cod" && (
           <Text
             type="label-small"
             className="text-center text-on-surface-variant"

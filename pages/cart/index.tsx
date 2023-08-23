@@ -9,7 +9,7 @@ import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import useJimmy from "@/utils/helpers/useJimmy";
 import { useOneTapSignin } from "@/utils/helpers/useOneTapSignin";
-import { LangCode } from "@/utils/types/common";
+import { IDOnly, LangCode } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
 import {
   Card,
@@ -33,7 +33,10 @@ import Balancer from "react-wrap-balancer";
 /**
  * The Cart page displays the user’s Cart from `localStorage`.
  */
-const CartPage: NextPage<{ userOrders: Order[] }> = ({ userOrders }) => {
+const CartPage: NextPage<{
+  userOrders: Order[];
+  managingShops: IDOnly[];
+}> = ({ userOrders, managingShops }) => {
   const { t } = useTranslation("cart");
   const { t: tx } = useTranslation("common");
 
@@ -68,7 +71,13 @@ const CartPage: NextPage<{ userOrders: Order[] }> = ({ userOrders }) => {
             <AnimatePresence mode="popLayout" initial={false}>
               {carts?.length ? (
                 carts.map((cart) => (
-                  <ShopCartCard key={cart.shop.id} cart={cart} />
+                  <ShopCartCard
+                    key={cart.shop.id}
+                    cart={cart}
+                    userIsManager={Boolean(
+                      managingShops?.find((shop) => cart.shop.id === shop.id),
+                    )}
+                  />
                 ))
               ) : (
                 <motion.div
@@ -141,24 +150,35 @@ export const getServerSideProps: GetServerSideProps = async ({
   const jimmy = await createJimmy(req);
 
   let userOrders: Order[] | null = null;
+  let managingShops: IDOnly[] | null = null;
 
   if (jimmy.user) {
-    const { data, error } = await jimmy.fetch<Order[]>("/orders", {
-      query: {
-        descendant_fetch_level: "compact",
-        filter: { data: { buyer_ids: [jimmy.user.id] } },
-        sorting: { by: ["created_at"], ascending: false },
+    const { data: orders, error: ordersError } = await jimmy.fetch<Order[]>(
+      "/orders",
+      {
+        query: {
+          descendant_fetch_level: "compact",
+          filter: { data: { buyer_ids: [jimmy.user.id] } },
+          sorting: { by: ["created_at"], ascending: false },
+        },
       },
-    });
-    if (error) logError("/cart getServerSideProps", error);
+    );
+    if (ordersError) logError("/cart getServerSideProps (orders)", ordersError);
     userOrders =
-      data?.filter(
+      orders?.filter(
         (order) =>
           !(
             order.shipment_status === "canceled" ||
             (order.payment_method === "promptpay" && !order.is_paid)
           ),
       ) || null;
+
+    const { data: shops, error: shopsError } = await jimmy.fetch<IDOnly[]>(
+      `/shops`,
+      { query: { filter: { data: { manager_ids: [jimmy.user.id] } } } },
+    );
+    if (shopsError) logError("/cart getServerSideProps (shops)", shopsError);
+    if (shops) managingShops = shops;
   }
 
   return {
@@ -169,8 +189,10 @@ export const getServerSideProps: GetServerSideProps = async ({
         "receipt",
       ])),
       userOrders,
+      managingShops,
     },
   };
 };
 
 export default CartPage;
+

@@ -27,7 +27,8 @@ import shortUUID from "short-uuid";
  */
 const ShopCartCard: StylableFC<{
   cart: Cart;
-}> = ({ cart, style, className }) => {
+  userIsManager?: boolean;
+}> = ({ cart, userIsManager, style, className }) => {
   const { items, shop } = cart;
 
   const getLocaleString = useGetLocaleString();
@@ -58,6 +59,16 @@ const ShopCartCard: StylableFC<{
       </List>
       <CardContent>
         <Actions className="!mt-0">
+          {userIsManager && (
+            <Button
+              appearance="outlined"
+              icon={<MaterialIcon icon="point_of_sale" />}
+              href={`/cart/cashier/${fromUUID(shop.id)}`}
+              element={Link}
+            >
+              {t("action.checkoutAsCashier")}
+            </Button>
+          )}
           <Button
             appearance="filled"
             icon={<MaterialIcon icon="shopping_cart_checkout" />}
@@ -73,3 +84,4 @@ const ShopCartCard: StylableFC<{
 };
 
 export default ShopCartCard;
+

@@ -19,7 +19,7 @@ import {
 } from "@/utils/regex";
 import { Address } from "@/utils/types/address";
 import { LangCode } from "@/utils/types/common";
-import { Order } from "@/utils/types/order";
+import { Order, PaymentMethod } from "@/utils/types/order";
 import { Shop } from "@/utils/types/shop";
 import { UserDetailed } from "@/utils/types/user";
 import {
@@ -91,7 +91,7 @@ const CheckoutPage: NextPage<{
     },
   ]);
 
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "promptpay">(
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     shop.accept_promptpay ? "promptpay" : "cod",
   );
 

@@ -14,7 +14,7 @@ export type OrderStatus =
   | "pending"
   | "delivered";
 export type DeliveryType = "school_pickup" | "delivery";
-export type PaymentMethod = "cod" | "promptpay";
+export type PaymentMethod = "cod" | "promptpay" | "pos_cash";
 
 export type Order = {
   id: string;
@@ -53,3 +53,4 @@ export type CompactOrder = Pick<
   | "delivery_type"
   | "payment_method"
 >;
+
