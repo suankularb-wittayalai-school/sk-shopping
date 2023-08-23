@@ -118,6 +118,7 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
             className="md:col-span-2"
           />
           <PaymentMethodCard
+            role="cashier"
             value={paymentMethod}
             shop={{ ...shop, accept_cod: false }}
             loading={loading}
@@ -166,7 +167,10 @@ export const getServerSideProps: GetServerSideProps = async ({
     "/auth/user",
     { query: { fetch_level: "detailed" } },
   );
-  if (userError) logError("/account getServerSideProps", userError);
+  if (userError) {
+    logError("/account getServerSideProps", userError);
+    return { notFound: true };
+  }
 
   return {
     props: {
@@ -183,4 +187,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default CheckoutAsCashierPage;
-

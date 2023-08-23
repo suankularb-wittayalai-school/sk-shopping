@@ -17,6 +17,7 @@ import { useTranslation } from "next-i18next";
 /**
  * A Card letting the user choose their payment method.
  *
+ * @param role The role of the user. If the user is a cashier, the Cash option is shown.
  * @param value Form control value for the payment method Form Group.
  * @param shop The Shop this Cart belongs to. This is used to only show options allowed by the Shop.
  * @param disabled Whether the place order Button is disabled. This should be used to prevent the user from placing an order when the Cart hasn’t been loaded yet.
@@ -24,6 +25,7 @@ import { useTranslation } from "next-i18next";
  * @param onSubmit Triggers when the place order Button is pressed.
  */
 const PaymentMethodCard: StylableFC<{
+  role: "customer" | "cashier";
   value: PaymentMethod;
   shop: Pick<Shop, "accept_promptpay" | "accept_cod">;
   loading: boolean;
@@ -31,6 +33,7 @@ const PaymentMethodCard: StylableFC<{
   onChange: (value: PaymentMethod) => void;
   onSubmit: () => void;
 }> = ({
+  role,
   value,
   shop,
   loading,
@@ -50,12 +53,14 @@ const PaymentMethodCard: StylableFC<{
           label={t("title")}
           className="grow [&>.skc-form-group\_\_label]:sr-only"
         >
-          <FormItem label={t("option.posCash")}>
-            <Radio
-              value={value === "pos_cash"}
-              onChange={(value) => value && onChange("pos_cash")}
-            />
-          </FormItem>
+          {role === "cashier" && (
+            <FormItem label={t("option.posCash")}>
+              <Radio
+                value={value === "pos_cash"}
+                onChange={(value) => value && onChange("pos_cash")}
+              />
+            </FormItem>
+          )}
           {shop.accept_promptpay && (
             <FormItem label={t("option.promptpay")}>
               <Radio
@@ -64,7 +69,7 @@ const PaymentMethodCard: StylableFC<{
               />
             </FormItem>
           )}
-          {shop.accept_cod && (
+          {shop.accept_cod && role !== "cashier" && (
             <FormItem label={t("option.cod")}>
               <Radio
                 value={value === "cod"}
@@ -95,4 +100,3 @@ const PaymentMethodCard: StylableFC<{
 };
 
 export default PaymentMethodCard;
-

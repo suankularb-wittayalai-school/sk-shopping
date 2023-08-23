@@ -241,6 +241,7 @@ const CheckoutPage: NextPage<{
               />
               <ContactInfoCard formProps={contactInfoProps} />
               <PaymentMethodCard
+                role="customer"
                 value={paymentMethod}
                 shop={shop}
                 loading={loading}
@@ -309,4 +310,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default CheckoutPage;
-
