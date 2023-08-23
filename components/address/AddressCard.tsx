@@ -60,7 +60,7 @@ const AddressCard: StylableFC<{
           loading={loading}
           onClick={handleDelete}
         >
-          ลบ
+          {t("action.remove")}
         </Button>
       </Actions>
     </Card>

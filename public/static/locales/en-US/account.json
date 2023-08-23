@@ -10,5 +10,12 @@
     "action": {
       "logOut": "Log out"
     }
+  },
+  "addresses": {
+    "title": "Saved addresses",
+    "empty": "No saved addresses yet. You can add addresses that you can use when you checkout.",
+    "action": {
+      "add": "Add address"
+    }
   }
 }

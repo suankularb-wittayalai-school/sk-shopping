@@ -52,13 +52,13 @@ const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
             <AccountHeader user={user} />
             <Section>
               <div className="flex flex-row gap-6">
-                <Header className="grow">ข้อมูลที่อยู่จัดส่ง</Header>
+                <Header className="grow">{t("addresses.title")}</Header>
                 <Button
                   appearance="filled"
                   icon={<MaterialIcon icon="add" />}
                   onClick={() => setAddAddressOpen(true)}
                 >
-                  เพิ่มที่อยู่
+                  {t("addresses.action.add")}
                 </Button>
                 <AddAddressDialog
                   open={addAddressOpen}
@@ -82,7 +82,7 @@ const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
                     element="p"
                     className="text-center text-on-surface-variant"
                   >
-                    ยังไม่ได้เพิ่มข้อมูลที่อยู่
+                    {t("addresses.empty")}
                   </Text>
                 </Card>
               )}

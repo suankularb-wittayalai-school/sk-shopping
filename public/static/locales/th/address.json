@@ -2,5 +2,8 @@
   "streetAddress": "บ้านเลขที่ ซอย ถนน ตำบล",
   "district": "อำเภอ",
   "province": "จังหวัด",
-  "zipCode": "รหัสไปรษณีย์"
+  "zipCode": "รหัสไปรษณีย์",
+  "action": {
+    "remove": "ลบ"
+  }
 }
