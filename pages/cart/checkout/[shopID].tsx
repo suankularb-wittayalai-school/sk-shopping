@@ -37,7 +37,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { omit } from "radash";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
@@ -71,6 +71,9 @@ const CheckoutPage: NextPage<{
 
   const { carts, removeCart, addOrder } = useContext(CartsContext);
   const cart = carts?.find((cart) => shop.id === cart.shop.id);
+  useEffect(() => {
+    if (!cart?.items.length) router.replace("/cart");
+  }, [cart]);
 
   const [deliveryType, setDeliveryType] = useState<
     "school_pickup" | "delivery"
@@ -195,8 +198,8 @@ const CheckoutPage: NextPage<{
       </Snackbar>,
     );
     addOrder(data[0]);
+    removeCart(shop.id);
     setLoading(false);
-    router.push("/cart");
   }
 
   return (
