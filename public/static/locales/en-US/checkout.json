@@ -1,5 +1,8 @@
 {
-  "title": "Checkout",
+  "title": {
+    "customer": "Checkout",
+    "cashier": "Checkout as cashier"
+  },
   "subtitle": "{{shop}} Shop",
   "delivery": {
     "title": "I’ll receive my package at…",
@@ -60,4 +63,3 @@
     "success": "You’ve placed your order! You’ll get your receipt at {{email}} soon"
   }
 }
-

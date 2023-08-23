@@ -100,9 +100,9 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
   return (
     <>
       <Head>
-        <title>{tx("tabName", { tabName: "Checkout as cashier" })}</title>
+        <title>{tx("tabName", { tabName: t("title.cashier") })}</title>
       </Head>
-      <PageHeader parentURL="/cart">Checkout as cashier</PageHeader>
+      <PageHeader parentURL="/cart">{t("title.cashier")}</PageHeader>
       <ContentLayout>
         <Text
           type="title-large"

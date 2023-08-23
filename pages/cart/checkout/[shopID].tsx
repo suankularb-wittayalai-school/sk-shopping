@@ -202,9 +202,9 @@ const CheckoutPage: NextPage<{
   return (
     <>
       <Head>
-        <title>{tx("tabName", { tabName: t("title") })}</title>
+        <title>{tx("tabName", { tabName: t("title.customer") })}</title>
       </Head>
-      <PageHeader parentURL="/cart">{t("title")}</PageHeader>
+      <PageHeader parentURL="/cart">{t("title.customer")}</PageHeader>
       <ContentLayout>
         <Text
           type="title-large"
