@@ -19,7 +19,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
@@ -30,20 +30,22 @@ import shortUUID from "short-uuid";
  *
  * @param shop The Shop this Checkout page is for. Used to decide with options to show.
  */
-const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
-  shop,
-  user,
-}) => {
+const CheckoutAsCashierPage: NextPage<{
+  shop: Shop;
+  user: User;
+}> = ({ shop, user }) => {
+  const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("checkout");
   const { t: tx } = useTranslation("common");
 
-  const getLocaleString = useGetLocaleString();
+  const { fromUUID } = shortUUID();
 
   const jimmy = useJimmy();
   const router = useRouter();
 
   const { carts, removeCart, addOrder } = useContext(CartsContext);
   const cart = carts?.find((cart) => shop.id === cart.shop.id);
+
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pos_cash");
 
   const [order, setOrder] = useState<Order>();
@@ -92,9 +94,10 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
   }
 
   async function handlePaymentComplete() {
+    if (!order) return;
     removeCart(shop.id);
-    addOrder(order!);
-    router.push(`/receipt/${order?.id}/print`);
+    addOrder(order);
+    router.push(`/receipt/${fromUUID(order.id)}/print`);
   }
 
   return (
@@ -133,7 +136,10 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
           <POSCashDialog
             order={order}
             open={paymentOpen}
-            onClose={() => setPaymentOpen(false)}
+            onClose={() => {
+              setPaymentOpen(false);
+              setOrder(undefined);
+            }}
             onSubmit={handlePaymentComplete}
           />
         ) : (

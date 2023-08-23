@@ -63,7 +63,7 @@ const POSCashDialog: StylableFC<{
     const { error } = await jimmy.fetch(`/orders/${order.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ is_paid: true, is_verified: true }),
+      body: JSON.stringify({ data: { is_paid: true, is_verified: true } }),
     });
     if (error) {
       logError("POSCashDialog", error);
@@ -91,7 +91,7 @@ const POSCashDialog: StylableFC<{
       <Actions align="full" className="!p-0">
         <Button
           appearance="outlined"
-          icon={<MaterialIcon icon="cancel" />}
+          icon={<MaterialIcon icon="close" />}
           dangerous
         >
           {t("action.cancel")}
@@ -110,4 +110,3 @@ const POSCashDialog: StylableFC<{
 };
 
 export default POSCashDialog;
-

@@ -11,18 +11,21 @@ import { useEffect } from "react";
 import QRCode from "react-qr-code";
 import shortUUID from "short-uuid";
 
-const PAPER_HEIGHT_MM = 104;
-const PAPER_WIDTH_MM = 150;
+const PAPER_HEIGHT_MM = 105;
+const PAPER_WIDTH_MM = 148;
 
 const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
   const { fromUUID } = shortUUID();
-  useEffect(() => window.print(), []);
+  useEffect(() => {
+    const timeout = setTimeout(() => window.print(), 100);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <main
       id="receipt"
       style={{ height: `${PAPER_HEIGHT_MM}mm`, width: `${PAPER_WIDTH_MM}mm` }}
-      className="light //hidden //print:flex absolute flex flex-row bg-white text-black"
+      className="light absolute hidden flex-row bg-white text-black print:flex"
     >
       <div className="flex grow flex-col gap-2 border-r-1 border-r-black p-6">
         <div className="flex flex-row gap-6">
@@ -112,4 +115,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default PrintReceiptPage;
-
