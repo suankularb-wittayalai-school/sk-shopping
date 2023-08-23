@@ -88,6 +88,7 @@ const ReceiptDialog: StylableFC<{
             {
               cod: <MaterialIcon icon="payments" />,
               promptpay: <MaterialIcon icon="qr_code_scanner" />,
+              pos_cash: <MaterialIcon icon="point_of_sale" />,
             }[order.payment_method]
           }
           <Text type="body-medium" element="p">
@@ -135,3 +136,4 @@ const ReceiptDialog: StylableFC<{
 };
 
 export default ReceiptDialog;
+
