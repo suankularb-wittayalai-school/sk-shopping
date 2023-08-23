@@ -140,12 +140,12 @@ const ListingView: StylableFC<{
       <Snackbar
         action={
           <Button appearance="text" href="/cart" element={Link}>
-            ดูในรถเข็น
+            {t("snackbar.addedToCart.action")}
           </Button>
         }
         stacked
       >
-        เพิ่ม “{selectedVariant?.name}” สู่รถเข็นแล้ว
+        {t("snackbar.addedToCart.message", { item: selectedVariant!.name })}
       </Snackbar>,
     );
 
