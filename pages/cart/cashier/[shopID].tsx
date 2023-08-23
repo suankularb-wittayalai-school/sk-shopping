@@ -1,26 +1,26 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
+import CostBreakdownCard from "@/components/cart/checkout/CostBreakdownCard";
+import POSCashDialog from "@/components/cart/checkout/POSCashDialog";
+import PaymentMethodCard from "@/components/cart/checkout/PaymentMethodCard";
+import PromptPayDialog from "@/components/cart/checkout/PromptPayDialog";
+import CartsContext from "@/contexts/CartsContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
+import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
+import useJimmy from "@/utils/helpers/useJimmy";
 import { LangCode } from "@/utils/types/common";
+import { Order, PaymentMethod } from "@/utils/types/order";
 import { Shop } from "@/utils/types/shop";
 import { User, UserDetailed } from "@/utils/types/user";
 import { Columns, ContentLayout, Text } from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
-import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
 import shortUUID from "short-uuid";
-import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
-import CostBreakdownCard from "@/components/cart/checkout/CostBreakdownCard";
-import CartsContext from "@/contexts/CartsContext";
-import { useContext, useEffect, useState } from "react";
-import cart from "..";
-import PaymentMethodCard from "@/components/cart/checkout/PaymentMethodCard";
-import { Order, PaymentMethod } from "@/utils/types/order";
-import useJimmy from "@/utils/helpers/useJimmy";
-import POSCashDialog from "@/components/cart/checkout/POSCashDialog";
-import PromptPayDialog from "@/components/cart/checkout/PromptPayDialog";
 
 /**
  * The Checkout as Cashier page is a modified version of the Checkout page
@@ -40,6 +40,7 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
   const getLocaleString = useGetLocaleString();
 
   const jimmy = useJimmy();
+  const router = useRouter();
 
   const { carts, removeCart, addOrder } = useContext(CartsContext);
   const cart = carts?.find((cart) => shop.id === cart.shop.id);
@@ -90,7 +91,11 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
     setLoading(false);
   }
 
-  async function handlePaymentComplete() {}
+  async function handlePaymentComplete() {
+    removeCart(shop.id);
+    addOrder(order!);
+    router.push(`/receipt/${order?.id}/print`);
+  }
 
   return (
     <>
