@@ -70,12 +70,6 @@ const CategoryPage: NextPage<{
                       filled={selectedTab === category.id}
                     />
                   ),
-                  "1978c92a-406b-4ef6-af69-a244ad38b278": (
-                    <UseIcon
-                      icon="sleeveless-shirt"
-                      filled={selectedTab === category.id}
-                    />
-                  ),
                   "ff488cb3-bf1d-422e-9820-00d2085562b9": (
                     <MaterialIcon icon="join" />
                   ),
@@ -90,6 +84,9 @@ const CategoryPage: NextPage<{
                   ),
                   "15d9ee24-4877-4aa8-80d8-7c9d04281c7b": (
                     <MaterialIcon icon="format_list_bulleted" />
+                  ),
+                  "71ae9310-1e0f-4825-8a9f-daaff12f8b92": (
+                    <MaterialIcon icon="box" />
                   ),
                 }[category.id]
               }
