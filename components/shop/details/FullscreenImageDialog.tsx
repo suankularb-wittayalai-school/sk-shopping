@@ -10,7 +10,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { omit } from "radash";
-import { ComponentProps } from "react";
+import { ComponentProps, useEffect } from "react";
 
 const FullscreenImageDialog: StylableFC<
   ComponentProps<typeof Image> & {
@@ -20,6 +20,13 @@ const FullscreenImageDialog: StylableFC<
 > = (props) => {
   const { src, open, onClose, style, className } = props;
   const { duration, easing } = useAnimationConfig();
+
+  useEffect(() => {
+    const handleKeyUp = ({ key }: KeyboardEvent) =>
+      key === "Escape" && onClose();
+    window.addEventListener("keyup", handleKeyUp);
+    return () => window.removeEventListener("keyup", handleKeyUp);
+  }, []);
 
   return (
     <AnimatePresence>
@@ -78,7 +85,7 @@ const FullscreenImageDialog: StylableFC<
               ...transition(duration.medium2, easing.standardDecelerate),
               delay: duration.short4,
             }}
-            className="fixed left-2 top-3.5 sm:top-2 z-[95]"
+            className="fixed left-2 top-3.5 z-[95] sm:top-2"
           >
             <Button
               appearance="outlined"
