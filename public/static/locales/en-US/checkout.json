@@ -41,6 +41,13 @@
     "action": {
       "placeOrder": "Place order"
     },
+    "posCash": {
+      "desc": "Press “Mark as paid” once the customer has paid, or press “Cancel order” to cancel the order. The order will be cancelled automatically if you don’t mark it as paid within 3 minutes.",
+      "action": {
+        "cancel": "Cancel order",
+        "markAsPaid": "Mark as paid"
+      }
+    },
     "promptpay": {
       "desc": "You have 3 minutes. Scan the QR code below with your mobile banking app to pay.",
       "countdownAlt": "3-minute countdown",

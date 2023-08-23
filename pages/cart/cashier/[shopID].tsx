@@ -4,7 +4,7 @@ import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
 import { Shop } from "@/utils/types/shop";
-import { UserDetailed } from "@/utils/types/user";
+import { User, UserDetailed } from "@/utils/types/user";
 import { Columns, ContentLayout, Text } from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -14,10 +14,13 @@ import shortUUID from "short-uuid";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import CostBreakdownCard from "@/components/cart/checkout/CostBreakdownCard";
 import CartsContext from "@/contexts/CartsContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import cart from "..";
 import PaymentMethodCard from "@/components/cart/checkout/PaymentMethodCard";
 import { Order, PaymentMethod } from "@/utils/types/order";
+import useJimmy from "@/utils/helpers/useJimmy";
+import POSCashDialog from "@/components/cart/checkout/POSCashDialog";
+import PromptPayDialog from "@/components/cart/checkout/PromptPayDialog";
 
 /**
  * The Checkout as Cashier page is a modified version of the Checkout page
@@ -27,18 +30,23 @@ import { Order, PaymentMethod } from "@/utils/types/order";
  *
  * @param shop The Shop this Checkout page is for. Used to decide with options to show.
  */
-const CheckoutAsCashierPage: NextPage<{ shop: Shop }> = ({ shop }) => {
+const CheckoutAsCashierPage: NextPage<{ shop: Shop; user: User }> = ({
+  shop,
+  user,
+}) => {
   const { t } = useTranslation("checkout");
   const { t: tx } = useTranslation("common");
 
   const getLocaleString = useGetLocaleString();
+
+  const jimmy = useJimmy();
 
   const { carts, removeCart, addOrder } = useContext(CartsContext);
   const cart = carts?.find((cart) => shop.id === cart.shop.id);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pos_cash");
 
   const [order, setOrder] = useState<Order>();
-  const [promptPayOpen, setPromptPayOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
 
   const total =
     cart?.items.reduce(
@@ -49,7 +57,40 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop }> = ({ shop }) => {
 
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit() {}
+  async function handleSubmit() {
+    if (!cart) return;
+    setLoading(true);
+
+    const { data, error } = await jimmy.fetch<Order[]>("/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data: [
+          {
+            items: cart.items.map(({ item, amount }) => ({
+              item_id: item.id,
+              amount,
+            })),
+            delivery_type: "school_pickup",
+            receiver_name: [user.first_name, user.last_name].join(" "),
+            payment_method: paymentMethod,
+            contact_email: user.email,
+          },
+        ],
+      }),
+    });
+    if (error) {
+      logError("handleSubmit", error);
+      setLoading(false);
+      return;
+    }
+
+    setOrder(data[0]);
+    setPaymentOpen(true);
+    setLoading(false);
+  }
+
+  async function handlePaymentComplete() {}
 
   return (
     <>
@@ -81,6 +122,22 @@ const CheckoutAsCashierPage: NextPage<{ shop: Shop }> = ({ shop }) => {
           />
         </Columns>
       </ContentLayout>
+      {order &&
+        (paymentMethod === "pos_cash" ? (
+          <POSCashDialog
+            order={order}
+            open={paymentOpen}
+            onClose={() => setPaymentOpen(false)}
+            onSubmit={handlePaymentComplete}
+          />
+        ) : (
+          <PromptPayDialog
+            order={order}
+            open={paymentOpen}
+            onClose={() => setPaymentOpen(false)}
+            onSubmit={handlePaymentComplete}
+          />
+        ))}
     </>
   );
 };

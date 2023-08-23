@@ -4,34 +4,31 @@ import cn from "@/utils/helpers/cn";
 import { logError } from "@/utils/helpers/logError";
 import useJimmy from "@/utils/helpers/useJimmy";
 import { StylableFC } from "@/utils/types/common";
-import { CompactOrder, Order } from "@/utils/types/order";
-import { Dialog, Text } from "@suankularb-components/react";
+import { Order } from "@/utils/types/order";
+import {
+  Actions,
+  Button,
+  Dialog,
+  MaterialIcon,
+  Text,
+} from "@suankularb-components/react";
 import { differenceInSeconds } from "date-fns";
 import { useTranslation } from "next-i18next";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 /**
- * The number of seconds allowed for the user to complete the PromptPay payment
- * before the Order is canceled.
+ * The number of seconds allowed for the Order to be marked as paid by the
+ * cashier before the Order is canceled.
  */
 const TIMEOUT_SEC = 180;
 
-/**
- * A Dialog shown to the user when as PromptPay Order has been successfully
- * initiated.
- *
- * @param order The Order to pay for.
- * @param open If the Dialog is open and shown.
- * @param onSubmit Triggers when the submit Button is pressed.
- */
-const PromptPayDialog: StylableFC<{
-  order: Pick<Order, "id" | "created_at" | "promptpay_qr_code_url">;
+const POSCashDialog: StylableFC<{
+  order: Pick<Order, "id" | "created_at">;
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
 }> = ({ order, open, onClose, onSubmit, style, className }) => {
-  const { t } = useTranslation("checkout", { keyPrefix: "payment.promptpay" });
+  const { t } = useTranslation("checkout", { keyPrefix: "payment.posCash" });
 
   const jimmy = useJimmy();
 
@@ -53,25 +50,35 @@ const PromptPayDialog: StylableFC<{
 
       // Otherwise, set the new time left value and check if the order is paid
       setTimeLeft(newTimeLeft);
-      (async () => {
-        const { data, error } = await jimmy.fetch<CompactOrder>(
-          `/orders/${order.id}`,
-          { query: { fetch_level: "compact" } },
-        );
-        if (error) logError("PromptPayDialog", error);
-        else if (data.is_paid) onSubmit();
-      })();
     }, 1000);
 
     // Clean up
     return () => clearInterval(interval);
   }, []);
 
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit() {
+    setLoading(true);
+    const { error } = await jimmy.fetch(`/orders/${order.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ is_paid: true, is_verified: true }),
+    });
+    if (error) {
+      logError("POSCashDialog", error);
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    onSubmit();
+  }
+
   return (
     <Dialog
       open={open}
-      width={320}
-      onClose={() => {}}
+      width={380}
+      onClose={onClose}
       style={style}
       className={cn(`flex flex-col gap-6 p-6`, className)}
     >
@@ -81,16 +88,26 @@ const PromptPayDialog: StylableFC<{
         </Text>
         <LabeledTimeProgress seconds={timeLeft} totalSeconds={TIMEOUT_SEC} />
       </div>
-      <Image
-        src={order.promptpay_qr_code_url!}
-        width={652}
-        height={432}
-        alt={t("qrAlt")}
-        className="mx-auto h-auto w-full rounded-md bg-surface"
-      />
+      <Actions align="full" className="!p-0">
+        <Button
+          appearance="outlined"
+          icon={<MaterialIcon icon="cancel" />}
+          dangerous
+        >
+          {t("action.cancel")}
+        </Button>
+        <Button
+          appearance="outlined"
+          icon={<MaterialIcon icon="done" />}
+          loading={loading}
+          onClick={handleSubmit}
+        >
+          {t("action.markAsPaid")}
+        </Button>
+      </Actions>
     </Dialog>
   );
 };
 
-export default PromptPayDialog;
+export default POSCashDialog;
 
