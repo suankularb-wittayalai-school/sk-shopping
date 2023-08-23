@@ -34,6 +34,7 @@ import { LayoutGroup, motion } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { usePlausible } from "next-plausible";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { omit } from "radash";
@@ -65,6 +66,7 @@ const CheckoutPage: NextPage<{
 
   const router = useRouter();
   const jimmy = useJimmy();
+  const plausible = usePlausible();
 
   const { setSnackbar } = useContext(SnackbarContext);
   const { duration, easing } = useAnimationConfig();
@@ -197,6 +199,10 @@ const CheckoutPage: NextPage<{
         {t("snackbar.success", { email: contactInfo.email })}
       </Snackbar>,
     );
+    plausible("Sales", {
+      props: { method: "Cash on delivery" },
+      revenue: { currency: "THB", amount: total },
+    });
     addOrder(data[0]);
     removeCart(shop.id);
     setLoading(false);
@@ -263,6 +269,10 @@ const CheckoutPage: NextPage<{
                     setOrder(undefined);
                   }}
                   onSubmit={() => {
+                    plausible("Sales", {
+                      props: { method: "PromptPay" },
+                      revenue: { currency: "THB", amount: total },
+                    });
                     removeCart(shop.id);
                     setPromptPayOpen(false);
                     router.push("/cart");

@@ -6,6 +6,7 @@ import useLocale from "@/utils/helpers/useLocale";
 import useRefreshProps from "@/utils/helpers/useRefreshProps";
 import useUser from "@/utils/helpers/useUser";
 import { CredentialResponse } from "google-one-tap";
+import { usePlausible } from "next-plausible";
 import { useEffect, useState } from "react";
 
 /**
@@ -30,6 +31,7 @@ export const useOneTapSignin = (options?: {
 
   const jimmy = useJimmy();
   const { accessToken, status } = useUser();
+  const plausible = usePlausible();
 
   async function handleLogIn(response: CredentialResponse) {
     const { data, error } = await jimmy.fetch<{
@@ -68,6 +70,10 @@ export const useOneTapSignin = (options?: {
     }; path=/; expires=${new Date(
       Date.now() + data.expires_in * 1000,
     ).toUTCString()}`;
+
+    // Count log in
+    plausible("Log in");
+
     refreshProps();
     setLoading(false);
   }

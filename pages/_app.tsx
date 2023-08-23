@@ -102,7 +102,11 @@ function App({ Component, pageProps }: AppProps) {
         {/* Framer Motion a11y */}
         <MotionConfig reducedMotion="user">
           {/* Plausible */}
-          <PlausibleProvider domain="shopping.skkornor.org">
+          <PlausibleProvider
+            domain="shopping.skkornor.org"
+            taggedEvents
+            revenue
+          >
             {/* SKCom variables */}
             <ThemeProvider>
               {/* Rendered app */}

@@ -26,6 +26,7 @@ import { LayoutGroup } from "framer-motion";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { usePlausible } from "next-plausible";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { omit, pick } from "radash";
@@ -37,12 +38,14 @@ const ShopPage: NextPage<{
   collections: { collection: Collection; listings: ListingCompact[] }[];
   orphanListings: ListingCompact[];
 }> = ({ shop, collections, orphanListings }) => {
-  const router = useRouter();
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("shop");
   const { t: tx } = useTranslation("common");
 
   const { fromUUID, toUUID } = shortUUID();
+
+  const router = useRouter();
+  const plausible = usePlausible();
 
   const { atBreakpoint } = useBreakpoint();
   const { activeNav } = useContext(AppStateContext);
@@ -60,6 +63,12 @@ const ShopPage: NextPage<{
         (listing) => toUUID(router.query.selected as string) === listing.id,
       );
     if (!selected) return;
+    plausible("View Listing", {
+      props: {
+        listing: selected.name,
+        shop: getLocaleString(shop.name, "en-US"),
+      },
+    });
     setSelected(selected);
   }, [router.query.selected]);
 

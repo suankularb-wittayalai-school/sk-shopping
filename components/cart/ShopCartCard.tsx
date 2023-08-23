@@ -17,6 +17,7 @@ import {
 } from "@suankularb-components/react";
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
+import { usePlausible } from "next-plausible";
 import Link from "next/link";
 import shortUUID from "short-uuid";
 
@@ -33,6 +34,8 @@ const ShopCartCard: StylableFC<{
 
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("cart", { keyPrefix: "cart" });
+
+  const plausible = usePlausible();
 
   const { fromUUID } = shortUUID();
   const { duration, easing } = useAnimationConfig();
@@ -64,6 +67,9 @@ const ShopCartCard: StylableFC<{
               appearance="outlined"
               icon={<MaterialIcon icon="point_of_sale" />}
               href={`/cart/cashier/${fromUUID(shop.id)}`}
+              onClick={() =>
+                plausible("Checkout", { props: { role: "Cashier" } })
+              }
               element={Link}
             >
               {t("action.checkoutAsCashier")}
@@ -73,6 +79,9 @@ const ShopCartCard: StylableFC<{
             appearance="filled"
             icon={<MaterialIcon icon="shopping_cart_checkout" />}
             href={`/cart/checkout/${fromUUID(shop.id)}`}
+            onClick={() =>
+              plausible("Checkout", { props: { role: "Customer" } })
+            }
             element={Link}
           >
             {t("action.checkout")}
@@ -84,4 +93,3 @@ const ShopCartCard: StylableFC<{
 };
 
 export default ShopCartCard;
-
