@@ -130,8 +130,9 @@ const CartPage: NextPage<{
               {jimmy.user.status !== "authenticated" && (
                 <div
                   id="button-google-sign-in"
-                  className={cn(`h-[38px] w-56 rounded-full
-                    [color-scheme:light] [&:not(:has(iframe))]:animate-pulse
+                  className={cn(`h-[38px] rounded-full [color-scheme:light]
+                    [&:not(:has(iframe))]:w-56
+                    [&:not(:has(iframe))]:animate-pulse
                     [&:not(:has(iframe))]:bg-surface-variant`)}
                 />
               )}
@@ -195,4 +196,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default CartPage;
-
