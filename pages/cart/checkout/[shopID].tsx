@@ -8,7 +8,6 @@ import PromptPayDialog from "@/components/cart/checkout/PromptPayDialog";
 import CartsContext from "@/contexts/CartsContext";
 import SnackbarContext from "@/contexts/SnackbarContext";
 import createJimmy from "@/utils/helpers/createJimmy";
-import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
 import { logError } from "@/utils/helpers/logError";
 import useForm from "@/utils/helpers/useForm";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -19,9 +18,10 @@ import {
   THAI_ZIPCODE_REGEX,
 } from "@/utils/regex";
 import { Address } from "@/utils/types/address";
-import { IDOnly, LangCode } from "@/utils/types/common";
+import { LangCode } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
 import { Shop } from "@/utils/types/shop";
+import { UserDetailed } from "@/utils/types/user";
 import {
   Columns,
   ContentLayout,
@@ -31,13 +31,13 @@ import {
   useAnimationConfig,
 } from "@suankularb-components/react";
 import { LayoutGroup, motion } from "framer-motion";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { omit } from "radash";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
@@ -55,7 +55,10 @@ const FLAT_SHIPPING_COST_THB = 70;
  *
  * @param shop The Shop this Checkout page is for. Used to decide with options to show.
  */
-const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
+const CheckoutPage: NextPage<{
+  shop: Shop;
+  user?: UserDetailed;
+}> = ({ shop, user }) => {
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("checkout");
   const { t: tx } = useTranslation("common");
@@ -72,8 +75,9 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const [deliveryType, setDeliveryType] = useState<
     "school_pickup" | "delivery"
   >(shop.is_school_pickup_allowed ? "school_pickup" : "delivery");
+  const [savedAddress, setSavedAddress] = useState<Address>();
   const {
-    form: address,
+    form: customAddress,
     formOK: addressOK,
     formProps: addressProps,
   } = useForm<"street_address" | "province" | "district" | "zip_code">([
@@ -93,13 +97,19 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
 
   const {
     form: contactInfo,
-    setForm: setContactInfo,
     formOK: contactInfoOK,
     formProps: contactInfoProps,
   } = useForm<"name" | "email" | "tel">([
-    { key: "name", required: true },
+    {
+      key: "name",
+      defaultValue: user
+        ? [user.first_name, user.last_name].join(" ")
+        : undefined,
+      required: true,
+    },
     {
       key: "email",
+      defaultValue: user?.email,
       validate: (value: string) => EMAIL_REGEX.test(value),
       required: true,
     },
@@ -108,18 +118,6 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       validate: (value: string) => THAI_PHONE_NUMBER_REGEX.test(value),
     },
   ]);
-  useEffect(() => {
-    // If the user is authenticated, auto-fill contact information
-    const {
-      user: { user, status },
-    } = jimmy;
-    if (status !== "authenticated" || !user) return;
-    setContactInfo({
-      ...contactInfo,
-      name: [user.first_name, user.last_name].join(" "),
-      email: user.email,
-    });
-  }, [jimmy.user.status]);
 
   const [order, setOrder] = useState<Order>();
   const [promptPayOpen, setPromptPayOpen] = useState(false);
@@ -159,15 +157,16 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
             delivery_type: deliveryType,
             address:
               deliveryType === "delivery"
-                ? ({
-                    ...omit(address, ["street_address", "zip_code"]),
+                ? savedAddress ||
+                  ({
+                    ...omit(customAddress, ["street_address", "zip_code"]),
                     street_address_line_1:
-                      address.street_address.split("\n")[0],
-                    street_address_line_2: address.street_address
+                      customAddress.street_address.split("\n")[0],
+                    street_address_line_2: customAddress.street_address
                       .split("\n")
                       .slice(1)
                       .join("\n"),
-                    zip_code: Number(address.zip_code),
+                    zip_code: Number(customAddress.zip_code),
                   } as Omit<Address, "id">)
                 : null,
             receiver_name: contactInfo.name,
@@ -218,6 +217,9 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
             value={deliveryType}
             onChange={setDeliveryType}
             shop={shop}
+            addresses={user?.addresses || []}
+            savedAddress={savedAddress}
+            onSavedAddressChange={setSavedAddress}
             shippingCost={FLAT_SHIPPING_COST_THB}
             addressProps={addressProps}
             className="mx-4 sm:mx-0"
@@ -271,16 +273,26 @@ const CheckoutPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const jimmy = await createJimmy();
+export const getServerSideProps: GetServerSideProps = async ({
+  locale,
+  params,
+  req,
+}) => {
+  const jimmy = await createJimmy(req);
   const { toUUID } = shortUUID();
 
   const shopID = toUUID(params!.shopID as string);
   const { data: shop, error } = await jimmy.fetch<Shop>(`/shops/${shopID}`);
   if (error) {
-    logError("/checkout/:id getStaticProps", error);
+    logError("/checkout/:id getServerSideProps", error);
     return { notFound: true };
   }
+
+  const { data: user, error: userError } = await jimmy.fetch<UserDetailed>(
+    "/auth/user",
+    { query: { fetch_level: "detailed" } },
+  );
+  if (userError) logError("/account getServerSideProps", userError);
 
   return {
     props: {
@@ -291,26 +303,10 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
         "receipt",
       ])),
       shop,
+      user,
     },
-    revalidate: 300,
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const jimmy = await createJimmy();
-  const { fromUUID } = shortUUID();
-
-  const { data: shops, error } = await jimmy.fetch<IDOnly[]>("/shops", {
-    query: { fetch_level: "id_only" },
-  });
-  if (error) logError("/shop/:id getStaticPaths", error);
-
-  return {
-    paths: insertLocaleIntoStaticPaths(
-      shops!.map((shop) => ({ params: { shopID: fromUUID(shop.id) } })),
-    ),
-    fallback: "blocking",
   };
 };
 
 export default CheckoutPage;
+

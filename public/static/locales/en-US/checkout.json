@@ -6,11 +6,19 @@
     "schoolPickup": {
       "option": "School",
       "detail": {
-        "desc": "Show your order receipt at {{location}} to get your package."
+        "desc": "Show your order receipt at {{location}} to get your order."
       }
     },
     "delivery": {
-      "option": "An address… ({{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}} shipping)"
+      "saved": {
+        "option": "{{address}} ({{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}} shipping)",
+        "detail": {
+          "desc": "We’ll deliver your order to {{address}}."
+        }
+      },
+      "custom": {
+        "option": "An address… ({{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}} shipping)"
+      }
     }
   },
   "costBreakdown": {

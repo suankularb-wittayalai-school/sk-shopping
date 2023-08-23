@@ -10,7 +10,15 @@
       }
     },
     "delivery": {
-      "option": "ที่อยู่อื่น… (เพิ่มค่าส่ง {{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}})"
+      "saved": {
+        "option": "{{address}} (เพิ่มค่าส่ง {{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}})",
+        "detail": {
+          "desc": "เราจะส่งสินค้าของคุณไปที่ {{address}}"
+        }
+      },
+      "custom": {
+        "option": "ที่อยู่อื่น… (เพิ่มค่าส่ง {{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}})"
+      }
     }
   },
   "costBreakdown": {
