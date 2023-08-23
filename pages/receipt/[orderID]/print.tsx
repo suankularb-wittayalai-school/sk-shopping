@@ -1,3 +1,4 @@
+// Imports
 import CostBreakdown from "@/components/cart/CostBreakdown";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
@@ -15,7 +16,7 @@ const PAPER_WIDTH_MM = 150;
 
 const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
   const { fromUUID } = shortUUID();
-  // useEffect(() => window.print(), []);
+  useEffect(() => window.print(), []);
 
   return (
     <main
