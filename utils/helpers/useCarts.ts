@@ -111,10 +111,10 @@ export default function useCarts() {
   }, []);
 
   // Update localStorage to match React state
-  if (typeof window !== "undefined" && carts)
+  if (typeof window !== "undefined" && orders)
     window.localStorage.setItem(
       ORDERS_LOCAL_STORAGE_KEY,
-      JSON.stringify(carts),
+      JSON.stringify(orders),
     );
 
   function addOrder(order: Order) {
