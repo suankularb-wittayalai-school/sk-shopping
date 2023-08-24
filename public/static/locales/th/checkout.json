@@ -1,5 +1,8 @@
 {
-  "title": "สั่งซื้อสินค้า",
+  "title": {
+    "customer": "สั่งซื้อสินค้า",
+    "cashier": "สั่งซื้อสินค้าในฐานะพนักงานขาย"
+  },
   "subtitle": "ร้านค้า{{shop}}",
   "delivery": {
     "title": "รับสินค้าที่…",
@@ -10,7 +13,15 @@
       }
     },
     "delivery": {
-      "option": "ที่อยู่อื่น… (เพิ่มค่าส่ง {{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}})"
+      "saved": {
+        "option": "{{address}} (เพิ่มค่าส่ง {{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}})",
+        "detail": {
+          "desc": "เราจะส่งสินค้าของคุณไปที่ {{address}}"
+        }
+      },
+      "custom": {
+        "option": "ที่อยู่อื่น… (เพิ่มค่าส่ง {{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}})"
+      }
     }
   },
   "costBreakdown": {
@@ -25,16 +36,24 @@
   "payment": {
     "title": "จ่ายผ่านวิธี…",
     "option": {
+      "posCash": "เงินสด",
       "promptpay": "พร้อมเพย์",
       "cod": "จ่ายเงินสดปลายทาง"
     },
     "countdownNote": "โปรดชำระเงินภายใน 3 นาทีหลังสั่งซื้อ",
+    "countdownAlt": "นับถอยหลัง 3 นาที",
     "action": {
       "placeOrder": "สั่งซื้อ"
     },
+    "posCash": {
+      "desc": "เมื่อลูกค้าชำระเงินแล้ว ให้กด “ชำระเงินแล้ว” หากลูกค้าไม่ยอมชำระเงิน ให้กด “ยกเลิก” หากไม่ได้ชำระภายใน 3 นาที การสั่งซื้อจะถูกยกเลิกโดยอัตโนมัติ",
+      "action": {
+        "cancel": "ยกเลิก",
+        "markAsPaid": "ชำระเงินแล้ว"
+      }
+    },
     "promptpay": {
       "desc": "สแกนรหัส QR ด้านล้างเพื่อชำระเงิน โปรดชำระภายใน 3 นาที",
-      "countdownAlt": "นับถอยหลัง 3 นาที",
       "qrAlt": "รหัส QR พร้อมเพย์"
     }
   },
@@ -44,4 +63,3 @@
     "success": "สั่งซื้อเรียบร้อย! คุณสามารถดูใบเสร็จได้ที่ {{email}}"
   }
 }
-

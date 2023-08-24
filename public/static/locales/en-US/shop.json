@@ -31,6 +31,12 @@
           "tooltip": "Favorite"
         },
         "addToCart": "Add to cart"
+      },
+      "snackbar": {
+        "addedToCart": {
+          "message": "Added “{{item}}” to cart",
+          "action": "View"
+        }
       }
     }
   }

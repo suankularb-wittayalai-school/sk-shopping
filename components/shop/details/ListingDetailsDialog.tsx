@@ -60,13 +60,6 @@ const ListingDetailsDialog: StylableFC<
 
   return (
     <>
-      {/* We have to put this class here because otherwise Tailwind CSS would
-          not recognize it and thus no style would be generated */}
-      <div
-        aria-hidden
-        // Side note: ~*> looks like a sperm
-        className="[&~*>.skc-fullscreen-dialog\_\_top-app-bar]:!hidden"
-      />
       <FullscreenDialog
         open={open}
         title=""
@@ -87,6 +80,8 @@ const ListingDetailsDialog: StylableFC<
           ...style,
         }}
         className={cn(
+          `relative [&>:first-child]:!hidden [&>:nth-child(2)]:h-[100dvh]
+          [&>:nth-child(2)]:!pb-0`,
           shop.background_color &&
             getSchemeFromBackgroundColor(shop.background_color),
           className,
@@ -94,7 +89,7 @@ const ListingDetailsDialog: StylableFC<
       >
         <motion.div
           animate={viewControls}
-          className="!mx-0 -mt-20 opacity-0 sm:!-m-6 sm:!-mt-8"
+          className="!mx-0 -mt-20 h-full opacity-0 sm:!-m-6 sm:!-mt-8 sm:h-fit"
         >
           <ListingView
             shop={shop}

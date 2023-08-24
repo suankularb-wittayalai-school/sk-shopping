@@ -4,6 +4,7 @@ import VariantChip from "@/components/shop/details/VariantChip";
 import CartsContext from "@/contexts/CartsContext";
 import SnackbarContext from "@/contexts/SnackbarContext";
 import cn from "@/utils/helpers/cn";
+import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
 import { ListingCompact } from "@/utils/types/listing";
@@ -19,13 +20,13 @@ import {
   Snackbar,
   Text,
   TextField,
-  ToggleButton,
   transition,
   useAnimationConfig,
   useBreakpoint,
 } from "@suankularb-components/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
+import { usePlausible } from "next-plausible";
 import Image from "next/image";
 import Link from "next/link";
 import { list } from "radash";
@@ -47,8 +48,11 @@ const ListingView: StylableFC<{
   className,
 }) => {
   const locale = useLocale();
+  const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("shop", { keyPrefix: "detail.listing" });
   const { t: tx } = useTranslation("common");
+
+  const plausible = usePlausible();
 
   const { setSnackbar } = useContext(SnackbarContext);
   const { atBreakpoint } = useBreakpoint();
@@ -122,8 +126,15 @@ const ListingView: StylableFC<{
       title: tx("tabName", { tabName: listing.name }),
       url: window.location.href,
     };
-    if (navigator.canShare && navigator.canShare(shareData))
+    if (navigator.canShare && navigator.canShare(shareData)) {
+      plausible("Share Listing", {
+        props: {
+          listing: listing.name,
+          shop: getLocaleString(shop.name, "en-US"),
+        },
+      });
       await navigator.share(shareData);
+    }
   }
 
   /**
@@ -136,17 +147,25 @@ const ListingView: StylableFC<{
     // Add via context
     addItem(selectedVariant!, Number(amount), shop);
 
+    // Send Plausible event
+    plausible("Add Item to Cart", {
+      props: {
+        item: selectedVariant!.name,
+        shop: getLocaleString(shop.name, "en-US"),
+      },
+    });
+
     // Visual feedback
     setSnackbar(
       <Snackbar
         action={
           <Button appearance="text" href="/cart" element={Link}>
-            ดูในรถเข็น
+            {t("snackbar.addedToCart.action")}
           </Button>
         }
         stacked
       >
-        เพิ่ม “{selectedVariant?.name}” สู่รถเข็นแล้ว
+        {t("snackbar.addedToCart.message", { item: selectedVariant!.name })}
       </Snackbar>,
     );
 
@@ -394,4 +413,3 @@ const ListingView: StylableFC<{
 };
 
 export default ListingView;
-

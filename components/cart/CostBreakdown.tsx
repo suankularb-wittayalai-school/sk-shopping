@@ -10,7 +10,7 @@ import { sift } from "radash";
 const CostBreakdown: StylableFC<{
   items: { item: ListingOption; amount: number }[];
   deliveryType: DeliveryType;
-  shippingCost: number;
+  shippingCost?: number;
   total: number;
 }> = ({ items, deliveryType, shippingCost, total, style, className }) => {
   const locale = useLocale();
@@ -103,3 +103,4 @@ const CostBreakdown: StylableFC<{
 };
 
 export default CostBreakdown;
+

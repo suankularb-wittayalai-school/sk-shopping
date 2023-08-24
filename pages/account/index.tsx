@@ -6,6 +6,7 @@ import AddAddressDialog from "@/components/address/AddAddressDialog";
 import AddressCard from "@/components/address/AddressCard";
 import AppStateContext from "@/contexts/AppStateContext";
 import createJimmy from "@/utils/helpers/createJimmy";
+import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
 import { UserDetailed } from "@/utils/types/user";
 import {
@@ -49,15 +50,15 @@ const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
         {user ? (
           <>
             <AccountHeader user={user} />
-            {/* <Section>
+            <Section>
               <div className="flex flex-row gap-6">
-                <Header className="grow">ข้อมูลที่อยู่จัดส่ง</Header>
+                <Header className="grow">{t("addresses.title")}</Header>
                 <Button
                   appearance="filled"
                   icon={<MaterialIcon icon="add" />}
                   onClick={() => setAddAddressOpen(true)}
                 >
-                  เพิ่มที่อยู่
+                  {t("addresses.action.add")}
                 </Button>
                 <AddAddressDialog
                   open={addAddressOpen}
@@ -81,15 +82,15 @@ const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
                     element="p"
                     className="text-center text-on-surface-variant"
                   >
-                    ยังไม่ได้เพิ่มข้อมูลที่อยู่
+                    {t("addresses.empty")}
                   </Text>
                 </Card>
               )}
-            </Section> */}
+            </Section>
           </>
         ) : (
           <Columns columns={4}>
-            <GuestCard className="md:col-span-2 md:col-start-2" />
+            <GuestCard className="mx-4 sm:col-span-2 sm:mx-0 md:col-start-2" />
           </Columns>
         )}
       </ContentLayout>
@@ -102,9 +103,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
 }) => {
   const jimmy = await createJimmy(req);
-  const { data: user } = await jimmy.fetch<UserDetailed>("/auth/user", {
+  const { data: user, error } = await jimmy.fetch<UserDetailed>("/auth/user", {
     query: { fetch_level: "detailed" },
   });
+  if (error) logError("/account getServerSideProps", error);
 
   return {
     props: {
@@ -119,4 +121,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default AccountPage;
-

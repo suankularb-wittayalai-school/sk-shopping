@@ -1,16 +1,27 @@
 {
-  "title": "Checkout",
+  "title": {
+    "customer": "Checkout",
+    "cashier": "Checkout as cashier"
+  },
   "subtitle": "{{shop}} Shop",
   "delivery": {
     "title": "I’ll receive my package at…",
     "schoolPickup": {
       "option": "School",
       "detail": {
-        "desc": "Show your order receipt at {{location}} to get your package."
+        "desc": "Show your order receipt at {{location}} to get your order."
       }
     },
     "delivery": {
-      "option": "An address… ({{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}} shipping)"
+      "saved": {
+        "option": "{{address}} ({{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}} shipping)",
+        "detail": {
+          "desc": "We’ll deliver your order to {{address}}."
+        }
+      },
+      "custom": {
+        "option": "An address… ({{shippingCost, currency(currency: THB; maximumFractionDigits: 0;)}} shipping)"
+      }
     }
   },
   "costBreakdown": {
@@ -25,12 +36,20 @@
   "payment": {
     "title": "I’ll pay via…",
     "option": {
+      "posCash": "Cash",
       "promptpay": "PromptPay",
       "cod": "Cash on delivery"
     },
     "countdownNote": "Please pay within 3 minutes.",
     "action": {
       "placeOrder": "Place order"
+    },
+    "posCash": {
+      "desc": "Press “Mark as paid” once the customer has paid, or press “Cancel order” to cancel the order. The order will be cancelled automatically if you don’t mark it as paid within 3 minutes.",
+      "action": {
+        "cancel": "Cancel order",
+        "markAsPaid": "Mark as paid"
+      }
     },
     "promptpay": {
       "desc": "You have 3 minutes. Scan the QR code below with your mobile banking app to pay.",
@@ -44,4 +63,3 @@
     "success": "You’ve placed your order! You’ll get your receipt at {{email}} soon"
   }
 }
-

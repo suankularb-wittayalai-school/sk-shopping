@@ -69,10 +69,11 @@ const OrderCard: StylableFC<{
               {
                 cod: <MaterialIcon icon="payments" />,
                 promptpay: <MaterialIcon icon="qr_code_scanner" />,
+                pos_cash: <MaterialIcon icon="point_of_sale" />,
               }[order.payment_method]
             }
             <Text type="body-medium" element="p" className="grow py-0.5">
-              {t(`payment.${order.payment_method}`)}
+              {t(`payment.${camel(order.payment_method)}`)}
             </Text>
           </div>
           <div className="col-span-2 flex flex-row gap-1">

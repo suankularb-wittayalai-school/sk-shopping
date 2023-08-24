@@ -11,6 +11,7 @@
       "delivered": "Delivered"
     },
     "payment": {
+      "posCash": "Cash on location",
       "cod": "Cash on delivery",
       "promptpay": "Paid via PromptPay"
     },

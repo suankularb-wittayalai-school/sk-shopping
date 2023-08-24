@@ -13,6 +13,7 @@ import {
   Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import { camel } from "radash";
 import QRCode from "react-qr-code";
 import shortUUID from "short-uuid";
@@ -42,6 +43,8 @@ const ReceiptDialog: StylableFC<{
   const { t } = useTranslation("receipt");
 
   const { fromUUID } = shortUUID();
+
+  const router = useRouter();
 
   return (
     <Dialog
@@ -88,10 +91,11 @@ const ReceiptDialog: StylableFC<{
             {
               cod: <MaterialIcon icon="payments" />,
               promptpay: <MaterialIcon icon="qr_code_scanner" />,
+              pos_cash: <MaterialIcon icon="point_of_sale" />,
             }[order.payment_method]
           }
           <Text type="body-medium" element="p">
-            {t(`details.payment.${order.payment_method}`)}
+            {t(`details.payment.${camel(order.payment_method)}`)}
           </Text>
           {order.is_paid ? (
             <MaterialIcon icon="check_circle" />
@@ -125,7 +129,15 @@ const ReceiptDialog: StylableFC<{
             [&>tfoot>tr]:border-t-outline [&>tfoot>tr]:bg-surface-3`)}
         />
       </DialogContent>
-      <Actions>
+      <Actions className="!justify-between">
+        <Button
+          appearance="text"
+          icon={<MaterialIcon icon="print" />}
+          onClick={() => {
+            onClose();
+            router.push(`/receipt/${fromUUID(order.id)}/print`);
+          }}
+        />
         <Button appearance="text" onClick={onClose}>
           {t("action.done")}
         </Button>
