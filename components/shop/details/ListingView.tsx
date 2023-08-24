@@ -151,6 +151,7 @@ const ListingView: StylableFC<{
     plausible("Add Item to Cart", {
       props: {
         item: selectedVariant!.name,
+        listing: listing.name,
         shop: getLocaleString(shop.name, "en-US"),
       },
     });

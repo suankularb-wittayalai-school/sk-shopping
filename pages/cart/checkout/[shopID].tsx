@@ -200,7 +200,11 @@ const CheckoutPage: NextPage<{
       </Snackbar>,
     );
     plausible("Sales", {
-      props: { method: "Cash on delivery" },
+      props: {
+        role: "Customer",
+        method: "Cash on delivery",
+        shop: getLocaleString(shop.name, "en-US"),
+      },
       revenue: { currency: "THB", amount: total },
     });
     addOrder(data[0]);
@@ -270,7 +274,11 @@ const CheckoutPage: NextPage<{
                   }}
                   onSubmit={() => {
                     plausible("Sales", {
-                      props: { method: "PromptPay" },
+                      props: {
+                        role: "Customer",
+                        method: "PromptPay",
+                        shop: getLocaleString(shop.name, "en-US"),
+                      },
                       revenue: { currency: "THB", amount: total },
                     });
                     removeCart(shop.id);
