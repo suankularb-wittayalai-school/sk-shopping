@@ -12,13 +12,11 @@ import shortUUID from "short-uuid";
 /**
  * A small Card in a list representing a Shop.
  *
- * @param role The role of the user. Used in determining the URL.
  * @param shop A compact Shop.
  */
 const ShopCard: StylableFC<{
-  role: "customer" | "manager";
   shop: ShopCompact;
-}> = ({ role, shop, style, className }) => {
+}> = ({ shop, style, className }) => {
   const getLocaleString = useGetLocaleString();
 
   const { fromUUID } = shortUUID();
@@ -29,12 +27,7 @@ const ShopCard: StylableFC<{
         appearance="filled"
         direction="row"
         stateLayerEffect
-        href={
-          {
-            customer: `/shop/${fromUUID(shop.id)}`,
-            manager: `/account/manage/${fromUUID(shop.id)}/customize`,
-          }[role]
-        }
+        href={`/shop/${fromUUID(shop.id)}`}
         element={Link}
         className={cn(
           `relative isolate min-h-[5rem] overflow-hidden`,
