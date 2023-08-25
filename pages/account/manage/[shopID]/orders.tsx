@@ -4,6 +4,7 @@ import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
 import OrderListItem from "@/components/account/manage/OrderListItem";
 import OrderStatusSelector from "@/components/account/manage/OrderStatusSelector";
 import SkeletonOrderListItem from "@/components/account/manage/SkeletonOrderListItem";
+import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -20,6 +21,7 @@ import {
   MaterialIcon,
   Search,
   SegmentedButton,
+  Text,
 } from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
@@ -28,6 +30,8 @@ import Head from "next/head";
 import { list } from "radash";
 import { useEffect, useState } from "react";
 import shortUUID from "short-uuid";
+
+const ROWS_PER_PAGE = 100;
 
 /**
  * The Manage Orders page allows Shop Managers to manage Orders for their Shop.
@@ -52,13 +56,19 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
 
   const [orders, setOrders] = useState<Order[]>([]);
 
+  useEffect(() => setPage(1), [query, status]);
   useEffect(() => {
     (async () => {
       setLoading(true);
+      setOrders([]);
       const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
         query: {
+          pagination: {
+            p: (page - 1) * ROWS_PER_PAGE + 1,
+            size: ROWS_PER_PAGE,
+          },
           filter: {
-            q: query,
+            ...(query ? { q: query } : {}),
             data: { shop_ids: [shop.id], shipment_status: status },
           },
           sorting: { by: ["created_at"], ascending: false },
@@ -107,17 +117,25 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
         </List>
         <SegmentedButton
           alt="เปลี่ยนหน้า"
-          className="sticky bottom-4 mx-auto [&>*]:!bg-surface-1"
+          className="sticky bottom-24 mx-auto sm:bottom-4 [&>*]:!bg-surface-1"
         >
           <Button
             appearance="outlined"
             icon={<MaterialIcon icon="chevron_left" />}
             onClick={() => setPage(Math.max(page - 1, 1))}
           />
+          <Text
+            type="title-medium"
+            element="div"
+            className={cn(`min-w-[2.5rem] select-none border-1 border-l-0
+              border-outline p-2 text-center`)}
+          >
+            {page}
+          </Text>
           <Button
             appearance="outlined"
             icon={<MaterialIcon icon="chevron_right" />}
-            onClick={() => setPage(page + 1)}
+            onClick={() => orders.length === ROWS_PER_PAGE && setPage(page + 1)}
           />
         </SegmentedButton>
       </ContentLayout>
