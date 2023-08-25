@@ -3,6 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
 import OrderListItem from "@/components/account/manage/OrderListItem";
 import OrderStatusSelector from "@/components/account/manage/OrderStatusSelector";
+import SkeletonOrderListItem from "@/components/account/manage/SkeletonOrderListItem";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
@@ -24,6 +25,7 @@ import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
+import { list } from "radash";
 import { useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
@@ -33,10 +35,7 @@ import shortUUID from "short-uuid";
  *
  * @param shop The Shop to manage Orders for.
  */
-const ManageOrdersPage: NextPage<{
-  shop: ShopCompact;
-  orders: Order[];
-}> = ({ shop, orders: initialOrders }) => {
+const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
   const locale = useLocale();
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("manage");
@@ -45,14 +44,17 @@ const ManageOrdersPage: NextPage<{
   const { fromUUID } = shortUUID();
 
   const jimmy = useJimmy();
+  const [loading, setLoading] = useState(true);
 
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<OrderStatus>("not_shipped_out");
   const [page, setPage] = useState(1);
 
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
+
   useEffect(() => {
     (async () => {
+      setLoading(true);
       const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
         query: {
           filter: {
@@ -65,6 +67,7 @@ const ManageOrdersPage: NextPage<{
       });
       if (error) logError("useEffect", error);
       else if (data) setOrders(data);
+      setLoading(false);
     })();
   }, [query, status, page]);
 
@@ -96,9 +99,11 @@ const ManageOrdersPage: NextPage<{
           />
         </Columns>
         <List divided>
-          {orders.map((order) => (
-            <OrderListItem key={order.id} order={order} />
-          ))}
+          {!loading
+            ? orders.map((order) => (
+                <OrderListItem key={order.id} order={order} />
+              ))
+            : list(8).map((idx) => <SkeletonOrderListItem key={idx} />)}
         </List>
         <SegmentedButton
           alt="เปลี่ยนหน้า"
@@ -150,18 +155,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     return { notFound: true };
   }
 
-  const { data: orders, error } = await jimmy.fetch<Order[]>(`/orders`, {
-    query: {
-      filter: {
-        data: { shop_ids: [shop.id], shipment_status: "not_shipped_out" },
-      },
-      sorting: { by: ["created_at"], ascending: false },
-      descendant_fetch_level: "compact",
-    },
-  });
-  if (error)
-    logError("/account/manage/:id/orders getServerSideProps (orders)", error);
-
   if (!managingShops?.find((managingShop) => shop.id === managingShop.id))
     return { notFound: true };
 
@@ -172,7 +165,6 @@ export const getServerSideProps: GetServerSideProps = async ({
         "manage",
       ])),
       shop,
-      orders,
     },
   };
 };
