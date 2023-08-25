@@ -1,31 +1,31 @@
 // Imports
+import PageHeader from "@/components/PageHeader";
+import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
+import OrderListItem from "@/components/account/manage/OrderListItem";
+import OrderStatusSelector from "@/components/account/manage/OrderStatusSelector";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
-import { IDOnly, LangCode } from "@/utils/types/common";
-import { ShopCompact } from "@/utils/types/shop";
-import { GetServerSideProps, NextPage } from "next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Head from "next/head";
-import { useTranslation } from "next-i18next";
-import shortUUID from "short-uuid";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
-import PageHeader from "@/components/PageHeader";
+import useJimmy from "@/utils/helpers/useJimmy";
+import useLocale from "@/utils/helpers/useLocale";
+import { IDOnly, LangCode } from "@/utils/types/common";
+import { Order, OrderStatus } from "@/utils/types/order";
+import { ShopCompact } from "@/utils/types/shop";
 import {
   Button,
   Columns,
   ContentLayout,
-  DataTablePagination,
   List,
   MaterialIcon,
   Search,
   SegmentedButton,
 } from "@suankularb-components/react";
-import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
-import { useState } from "react";
-import { Order, OrderStatus } from "@/utils/types/order";
-import OrderStatusSelector from "@/components/account/manage/OrderStatusSelector";
-import OrderListItem from "@/components/account/manage/OrderListItem";
-import useLocale from "@/utils/helpers/useLocale";
+import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import shortUUID from "short-uuid";
 
 /**
  * The Manage Orders page allows Shop Managers to manage Orders for their Shop.
@@ -36,7 +36,7 @@ import useLocale from "@/utils/helpers/useLocale";
 const ManageOrdersPage: NextPage<{
   shop: ShopCompact;
   orders: Order[];
-}> = ({ shop, orders }) => {
+}> = ({ shop, orders: initialOrders }) => {
   const locale = useLocale();
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("manage");
@@ -44,7 +44,30 @@ const ManageOrdersPage: NextPage<{
 
   const { fromUUID } = shortUUID();
 
+  const jimmy = useJimmy();
+
+  const [query, setQuery] = useState("");
   const [status, setStatus] = useState<OrderStatus>("not_shipped_out");
+  const [page, setPage] = useState(1);
+
+  const [orders, setOrders] = useState(initialOrders);
+  useEffect(() => {
+    (async () => {
+      console.log(query, status, page);
+      const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
+        query: {
+          filter: {
+            q: query,
+            data: { shop_ids: [shop.id], shipment_status: status },
+          },
+          sorting: { by: ["created_at"], ascending: false },
+          descendant_fetch_level: "compact",
+        },
+      });
+      if (error) logError("useEffect", error);
+      else if (data) setOrders(data);
+    })();
+  }, [query, status, page]);
 
   return (
     <>
@@ -66,23 +89,33 @@ const ManageOrdersPage: NextPage<{
             onChange={setStatus}
             className="md:col-span-2"
           />
-          <Search alt="ค้นหาคำสั่ง" locale={locale} />
+          <Search
+            alt="ค้นหาคำสั่ง"
+            value={query}
+            locale={locale}
+            onChange={setQuery}
+          />
         </Columns>
         <List divided>
           {orders.map((order) => (
             <OrderListItem key={order.id} order={order} />
           ))}
         </List>
-        <div className="sticky bottom-2 flex flex-row justify-end rounded-full bg-surface-1 p-4">
+        <SegmentedButton
+          alt="เปลี่ยนหน้า"
+          className="sticky bottom-4 mx-auto [&>*]:!bg-surface-1"
+        >
           <Button
-            appearance="text"
+            appearance="outlined"
             icon={<MaterialIcon icon="chevron_left" />}
+            onClick={() => setPage(Math.max(page - 1, 1))}
           />
           <Button
-            appearance="text"
+            appearance="outlined"
             icon={<MaterialIcon icon="chevron_right" />}
+            onClick={() => setPage(page + 1)}
           />
-        </div>
+        </SegmentedButton>
       </ContentLayout>
     </>
   );
@@ -120,7 +153,9 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const { data: orders, error } = await jimmy.fetch<Order[]>(`/orders`, {
     query: {
-      filter: { data: { shop_ids: [shop.id] } },
+      filter: {
+        data: { shop_ids: [shop.id], shipment_status: "not_shipped_out" },
+      },
       sorting: { by: ["created_at"], ascending: false },
       descendant_fetch_level: "compact",
     },

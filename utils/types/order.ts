@@ -13,7 +13,7 @@ export type OrderStatus =
   | "not_shipped_out"
   | "pending"
   | "delivered";
-export type DeliveryType = "school_pickup" | "delivery";
+export type DeliveryType = "school_pickup" | "delivery" | "pos";
 export type PaymentMethod = "cod" | "promptpay" | "pos_cash";
 
 export type Order = {

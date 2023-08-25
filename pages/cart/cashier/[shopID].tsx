@@ -74,7 +74,7 @@ const CheckoutAsCashierPage: NextPage<{
               item_id: item.id,
               amount,
             })),
-            delivery_type: "school_pickup",
+            delivery_type: "pos",
             receiver_name: [user.first_name, user.last_name].join(" "),
             payment_method: paymentMethod,
             contact_email: user.email,
@@ -193,3 +193,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default CheckoutAsCashierPage;
+
