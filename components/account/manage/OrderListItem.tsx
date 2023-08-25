@@ -37,7 +37,8 @@ const OrderListItem: StylableFC<{
       lines={3}
       style={style}
       className={cn(
-        `!grid !pr-4 md:!grid-cols-[3rem,minmax(0,1fr),minmax(0,1fr),minmax(0,1fr),5.5rem]`,
+        `!grid !pr-4
+        md:!grid-cols-[3rem,minmax(0,1fr),minmax(0,1fr),minmax(0,1fr),5.5rem]`,
         className,
       )}
     >
@@ -109,9 +110,15 @@ const OrderListItem: StylableFC<{
         <Button
           appearance="tonal"
           icon={<MaterialIcon icon="print" />}
-          onClick={() => window.open(`/receipt/${fromUUID(order.id)}/print`)}
+          onClick={() =>
+            window.open(
+              `/receipt/${fromUUID(order.id)}/print`,
+              "_blank",
+              "popup",
+            )
+          }
         />
-        <Button appearance="tonal" icon={<MaterialIcon icon="done" />} />
+        <Button appearance="tonal" icon={<MaterialIcon icon="move_item" />} />
       </Actions>
     </ListItem>
   );
