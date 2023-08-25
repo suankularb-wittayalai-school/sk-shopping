@@ -205,13 +205,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   >(`/shops`, {
     query: { filter: { data: { manager_ids: [jimmy.user.id] } } },
   });
-  if (shopsError) logError("/cart getServerSideProps (shops)", shopsError);
+  if (shopsError)
+    logError(
+      "/account/manage/:id/customize getServerSideProps (shops)",
+      shopsError,
+    );
 
   const { toUUID } = shortUUID();
   const shopID = toUUID(params!.shopID as string);
   const { data: shop, error } = await jimmy.fetch<Shop>(`/shops/${shopID}`);
   if (error) {
-    logError("/account/manage/:id/customize getServerSideProps", error);
+    logError("/account/manage/:id/customize getServerSideProps (shop)", error);
     return { notFound: true };
   }
 
@@ -230,3 +234,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default CustomizeShopPage;
+
