@@ -19,12 +19,7 @@ const OrderStatusSelector: StylableFC<{
   const { t } = useTranslation("manage");
 
   return (
-    <SegmentedButton
-      alt="สถานะการสั่งซื้อ"
-      full
-      style={style}
-      className={className}
-    >
+    <SegmentedButton alt="สถานะการสั่งซื้อ" style={style} className={className}>
       <Button
         appearance="outlined"
         dangerous
@@ -32,7 +27,7 @@ const OrderStatusSelector: StylableFC<{
         onClick={() => onChange("canceled")}
         className={cn(value === "canceled" && `!bg-error-container`)}
       >
-        ถูกยกเลิก
+        ยกเลิกไปแล้ว
       </Button>
       <Button
         appearance="outlined"

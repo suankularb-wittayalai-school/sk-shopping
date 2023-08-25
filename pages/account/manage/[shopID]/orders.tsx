@@ -12,13 +12,20 @@ import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import PageHeader from "@/components/PageHeader";
 import {
   Button,
+  Columns,
   ContentLayout,
+  DataTablePagination,
+  List,
+  MaterialIcon,
+  Search,
   SegmentedButton,
 } from "@suankularb-components/react";
 import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
 import { useState } from "react";
-import { OrderStatus } from "@/utils/types/order";
+import { Order, OrderStatus } from "@/utils/types/order";
 import OrderStatusSelector from "@/components/account/manage/OrderStatusSelector";
+import OrderListItem from "@/components/account/manage/OrderListItem";
+import useLocale from "@/utils/helpers/useLocale";
 
 /**
  * The Manage Orders page allows Shop Managers to manage Orders for their Shop.
@@ -26,7 +33,11 @@ import OrderStatusSelector from "@/components/account/manage/OrderStatusSelector
  *
  * @param shop The Shop to manage Orders for.
  */
-const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
+const ManageOrdersPage: NextPage<{
+  shop: ShopCompact;
+  orders: Order[];
+}> = ({ shop, orders }) => {
+  const locale = useLocale();
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("manage");
   const { t: tx } = useTranslation("common");
@@ -49,11 +60,27 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
       </PageHeader>
       <ContentLayout>
         <ManageShopTabs shopID={shop.id} />
-        <div className="flex flex-row justify-center">
+        <Columns columns={3} className="!items-end">
           <OrderStatusSelector
             value={status}
             onChange={setStatus}
-            className="!w-full !max-w-[46rem]"
+            className="md:col-span-2"
+          />
+          <Search alt="ค้นหาคำสั่ง" locale={locale} />
+        </Columns>
+        <List divided>
+          {orders.map((order) => (
+            <OrderListItem key={order.id} order={order} />
+          ))}
+        </List>
+        <div className="sticky bottom-2 flex flex-row justify-end rounded-full bg-surface-1 p-4">
+          <Button
+            appearance="text"
+            icon={<MaterialIcon icon="chevron_left" />}
+          />
+          <Button
+            appearance="text"
+            icon={<MaterialIcon icon="chevron_right" />}
           />
         </div>
       </ContentLayout>
@@ -82,14 +109,24 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const { toUUID } = shortUUID();
   const shopID = toUUID(params!.shopID as string);
-  const { data: shop, error } = await jimmy.fetch<ShopCompact>(
+  const { data: shop, error: shopError } = await jimmy.fetch<ShopCompact>(
     `/shops/${shopID}`,
     { query: { fetch_level: "compact" } },
   );
-  if (error) {
-    logError("/account/manage/:id/orders getServerSideProps (shop)", error);
+  if (shopError) {
+    logError("/account/manage/:id/orders getServerSideProps (shop)", shopError);
     return { notFound: true };
   }
+
+  const { data: orders, error } = await jimmy.fetch<Order[]>(`/orders`, {
+    query: {
+      filter: { data: { shop_ids: [shop.id] } },
+      sorting: { by: ["created_at"], ascending: false },
+      descendant_fetch_level: "compact",
+    },
+  });
+  if (error)
+    logError("/account/manage/:id/orders getServerSideProps (orders)", error);
 
   if (!managingShops?.find((managingShop) => shop.id === managingShop.id))
     return { notFound: true };
@@ -101,6 +138,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         "manage",
       ])),
       shop,
+      orders,
     },
   };
 };
