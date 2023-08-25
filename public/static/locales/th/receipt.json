@@ -2,6 +2,7 @@
   "title": "ใบเสร็จ {{date, datetime(dateStyle: long)}}",
   "details": {
     "delivery": {
+      "pos": "รับสินค้าที่หน้าร้าน",
       "schoolPickup": "รับสินค้าที่โรงเรียน",
       "delivery": "ส่งสินค้าไปที่ {{streetAddress}}"
     },

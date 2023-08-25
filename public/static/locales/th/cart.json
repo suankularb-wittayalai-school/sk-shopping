@@ -23,6 +23,7 @@
   "order": {
     "title": "ประวัติการสั่งซื้อ",
     "delivery": {
+      "pos": "รับสินค้าหน้าร้าน",
       "schoolPickup": "รับสินค้าที่โรงเรียน",
       "delivery": {
         "notShippedOut": "ยังไม่ได้จัดส่ง (ส่งที่ {{streetAddress}})",
