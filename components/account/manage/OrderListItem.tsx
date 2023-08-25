@@ -1,3 +1,4 @@
+// Imports
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
@@ -9,10 +10,10 @@ import {
   ListItem,
   ListItemContent,
   MaterialIcon,
+  Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
-import Link from "next/link";
 import { sift } from "radash";
 import shortUUID from "short-uuid";
 
@@ -36,7 +37,7 @@ const OrderListItem: StylableFC<{
       lines={3}
       style={style}
       className={cn(
-        `!grid md:!grid-cols-[3rem,minmax(0,1fr),minmax(0,1fr),minmax(0,1fr),5.5rem]`,
+        `!grid !pr-4 md:!grid-cols-[3rem,minmax(0,1fr),minmax(0,1fr),minmax(0,1fr),5.5rem]`,
         className,
       )}
     >
@@ -67,17 +68,23 @@ const OrderListItem: StylableFC<{
         className="[&>span:first-child]:truncate"
       />
       <ListItemContent
-        title={order.items
+        title={<Text type="title-medium">สินค้าที่สั่งซื้อ</Text>}
+        desc={order.items
           .map(({ item, amount }) => `${amount}×${item.name}`)
           .join(", ")}
+        alt="สินค้าที่สั่งซื้อ"
       />
       <ListItemContent
         title={
-          {
-            pos: "รับที่หน้าร้าน",
-            school_pickup: "รับที่โรงเรียน",
-            delivery: "รับที่ที่อยู่…",
-          }[order.delivery_type]
+          <Text type="title-medium">
+            {
+              {
+                pos: "รับที่หน้าร้าน",
+                school_pickup: "รับที่โรงเรียน",
+                delivery: "รับที่ที่อยู่…",
+              }[order.delivery_type]
+            }
+          </Text>
         }
         desc={
           order.delivery_type === "delivery"
@@ -89,6 +96,13 @@ const OrderListItem: StylableFC<{
                 order.zip_code,
               ].join(" ")
             : undefined
+        }
+        alt={
+          {
+            pos: "รับที่หน้าร้าน",
+            school_pickup: "รับที่โรงเรียน",
+            delivery: "รับที่ที่อยู่…",
+          }[order.delivery_type]
         }
       />
       <Actions className="self-end">
@@ -104,4 +118,3 @@ const OrderListItem: StylableFC<{
 };
 
 export default OrderListItem;
-

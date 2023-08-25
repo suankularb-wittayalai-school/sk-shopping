@@ -53,7 +53,6 @@ const ManageOrdersPage: NextPage<{
   const [orders, setOrders] = useState(initialOrders);
   useEffect(() => {
     (async () => {
-      console.log(query, status, page);
       const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
         query: {
           filter: {
@@ -83,7 +82,7 @@ const ManageOrdersPage: NextPage<{
       </PageHeader>
       <ContentLayout>
         <ManageShopTabs shopID={shop.id} />
-        <Columns columns={3} className="!items-end">
+        <Columns columns={3} className="mx-4 !items-end sm:mx-0">
           <OrderStatusSelector
             value={status}
             onChange={setStatus}
@@ -179,4 +178,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default ManageOrdersPage;
-
