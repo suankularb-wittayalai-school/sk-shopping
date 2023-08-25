@@ -1,4 +1,5 @@
 // Imports
+import ReceiptDialog from "@/components/cart/ReceiptDialog";
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
@@ -15,7 +16,7 @@ import {
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { sift } from "radash";
-import shortUUID from "short-uuid";
+import { useState } from "react";
 
 /**
  * A List Item inside the Manage Orders page that displays information about an
@@ -29,7 +30,7 @@ const OrderListItem: StylableFC<{
   const locale = useLocale();
   const { t } = useTranslation("manage");
 
-  const { fromUUID } = shortUUID();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <ListItem
@@ -61,10 +62,9 @@ const OrderListItem: StylableFC<{
             hour: "numeric",
             minute: "numeric",
           }),
-          order.shipment_status !== "canceled" &&
-            (order.is_paid && order.is_verified
-              ? `จ่าย ฿${order.total_price.toLocaleString(locale)} แล้ว`
-              : `ยังไม่ได้จ่าย ฿${order.total_price.toLocaleString(locale)}`),
+          order.is_paid && order.is_verified
+            ? `จ่าย ฿${order.total_price.toLocaleString(locale)} แล้ว`
+            : `ยังไม่ได้จ่าย ฿${order.total_price.toLocaleString(locale)}`,
         ]).join(" • ")}
         className="[&>span:first-child]:truncate"
       />
@@ -108,15 +108,14 @@ const OrderListItem: StylableFC<{
       />
       <Actions className="self-end">
         <Button
-          appearance="tonal"
-          icon={<MaterialIcon icon="print" />}
-          onClick={() =>
-            window.open(
-              `/receipt/${fromUUID(order.id)}/print`,
-              "_blank",
-              "popup",
-            )
-          }
+          appearance="outlined"
+          icon={<MaterialIcon icon="receipt_long" />}
+          onClick={() => setDialogOpen(true)}
+        />
+        <ReceiptDialog
+          order={order}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
         />
         <Button appearance="tonal" icon={<MaterialIcon icon="move_item" />} />
       </Actions>

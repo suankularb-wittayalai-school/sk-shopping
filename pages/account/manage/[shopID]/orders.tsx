@@ -163,6 +163,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       ...(await serverSideTranslations(locale as LangCode, [
         "common",
         "manage",
+        "receipt",
       ])),
       shop,
     },
