@@ -77,7 +77,7 @@ const LandingPage: NextPage<{
           <Header>{t("shops.title")}</Header>
           <Columns columns={4} element="ul">
             {shops.map((shop) => (
-              <ShopCard key={shop.id} shop={shop} />
+              <ShopCard key={shop.id} role="customer" shop={shop} />
             ))}
           </Columns>
         </Section>
