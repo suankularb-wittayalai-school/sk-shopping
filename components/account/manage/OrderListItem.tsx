@@ -2,7 +2,6 @@
 import ReceiptDialog from "@/components/cart/ReceiptDialog";
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
-import useRefreshProps from "@/utils/helpers/useRefreshProps";
 import { StylableFC } from "@/utils/types/common";
 import { Order, OrderStatus } from "@/utils/types/order";
 import {
