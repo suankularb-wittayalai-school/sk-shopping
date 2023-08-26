@@ -2,8 +2,9 @@
 import ReceiptDialog from "@/components/cart/ReceiptDialog";
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
+import useRefreshProps from "@/utils/helpers/useRefreshProps";
 import { StylableFC } from "@/utils/types/common";
-import { Order } from "@/utils/types/order";
+import { Order, OrderStatus } from "@/utils/types/order";
 import {
   Actions,
   Avatar,
@@ -12,6 +13,8 @@ import {
   ListItem,
   ListItemContent,
   MaterialIcon,
+  Menu,
+  MenuItem,
   Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
@@ -27,18 +30,26 @@ import { useState } from "react";
  */
 const OrderListItem: StylableFC<{
   order: Order;
-}> = ({ order, style, className }) => {
+  onStatusChange: (status: OrderStatus) => void;
+}> = ({ order, onStatusChange, style, className }) => {
   const locale = useLocale();
   const { t } = useTranslation("manage");
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  async function handleChangeStatus(status: OrderStatus) {
+    setMenuOpen(false);
+    if (status === order.shipment_status) return;
+    onStatusChange(status);
+  }
 
   return (
     <ListItem
       align="top"
       lines={3}
       style={style}
-      className={cn(`!pr-4`, className)}
+      className={cn(`!overflow-visible !pr-4`, className)}
     >
       <Columns columns={3} className="grow !items-stretch">
         <div className="grid grid-cols-[3rem,1fr] gap-1">
@@ -129,10 +140,30 @@ const OrderListItem: StylableFC<{
               open={dialogOpen}
               onClose={() => setDialogOpen(false)}
             />
-            <Button
-              appearance="tonal"
-              icon={<MaterialIcon icon="move_item" />}
-            />
+            <div className="relative">
+              <Button
+                appearance="tonal"
+                icon={<MaterialIcon icon="move_down" />}
+                onClick={() => setMenuOpen(true)}
+              />
+              <Menu open={menuOpen} onBlur={() => setMenuOpen(false)}>
+                <Text type="title-medium" className="py-2 pl-4 pr-6">
+                  ย้ายการสั่งซื้อไป…
+                </Text>
+                <MenuItem onClick={() => handleChangeStatus("canceled")}>
+                  ยกเลิกไปแล้ว
+                </MenuItem>
+                <MenuItem onClick={() => handleChangeStatus("not_shipped_out")}>
+                  ยังไม่ได้จัดส่ง
+                </MenuItem>
+                <MenuItem onClick={() => handleChangeStatus("pending")}>
+                  กำลังส่ง/พร้อมรับ
+                </MenuItem>
+                <MenuItem onClick={() => handleChangeStatus("delivered")}>
+                  รับสินค้าแล้ว
+                </MenuItem>
+              </Menu>
+            </div>
           </Actions>
         </div>
       </Columns>

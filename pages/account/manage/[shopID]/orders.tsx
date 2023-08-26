@@ -27,6 +27,7 @@ import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { list } from "radash";
 import { useEffect, useState } from "react";
 import shortUUID from "short-uuid";
@@ -45,6 +46,7 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
   const { t } = useTranslation("manage");
   const { t: tx } = useTranslation("common");
 
+  const router = useRouter();
   const { fromUUID } = shortUUID();
 
   const jimmy = useJimmy();
@@ -56,29 +58,31 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
 
   const [orders, setOrders] = useState<Order[]>([]);
 
+  async function refreshOrders() {
+    setLoading(true);
+    setOrders([]);
+    const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
+      query: {
+        pagination: {
+          p: (page - 1) * ROWS_PER_PAGE + 1,
+          size: ROWS_PER_PAGE,
+        },
+        filter: {
+          ...(query ? { q: query } : {}),
+          data: { shop_ids: [shop.id], shipment_status: status },
+        },
+        sorting: { by: ["created_at"], ascending: false },
+        descendant_fetch_level: "compact",
+      },
+    });
+    if (error) logError("useEffect", error);
+    else if (data) setOrders(data);
+    setLoading(false);
+  }
+
   useEffect(() => setPage(1), [query, status]);
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      setOrders([]);
-      const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
-        query: {
-          pagination: {
-            p: (page - 1) * ROWS_PER_PAGE + 1,
-            size: ROWS_PER_PAGE,
-          },
-          filter: {
-            ...(query ? { q: query } : {}),
-            data: { shop_ids: [shop.id], shipment_status: status },
-          },
-          sorting: { by: ["created_at"], ascending: false },
-          descendant_fetch_level: "compact",
-        },
-      });
-      if (error) logError("useEffect", error);
-      else if (data) setOrders(data);
-      setLoading(false);
-    })();
+    refreshOrders();
   }, [query, status, page]);
 
   return (
@@ -111,7 +115,11 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
         <List divided>
           {!loading
             ? orders.map((order) => (
-                <OrderListItem key={order.id} order={order} />
+                <OrderListItem
+                  key={order.id}
+                  order={order}
+                  onStatusChange={setStatus}
+                />
               ))
             : list(8).map((idx) => <SkeletonOrderListItem key={idx} />)}
         </List>
