@@ -40,6 +40,7 @@ const AccountHeader: StylableFC<{
               width={72}
               height={72}
               alt={t("avatarAlt")}
+              className="!h-[inherit] !w-[inherit]"
             />
           )}
         </Avatar>
