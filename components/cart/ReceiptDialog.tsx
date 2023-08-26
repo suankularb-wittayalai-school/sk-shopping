@@ -15,6 +15,7 @@ import {
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { camel } from "radash";
+import { forwardRef } from "react";
 import QRCode from "react-qr-code";
 import shortUUID from "short-uuid";
 
@@ -72,9 +73,9 @@ const ReceiptDialog: StylableFC<{
         </Text>
       </div>
       <div className="grid grid-cols-2 items-start gap-6 p-6">
-        <div className="grid grid-cols-[1.5rem,1fr] gap-1 [&>i]:text-on-surface-variant [&>p]:py-0.5">
+        <div className="grid grid-cols-[1.5rem,minmax(0,1fr)] gap-1 [&>i]:text-on-surface-variant [&>p]:py-0.5">
           <MaterialIcon icon="location_on" />
-          <Text type="body-medium" element="p">
+          <Text type="body-medium" element="p" className="line-clamp-3">
             {t(`details.delivery.${camel(order.delivery_type)}`, {
               streetAddress: order.street_address_line_1,
             })}
@@ -123,20 +124,20 @@ const ReceiptDialog: StylableFC<{
           deliveryType={order.delivery_type}
           shippingCost={FLAT_SHIPPING_COST_THB}
           total={order.total_price}
-          className={cn(`m-2 [&>tfoot>tr>*:first-child]:pl-6
-            [&>tfoot>tr>*:last-child]:pr-6
-            [&>tfoot>tr>*]:py-3 [&>tfoot>tr]:border-t-1
-            [&>tfoot>tr]:border-t-outline [&>tfoot>tr]:bg-surface-3`)}
+          density={-1}
+          className={cn(`!m-2 [&>tfoot]:static [&>tfoot]:bg-transparent`)}
         />
       </DialogContent>
       <Actions className="!justify-between">
         <Button
           appearance="text"
           icon={<MaterialIcon icon="print" />}
-          onClick={() => {
-            onClose();
-            router.push(`/receipt/${fromUUID(order.id)}/print`);
-          }}
+          onClick={onClose}
+          href={`/receipt/${fromUUID(order.id)}/print`}
+          // eslint-disable-next-line react/display-name
+          element={forwardRef((props, ref) => (
+            <a {...props} ref={ref} target="_blank" />
+          ))}
         />
         <Button appearance="text" onClick={onClose}>
           {t("action.done")}
