@@ -60,7 +60,7 @@ const ManageShopTabs: StylableFC<{
         element={Link}
       />
       <Tab
-        icon={<MaterialIcon icon="analytics" />}
+        icon={<MaterialIcon icon="trending_up" />}
         label="สถิติ"
         selected={selected === "analytics"}
         onClick={() => setSelected("analytics")}
