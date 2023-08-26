@@ -17,13 +17,13 @@ import shortUUID from "short-uuid";
 
 /**
  * A Plausible Analytics embed for a Shop.
- * 
+ *
  * @param shop The Shop to display Plausible Analytics of.
  */
 const AnalyticsPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
   const getLocaleString = useGetLocaleString();
-  const { t } = useTranslation("manage");
-  const { t: tx } = useTranslation("common");
+  const { t } = useTranslation("manage", { keyPrefix: "analytics" });
+  const { t: tx } = useTranslation(["common", "manage"]);
 
   const { fromUUID } = shortUUID();
 
@@ -32,13 +32,16 @@ const AnalyticsPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
       <Head>
         <title>
           {tx("tabName", {
-            tabName: `จัดการร้านค้า${getLocaleString(shop.name)}`,
+            tabName: t("title", {
+              ns: "manage",
+              shop: getLocaleString(shop.name),
+            }),
           })}
         </title>
       </Head>
       <Script async src="https://plausible.io/js/embed.host.js" />
       <PageHeader parentURL={`/account/manage/${fromUUID(shop.id)}`}>
-        จัดการร้านค้า{getLocaleString(shop.name)}
+        {tx("title", { ns: "manage", shop: getLocaleString(shop.name) })}
       </PageHeader>
       <ContentLayout className="!pb-0">
         <ManageShopTabs shopID={shop.id} />

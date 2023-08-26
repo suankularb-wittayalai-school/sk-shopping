@@ -34,7 +34,7 @@ const ManageShopTabs: StylableFC<{
   return (
     <TabsContainer
       appearance="primary"
-      alt="View"
+      alt={t("tabsAlt")}
       style={style}
       className={cn(`!-mt-6`, className)}
     >

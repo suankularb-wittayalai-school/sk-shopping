@@ -57,7 +57,7 @@ const AccountPage: NextPage<{
             <AccountHeader user={user} />
             {managingShops && (
               <Section>
-                <Header>จัดการร้านค้า</Header>
+                <Header>{t("managingShops.title")}</Header>
                 <Columns columns={4} element="ul">
                   {managingShops.map((shop) => (
                     <ShopCard key={shop.id} role="manager" shop={shop} />
