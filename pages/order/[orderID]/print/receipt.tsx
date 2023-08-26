@@ -72,7 +72,7 @@ const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
             </Text>
           </h1>
           <QRCode
-            value={`https://shopping.skkornor.org/receipt/${fromUUID(
+            value={`https://shopping.skkornor.org/order/${fromUUID(
               order.id,
             )}`}
             bgColor="transparent"
@@ -163,7 +163,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     { query: { descendant_fetch_level: "compact" } },
   );
   if (error) {
-    logError("/receipt/:id getServerSideProps", error);
+    logError("/order/:id getServerSideProps", error);
     return { notFound: true };
   }
 

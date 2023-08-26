@@ -109,7 +109,7 @@ const ReceiptDialog: StylableFC<{
         </div>
         <figure className="light dark:rounded-md dark:bg-surface dark:p-3">
           <QRCode
-            value={`https://shopping.skkornor.org/receipt/${fromUUID(
+            value={`https://shopping.skkornor.org/order/${fromUUID(
               order.id,
             )}`}
             bgColor="transparent"
@@ -133,7 +133,7 @@ const ReceiptDialog: StylableFC<{
           appearance="text"
           icon={<MaterialIcon icon="print" />}
           onClick={onClose}
-          href={`/receipt/${fromUUID(order.id)}/print`}
+          href={`/order/${fromUUID(order.id)}/print/receipt`}
           // eslint-disable-next-line react/display-name
           element={forwardRef((props, ref) => (
             <a {...props} ref={ref} target="_blank" />
