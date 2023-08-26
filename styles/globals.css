@@ -56,11 +56,5 @@
 #credential_picker_container {
   right: 0.5rem !important;
   top: 0.5rem !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  #credential_picker_container {
-    overflow: hidden;
-    border-radius: var(--rounded-md);
-  }
+  color-scheme: light;
 }
