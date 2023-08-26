@@ -1,11 +1,12 @@
 // Imports
+import AppStateContext from "@/contexts/AppStateContext";
 import cn from "@/utils/helpers/cn";
 import { StylableFC } from "@/utils/types/common";
 import { MaterialIcon, Tab, TabsContainer } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
@@ -20,6 +21,9 @@ const ManageShopTabs: StylableFC<{
 
   const router = useRouter();
   const { fromUUID } = shortUUID();
+
+  const { setActiveNav } = useContext(AppStateContext);
+  useEffect(() => setActiveNav("account"), []);
 
   const [selected, setSelected] = useState(
     router.pathname.split("/").slice(-1)[0] as

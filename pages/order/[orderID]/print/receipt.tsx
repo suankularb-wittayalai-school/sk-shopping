@@ -1,6 +1,7 @@
 // Imports
 import CostBreakdown from "@/components/cart/CostBreakdown";
 import UseIcon from "@/components/icon/UseIcon";
+import AppStateContext from "@/contexts/AppStateContext";
 import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
@@ -9,7 +10,7 @@ import { Order } from "@/utils/types/order";
 import { MaterialIcon, Text } from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import shortUUID from "short-uuid";
 
@@ -22,6 +23,9 @@ const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
     const timeout = setTimeout(() => window.print(), 100);
     return () => clearTimeout(timeout);
   }, []);
+
+  const { setActiveNav } = useContext(AppStateContext);
+  useEffect(() => setActiveNav("cart"), []);
 
   const tableRef = useRef<HTMLDivElement>(null);
   const [overflowing, setOverflowing] = useState<boolean>();
@@ -72,9 +76,7 @@ const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
             </Text>
           </h1>
           <QRCode
-            value={`https://shopping.skkornor.org/order/${fromUUID(
-              order.id,
-            )}`}
+            value={`https://shopping.skkornor.org/order/${fromUUID(order.id)}`}
             bgColor="transparent"
             className="h-auto w-full"
           />
