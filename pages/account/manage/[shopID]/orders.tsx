@@ -23,6 +23,7 @@ import {
   SegmentedButton,
   Text,
 } from "@suankularb-components/react";
+import { LayoutGroup, AnimatePresence } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -111,17 +112,27 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             onChange={setQuery}
           />
         </Columns>
-        <List divided>
-          {!loading
-            ? orders.map((order) => (
-                <OrderListItem
-                  key={order.id}
-                  order={order}
-                  onStatusChange={setStatus}
-                />
-              ))
-            : list(8).map((idx) => <SkeletonOrderListItem key={idx} />)}
-        </List>
+        <div aria-busy={loading}>
+          <List divided>
+            <LayoutGroup id="order">
+              {!loading
+                ? orders.map((order) => (
+                    <OrderListItem
+                      key={order.id}
+                      order={order}
+                      onStatusChange={() =>
+                        setOrders(
+                          orders.filter((mapOrder) => order.id !== mapOrder.id),
+                        )
+                      }
+                      setStatus={setStatus}
+                      jimmy={jimmy}
+                    />
+                  ))
+                : list(8).map((idx) => <SkeletonOrderListItem key={idx} />)}
+            </LayoutGroup>
+          </List>
+        </div>
         <SegmentedButton
           alt="เปลี่ยนหน้า"
           className="sticky bottom-24 mx-auto sm:bottom-4 [&>*]:!bg-surface-1"

@@ -1,19 +1,17 @@
 // Imports
 import cn from "@/utils/helpers/cn";
 import { StylableFC } from "@/utils/types/common";
-import { Columns, ListItem } from "@suankularb-components/react";
+import { Columns } from "@suankularb-components/react";
 
 /**
  * A placeholder for Order List Item when Manage Orders is loading.
  */
 const SkeletonOrderListItem: StylableFC = ({ style, className }) => (
-  <ListItem
-    align="top"
-    lines={3}
-    style={style}
-    className={cn(`animate-pulse !pr-4`, className)}
-  >
-    <Columns columns={3} className="grow !items-stretch">
+  <li>
+    <Columns
+      columns={3}
+      className="grow animate-pulse !items-stretch px-4 py-3"
+    >
       <div className="grid grid-cols-[3rem,1fr] gap-1">
         <div className="h-10 w-10 rounded-full bg-surface-variant" />
         <div className="my-0.5 space-y-1">
@@ -38,7 +36,7 @@ const SkeletonOrderListItem: StylableFC = ({ style, className }) => (
         </div>
       </div>
     </Columns>
-  </ListItem>
+  </li>
 );
 
 export default SkeletonOrderListItem;
