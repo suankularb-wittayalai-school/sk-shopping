@@ -27,7 +27,6 @@ import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { list } from "radash";
 import { useEffect, useState } from "react";
 import shortUUID from "short-uuid";
@@ -46,7 +45,6 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
   const { t } = useTranslation("manage");
   const { t: tx } = useTranslation("common");
 
-  const router = useRouter();
   const { fromUUID } = shortUUID();
 
   const jimmy = useJimmy();
@@ -74,6 +72,7 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
         sorting: { by: ["created_at"], ascending: false },
         descendant_fetch_level: "compact",
       },
+      cache: "no-cache",
     });
     if (error) logError("useEffect", error);
     else if (data) setOrders(data);
