@@ -23,7 +23,7 @@ import {
   SegmentedButton,
   Text,
 } from "@suankularb-components/react";
-import { LayoutGroup, AnimatePresence } from "framer-motion";
+import { LayoutGroup } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
