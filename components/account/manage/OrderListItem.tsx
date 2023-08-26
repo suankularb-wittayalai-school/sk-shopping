@@ -96,7 +96,7 @@ const OrderListItem: StylableFC<{
       className={className}
     >
       <Columns columns={3} className="grow !items-stretch px-4 py-3">
-        <div className="grid grid-cols-[3rem,1fr] gap-1">
+        <div className="grid grid-cols-[2.5rem,minmax(0,1fr)] gap-3">
           <Avatar>
             {order.buyer?.profile && (
               <Image src={order.buyer.profile} width={48} height={48} alt="" />

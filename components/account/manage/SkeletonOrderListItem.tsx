@@ -7,12 +7,12 @@ import { Columns } from "@suankularb-components/react";
  * A placeholder for Order List Item when Manage Orders is loading.
  */
 const SkeletonOrderListItem: StylableFC = ({ style, className }) => (
-  <li>
+  <li style={style} className={className}>
     <Columns
       columns={3}
       className="grow animate-pulse !items-stretch px-4 py-3"
     >
-      <div className="grid grid-cols-[3rem,1fr] gap-1">
+      <div className="grid grid-cols-[2.5rem,1fr] gap-3">
         <div className="h-10 w-10 rounded-full bg-surface-variant" />
         <div className="my-0.5 space-y-1">
           <div className="h-5 w-36 rounded-xs bg-surface-variant" />
