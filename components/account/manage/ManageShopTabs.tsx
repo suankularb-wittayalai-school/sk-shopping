@@ -22,7 +22,8 @@ const ManageShopTabs: StylableFC<{
     router.pathname.split("/").slice(-1)[0] as
       | "customize"
       | "listings"
-      | "orders",
+      | "orders"
+      | "analytics",
   );
 
   const baseURL = `/account/manage/${fromUUID(shopID)}`;
@@ -56,6 +57,14 @@ const ManageShopTabs: StylableFC<{
         selected={selected === "orders"}
         onClick={() => setSelected("orders")}
         href={[baseURL, "orders"].join("/")}
+        element={Link}
+      />
+      <Tab
+        icon={<MaterialIcon icon="analytics" />}
+        label="สถิติ"
+        selected={selected === "analytics"}
+        onClick={() => setSelected("analytics")}
+        href={[baseURL, "analytics"].join("/")}
         element={Link}
       />
     </TabsContainer>
