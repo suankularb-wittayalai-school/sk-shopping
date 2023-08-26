@@ -19,7 +19,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
@@ -74,7 +74,7 @@ const CheckoutAsCashierPage: NextPage<{
               item_id: item.id,
               amount,
             })),
-            delivery_type: "school_pickup",
+            delivery_type: "pos",
             receiver_name: [user.first_name, user.last_name].join(" "),
             payment_method: paymentMethod,
             contact_email: user.email,
@@ -97,7 +97,7 @@ const CheckoutAsCashierPage: NextPage<{
     if (!order) return;
     removeCart(shop.id);
     addOrder(order);
-    router.push(`/receipt/${fromUUID(order.id)}/print`);
+    router.push(`/order/${fromUUID(order.id)}/print/receipt`);
   }
 
   return (

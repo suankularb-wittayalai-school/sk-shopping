@@ -78,7 +78,7 @@ const CheckoutPage: NextPage<{
   }, [cart]);
 
   const [deliveryType, setDeliveryType] = useState<
-    "school_pickup" | "delivery"
+    "school_pickup" | "delivery" | "pos"
   >(shop.is_school_pickup_allowed ? "school_pickup" : "delivery");
   const [savedAddress, setSavedAddress] = useState<Address>();
   const {
@@ -323,3 +323,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default CheckoutPage;
+

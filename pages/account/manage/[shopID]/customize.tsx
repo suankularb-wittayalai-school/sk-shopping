@@ -37,8 +37,8 @@ import shortUUID from "short-uuid";
  */
 const CustomizeShopPage: NextPage<{ shop: Shop }> = ({ shop }) => {
   const getLocaleString = useGetLocaleString();
-  const { t } = useTranslation("manage");
-  const { t: tx } = useTranslation("common");
+  const { t } = useTranslation("manage", { keyPrefix: "customize" });
+  const { t: tx } = useTranslation(["common", "manage"]);
 
   const refreshProps = useRefreshProps();
   const jimmy = useJimmy();
@@ -106,12 +106,15 @@ const CustomizeShopPage: NextPage<{ shop: Shop }> = ({ shop }) => {
       <Head>
         <title>
           {tx("tabName", {
-            tabName: `จัดการร้านค้า${getLocaleString(shop.name)}`,
+            tabName: t("title", {
+              ns: "manage",
+              shop: getLocaleString(shop.name),
+            }),
           })}
         </title>
       </Head>
       <PageHeader parentURL="/account">
-        จัดการร้านค้า{getLocaleString(shop.name)}
+        {tx("title", { ns: "manage", shop: getLocaleString(shop.name) })}
       </PageHeader>
       <ContentLayout>
         <ManageShopTabs shopID={shop.id} />
@@ -205,13 +208,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   >(`/shops`, {
     query: { filter: { data: { manager_ids: [jimmy.user.id] } } },
   });
-  if (shopsError) logError("/cart getServerSideProps (shops)", shopsError);
+  if (shopsError)
+    logError(
+      "/account/manage/:id/customize getServerSideProps (shops)",
+      shopsError,
+    );
 
   const { toUUID } = shortUUID();
   const shopID = toUUID(params!.shopID as string);
   const { data: shop, error } = await jimmy.fetch<Shop>(`/shops/${shopID}`);
   if (error) {
-    logError("/account/manage/:id/customize getServerSideProps", error);
+    logError("/account/manage/:id/customize getServerSideProps (shop)", error);
     return { notFound: true };
   }
 

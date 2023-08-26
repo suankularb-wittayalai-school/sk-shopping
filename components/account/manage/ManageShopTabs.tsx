@@ -1,10 +1,12 @@
 // Imports
+import AppStateContext from "@/contexts/AppStateContext";
 import cn from "@/utils/helpers/cn";
 import { StylableFC } from "@/utils/types/common";
 import { MaterialIcon, Tab, TabsContainer } from "@suankularb-components/react";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
@@ -15,14 +17,20 @@ import shortUUID from "short-uuid";
 const ManageShopTabs: StylableFC<{
   shopID: string;
 }> = ({ shopID, style, className }) => {
+  const { t } = useTranslation("manage");
+
   const router = useRouter();
   const { fromUUID } = shortUUID();
+
+  const { setActiveNav } = useContext(AppStateContext);
+  useEffect(() => setActiveNav("account"), []);
 
   const [selected, setSelected] = useState(
     router.pathname.split("/").slice(-1)[0] as
       | "customize"
       | "listings"
-      | "orders",
+      | "orders"
+      | "analytics",
   );
 
   const baseURL = `/account/manage/${fromUUID(shopID)}`;
@@ -30,13 +38,13 @@ const ManageShopTabs: StylableFC<{
   return (
     <TabsContainer
       appearance="primary"
-      alt="View"
+      alt={t("tabsAlt")}
       style={style}
       className={cn(`!-mt-6`, className)}
     >
       <Tab
         icon={<MaterialIcon icon="imagesearch_roller" />}
-        label="ร้านค้า"
+        label={t("customize.title")}
         selected={selected === "customize"}
         onClick={() => setSelected("customize")}
         href={[baseURL, "customize"].join("/")}
@@ -44,7 +52,7 @@ const ManageShopTabs: StylableFC<{
       />
       <Tab
         icon={<MaterialIcon icon="category" />}
-        label="สินค้า"
+        label={t("listings.title")}
         selected={selected === "listings"}
         onClick={() => setSelected("listings")}
         href={[baseURL, "listings"].join("/")}
@@ -52,10 +60,18 @@ const ManageShopTabs: StylableFC<{
       />
       <Tab
         icon={<MaterialIcon icon="receipt" />}
-        label="การสั่งซื้อ"
+        label={t("orders.title")}
         selected={selected === "orders"}
         onClick={() => setSelected("orders")}
         href={[baseURL, "orders"].join("/")}
+        element={Link}
+      />
+      <Tab
+        icon={<MaterialIcon icon="trending_up" />}
+        label={t("analytics.title")}
+        selected={selected === "analytics"}
+        onClick={() => setSelected("analytics")}
+        href={[baseURL, "analytics"].join("/")}
         element={Link}
       />
     </TabsContainer>
