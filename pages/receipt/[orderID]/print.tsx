@@ -1,18 +1,20 @@
 // Imports
 import CostBreakdown from "@/components/cart/CostBreakdown";
+import UseIcon from "@/components/icon/UseIcon";
+import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
-import { Text } from "@suankularb-components/react";
+import { MaterialIcon, Text } from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import shortUUID from "short-uuid";
 
-const PAPER_HEIGHT_MM = 105;
-const PAPER_WIDTH_MM = 148;
+const PAPER_HEIGHT_MM = 147;
+const PAPER_WIDTH_MM = 105;
 
 const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
   const { fromUUID } = shortUUID();
@@ -21,14 +23,22 @@ const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
     return () => clearTimeout(timeout);
   }, []);
 
+  const tableRef = useRef<HTMLDivElement>(null);
+  const [overflowing, setOverflowing] = useState<boolean>();
+  useEffect(() => {
+    if (!tableRef.current) return;
+    const { scrollHeight, clientHeight } = tableRef.current;
+    setOverflowing(scrollHeight > clientHeight);
+  }, [tableRef]);
+
   return (
     <main
       id="receipt"
       style={{ height: `${PAPER_HEIGHT_MM}mm`, width: `${PAPER_WIDTH_MM}mm` }}
-      className="light absolute hidden flex-row bg-white text-black print:flex"
+      className="light invisible absolute flex flex-col divide-y-1 divide-dashed divide-black bg-white text-black print:visible"
     >
-      <div className="flex grow flex-col gap-2 border-r-1 border-r-black p-6">
-        <div className="flex flex-row gap-6">
+      <div className="flex grow flex-col gap-2 overflow-hidden p-6 relative">
+        <div className="flex flex-row items-start gap-6">
           <h1 className="grow self-end">
             <Text type="headline-medium">ใบเสร็จ • </Text>
             <Text type="title-large" className="!font-mono">
@@ -41,40 +51,44 @@ const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
               order.id,
             )}`}
             bgColor="transparent"
-            className="h-auto w-12"
+            className={cn(
+              `box-content h-auto w-16`,
+              overflowing && `border-8 border-error p-1`,
+            )}
           />
         </div>
-        <div className="relative grow overflow-hidden border-1 border-black">
+        <div
+          ref={tableRef}
+          className="relative grow overflow-hidden border-1 border-black"
+        >
           <CostBreakdown
             items={order.items}
             deliveryType="school_pickup"
             total={order.total_price}
+            density={-2}
             className="[&>tfoot]:bg-white"
           />
         </div>
-        <Text type="body-medium" className="grow">
-          {order.receiver_name}
-          {" • "}
-          {new Date(order.created_at).toLocaleString("th", {
-            dateStyle: "medium",
-            timeStyle: "medium",
-          })}
-        </Text>
+        <div className="flex flex-row items-center">
+          <Text type="body-medium" className="grow">
+            {[
+              order.receiver_name,
+              new Date(order.created_at).toLocaleString("th", {
+                dateStyle: "medium",
+                timeStyle: "medium",
+              }),
+            ].join(" • ")}
+          </Text>
+          <UseIcon icon="kornor" />
+        </div>
+        <MaterialIcon icon="cut" size={20} className="absolute -bottom-1 left-6" />
       </div>
-      <div className="flex w-24 rotate-180 flex-row items-center justify-center p-4">
-        <Text
-          type="display-small"
-          element="pre"
-          className="!font-mono [writing-mode:vertical-lr]"
-        >
+      <div className="flex h-24 relative flex-col -space-y-1 p-4">
+        <Text type="title-medium">เลขใบเสร็จ</Text>
+        <Text type="display-small" element="pre" className="!font-mono">
           {order.ref_id.slice(-5)}
         </Text>
-        <Text
-          type="headline-small"
-          className="block [writing-mode:vertical-lr]"
-        >
-          เลขใบเสร็จ
-        </Text>
+        <UseIcon icon="kornor" className="absolute bottom-6 right-6" />
       </div>
       <style>{`
         @media print {
