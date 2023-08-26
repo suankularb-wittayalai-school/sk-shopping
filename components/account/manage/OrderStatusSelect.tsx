@@ -61,7 +61,7 @@ const OrderStatusSelect: StylableFC<{
       </SegmentedButton>
       <Select
         appearance="outlined"
-        label="สถานะการสั่งซื้อ"
+        label={t("label")}
         locale={locale}
         value={value}
         onChange={onChange}
