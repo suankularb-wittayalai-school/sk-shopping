@@ -7,7 +7,7 @@ import {
   Button,
   MenuItem,
   SegmentedButton,
-  Select
+  Select,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 
@@ -18,16 +18,16 @@ import { useTranslation } from "next-i18next";
  * @param value The currently selected Order Status.
  * @param onChange Triggers when the currently selected Order Status changes.
  */
-const OrderStatusSelector: StylableFC<{
+const OrderStatusSelect: StylableFC<{
   value: OrderStatus;
   onChange: (value: OrderStatus) => void;
 }> = ({ value, onChange, style, className }) => {
   const locale = useLocale();
-  const { t } = useTranslation("manage");
+  const { t } = useTranslation("manage", { keyPrefix: "orders.statusSelect" });
 
   return (
     <div style={style} className={className}>
-      <SegmentedButton alt="สถานะการสั่งซื้อ" className="!hidden md:!flex">
+      <SegmentedButton alt={t("label")} className="!hidden md:!flex">
         <Button
           appearance="outlined"
           dangerous
@@ -35,28 +35,28 @@ const OrderStatusSelector: StylableFC<{
           onClick={() => onChange("canceled")}
           className={cn(value === "canceled" && `!bg-error-container`)}
         >
-          ยกเลิกไปแล้ว
+          {t("canceled")}
         </Button>
         <Button
           appearance="outlined"
           selected={value === "not_shipped_out"}
           onClick={() => onChange("not_shipped_out")}
         >
-          ยังไม่ได้จัดส่ง
+          {t("notShippedOut")}
         </Button>
         <Button
           appearance="outlined"
           selected={value === "pending"}
           onClick={() => onChange("pending")}
         >
-          กำลังส่ง/พร้อมรับ
+          {t("pending")}
         </Button>
         <Button
           appearance="outlined"
           selected={value === "delivered"}
           onClick={() => onChange("delivered")}
         >
-          รับสินค้าแล้ว
+          {t("delivered")}
         </Button>
       </SegmentedButton>
       <Select
@@ -67,13 +67,13 @@ const OrderStatusSelector: StylableFC<{
         onChange={onChange}
         className="md:!hidden"
       >
-        <MenuItem value="canceled">ยกเลิกไปแล้ว</MenuItem>
-        <MenuItem value="not_shipped_out">ยังไม่ได้จัดส่ง</MenuItem>
-        <MenuItem value="pending">กำลังส่ง/พร้อมรับ</MenuItem>
-        <MenuItem value="delivered">รับสินค้าแล้ว</MenuItem>
+        <MenuItem value="canceled">{t("canceled")}</MenuItem>
+        <MenuItem value="not_shipped_out">{t("notShippedOut")}</MenuItem>
+        <MenuItem value="pending">{t("pending")}</MenuItem>
+        <MenuItem value="delivered">{t("delivered")}</MenuItem>
       </Select>
     </div>
   );
 };
 
-export default OrderStatusSelector;
+export default OrderStatusSelect;

@@ -1,0 +1,62 @@
+{
+  "title": "Manage {{shop}} Shop",
+  "tabsAlt": "Select aspect to manage",
+  "customize": {
+    "title": "Customize"
+  },
+  "listings": {
+    "title": "Listings"
+  },
+  "orders": {
+    "title": "Orders",
+    "statusSelect": {
+      "label": "Order status",
+      "canceled": "Canceled",
+      "notShippedOut": "Not shipped out",
+      "pending": "Pending",
+      "delivered": "Delivered"
+    },
+    "searchAlt": "Search orders",
+    "order": {
+      "payment": {
+        "true": "Paid {{price, currency(currency: THB; maximumFractionDigits: 0;)}}",
+        "false": "{{price, currency(currency: THB; maximumFractionDigits: 0;)}} outstanding"
+      },
+      "items": "Purchased items",
+      "delivery": {
+        "pos": "Storefront",
+        "schoolPickup": "School pickup",
+        "delivery": "Delivery to…"
+      },
+      "action": {
+        "viewReceipt": "View receipt",
+        "changeStatus": {
+          "label": "Change status",
+          "menu": {
+            "canceled": "Cancel this order",
+            "label": "Change status to…",
+            "notShipppedOut": "Not shipped out",
+            "pending": "Pending",
+            "delivered": "Delivered"
+          }
+        }
+      },
+      "snackbar": {
+        "changedStatus": {
+          "message": "Moved {{name}}’s successfully",
+          "action": "View new status"
+        }
+      }
+    },
+    "pagination": {
+      "alt": "Change page",
+      "action": {
+        "previous": "Previous",
+        "next": "Next"
+      }
+    }
+  },
+  "analytics": {
+    "title": "Analytics"
+  }
+}

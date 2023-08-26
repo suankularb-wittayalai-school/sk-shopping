@@ -1,0 +1,62 @@
+{
+  "title": "จัดการร้านค้า{{shop}}",
+  "tabsAlt": "เลือกรายการที่จะจัดการ",
+  "customize": {
+    "title": "ร้านค้า"
+  },
+  "listings": {
+    "title": "สินค้า"
+  },
+  "orders": {
+    "title": "การสั่งซื้อ",
+    "statusSelect": {
+      "label": "สถานะการสั่งซื้อ",
+      "canceled": "ยกเลิกไปแล้ว",
+      "notShippedOut": "ยังไม่ได้จัดส่ง",
+      "pending": "กำลังส่ง/พร้อมรับ",
+      "delivered": "รับสินค้าแล้ว"
+    },
+    "searchAlt": "ค้นหาการสั่งซื้อ",
+    "order": {
+      "payment": {
+        "true": "จ่าย {{price, currency(currency: THB; maximumFractionDigits: 0;)}} แล้ว",
+        "false": "ยังไม่ได้จ่าย {{price, currency(currency: THB; maximumFractionDigits: 0;)}}"
+      },
+      "items": "สินค้าที่สั่งซื้อ",
+      "delivery": {
+        "pos": "รับที่หน้าร้าน",
+        "schoolPickup": "รับที่โรงเรียน",
+        "delivery": "รับที่ที่อยู่…"
+      },
+      "action": {
+        "viewReceipt": "ดูใบเสร็จ",
+        "changeStatus": {
+          "label": "เปลี่ยนสถานะ",
+          "menu": {
+            "canceled": "ยกเลิกการสั่งซื้อนี้",
+            "label": "เปลี่ยนสถานะเป็น…",
+            "notShipppedOut": "ยังไม่ได้จัดส่ง",
+            "pending": "กำลังส่ง/พร้อมรับ",
+            "delivered": "รับสินค้าแล้ว"
+          }
+        }
+      },
+      "snackbar": {
+        "changedStatus": {
+          "message": "ย้ายการสั่งซื้อของ {{name}} แล้ว",
+          "action": "ไปที่สถานะใหม่"
+        }
+      }
+    },
+    "pagination": {
+      "alt": "เปลี่ยนหน้า",
+      "action": {
+        "previous": "หน้าที่แล้ว",
+        "next": "หน้าต่อไป"
+      }
+    }
+  },
+  "analytics": {
+    "title": "สถิติ"
+  }
+}

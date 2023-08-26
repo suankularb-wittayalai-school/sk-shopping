@@ -2,6 +2,7 @@
 import cn from "@/utils/helpers/cn";
 import { StylableFC } from "@/utils/types/common";
 import { MaterialIcon, Tab, TabsContainer } from "@suankularb-components/react";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -15,6 +16,8 @@ import shortUUID from "short-uuid";
 const ManageShopTabs: StylableFC<{
   shopID: string;
 }> = ({ shopID, style, className }) => {
+  const { t } = useTranslation("manage");
+
   const router = useRouter();
   const { fromUUID } = shortUUID();
 
@@ -37,7 +40,7 @@ const ManageShopTabs: StylableFC<{
     >
       <Tab
         icon={<MaterialIcon icon="imagesearch_roller" />}
-        label="ร้านค้า"
+        label={t("customize.title")}
         selected={selected === "customize"}
         onClick={() => setSelected("customize")}
         href={[baseURL, "customize"].join("/")}
@@ -45,7 +48,7 @@ const ManageShopTabs: StylableFC<{
       />
       <Tab
         icon={<MaterialIcon icon="category" />}
-        label="สินค้า"
+        label={t("listings.title")}
         selected={selected === "listings"}
         onClick={() => setSelected("listings")}
         href={[baseURL, "listings"].join("/")}
@@ -53,7 +56,7 @@ const ManageShopTabs: StylableFC<{
       />
       <Tab
         icon={<MaterialIcon icon="receipt" />}
-        label="การสั่งซื้อ"
+        label={t("orders.title")}
         selected={selected === "orders"}
         onClick={() => setSelected("orders")}
         href={[baseURL, "orders"].join("/")}
@@ -61,7 +64,7 @@ const ManageShopTabs: StylableFC<{
       />
       <Tab
         icon={<MaterialIcon icon="trending_up" />}
-        label="สถิติ"
+        label={t("analytics.title")}
         selected={selected === "analytics"}
         onClick={() => setSelected("analytics")}
         href={[baseURL, "analytics"].join("/")}

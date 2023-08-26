@@ -2,7 +2,7 @@
 import PageHeader from "@/components/PageHeader";
 import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
 import OrderListItem from "@/components/account/manage/OrderListItem";
-import OrderStatusSelector from "@/components/account/manage/OrderStatusSelector";
+import OrderStatusSelect from "@/components/account/manage/OrderStatusSelector";
 import SkeletonOrderListItem from "@/components/account/manage/SkeletonOrderListItem";
 import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
@@ -43,8 +43,8 @@ const ROWS_PER_PAGE = 100;
 const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
   const locale = useLocale();
   const getLocaleString = useGetLocaleString();
-  const { t } = useTranslation("manage");
-  const { t: tx } = useTranslation("common");
+  const { t } = useTranslation("manage", { keyPrefix: "orders" });
+  const { t: tx } = useTranslation(["common", "manage"]);
 
   const { fromUUID } = shortUUID();
 
@@ -90,23 +90,26 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
       <Head>
         <title>
           {tx("tabName", {
-            tabName: `จัดการร้านค้า${getLocaleString(shop.name)}`,
+            tabName: t("title", {
+              ns: "manage",
+              shop: getLocaleString(shop.name),
+            }),
           })}
         </title>
       </Head>
       <PageHeader parentURL={`/account/manage/${fromUUID(shop.id)}`}>
-        จัดการร้านค้า{getLocaleString(shop.name)}
+        {tx("title", { ns: "manage", shop: getLocaleString(shop.name) })}
       </PageHeader>
       <ContentLayout>
         <ManageShopTabs shopID={shop.id} />
         <Columns columns={3} className="mx-4 !items-end sm:mx-0">
-          <OrderStatusSelector
+          <OrderStatusSelect
             value={status}
             onChange={setStatus}
             className="md:col-span-2"
           />
           <Search
-            alt="ค้นหาคำสั่ง"
+            alt={t("searchAlt")}
             value={query}
             locale={locale}
             onChange={setQuery}
@@ -134,12 +137,13 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
           </List>
         </div>
         <SegmentedButton
-          alt="เปลี่ยนหน้า"
+          alt={t("pagination.alt")}
           className="sticky bottom-24 mx-auto sm:bottom-4 [&>*]:!bg-surface-1"
         >
           <Button
             appearance="outlined"
             icon={<MaterialIcon icon="chevron_left" />}
+            tooltip={t("pagination.action.previous")}
             onClick={() => setPage(Math.max(page - 1, 1))}
           />
           <Text
@@ -153,6 +157,7 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
           <Button
             appearance="outlined"
             icon={<MaterialIcon icon="chevron_right" />}
+            tooltip={t("pagination.action.next")}
             onClick={() => orders.length === ROWS_PER_PAGE && setPage(page + 1)}
           />
         </SegmentedButton>

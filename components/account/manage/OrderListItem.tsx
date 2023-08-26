@@ -19,12 +19,12 @@ import {
   Snackbar,
   Text,
   transition,
-  useAnimationConfig
+  useAnimationConfig,
 } from "@suankularb-components/react";
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
-import { sift } from "radash";
+import { camel, sift } from "radash";
 import { useContext, useState } from "react";
 
 /**
@@ -47,7 +47,7 @@ const OrderListItem: StylableFC<{
   jimmy: ReturnType<typeof useJimmy>;
 }> = ({ order, onStatusChange, setStatus, jimmy, style, className }) => {
   const locale = useLocale();
-  const { t } = useTranslation("manage");
+  const { t } = useTranslation("manage", { keyPrefix: "orders.order" });
 
   const { setSnackbar } = useContext(SnackbarContext);
 
@@ -58,7 +58,7 @@ const OrderListItem: StylableFC<{
 
   /**
    * Push the change to the Status of this Order to the database.
-   * 
+   *
    * @param status The Status to change to.
    */
   async function handleChangeStatus(status: OrderStatus) {
@@ -78,12 +78,12 @@ const OrderListItem: StylableFC<{
       <Snackbar
         action={
           <Button appearance="text" onClick={() => setStatus(status)}>
-            ไปที่สถานะใหม่
+            {t("snackbar.changedStatus.action")}
           </Button>
         }
         stacked
       >
-        ย้ายการสั่งซื้อของ {order.receiver_name} แล้ว
+        {t("snackbar.changedStatus.message", { name: order.receiver_name })}
       </Snackbar>,
     );
   }
@@ -92,6 +92,8 @@ const OrderListItem: StylableFC<{
     <motion.li
       layoutId={order.id}
       transition={transition(duration.medium2, easing.standard)}
+      style={style}
+      className={className}
     >
       <Columns columns={3} className="grow !items-stretch px-4 py-3">
         <div className="grid grid-cols-[3rem,1fr] gap-1">
@@ -114,27 +116,19 @@ const OrderListItem: StylableFC<{
                 hour: "numeric",
                 minute: "numeric",
               }),
-              order.is_paid && order.is_verified
-                ? `จ่าย ${order.total_price.toLocaleString(locale, {
-                    style: "currency",
-                    currency: "THB",
-                    maximumFractionDigits: 0,
-                  })} แล้ว`
-                : `ยังไม่ได้จ่าย ${order.total_price.toLocaleString(locale, {
-                    style: "currency",
-                    currency: "THB",
-                    maximumFractionDigits: 0,
-                  })}`,
+              t(`payment.${order.is_paid && order.is_verified}`, {
+                price: order.total_price,
+              }),
             ]).join(" • ")}
             className="[&>span:first-child]:truncate"
           />
         </div>
         <ListItemContent
-          title={<Text type="title-medium">สินค้าที่สั่งซื้อ</Text>}
+          title={<Text type="title-medium">{t("items")}</Text>}
           desc={order.items
             .map(({ item, amount }) => `${amount}×${item.name}`)
             .join(", ")}
-          alt="สินค้าที่สั่งซื้อ"
+          alt={t("items")}
         />
         <div
           className={cn(`grid grid-cols-[1fr,calc(5.5rem+2px)] gap-4
@@ -143,13 +137,7 @@ const OrderListItem: StylableFC<{
           <ListItemContent
             title={
               <Text type="title-medium">
-                {
-                  {
-                    pos: "รับที่หน้าร้าน",
-                    school_pickup: "รับที่โรงเรียน",
-                    delivery: "รับที่ที่อยู่…",
-                  }[order.delivery_type]
-                }
+                {t(`delivery.${camel(order.delivery_type)}`)}
               </Text>
             }
             desc={
@@ -163,18 +151,13 @@ const OrderListItem: StylableFC<{
                   ].join(" ")
                 : undefined
             }
-            alt={
-              {
-                pos: "รับที่หน้าร้าน",
-                school_pickup: "รับที่โรงเรียน",
-                delivery: "รับที่ที่อยู่…",
-              }[order.delivery_type]
-            }
+            alt={t(`delivery.${camel(order.delivery_type)}`)}
           />
           <Actions className="self-end">
             <Button
               appearance="outlined"
               icon={<MaterialIcon icon="receipt_long" />}
+              tooltip={t("action.viewReceipt")}
               onClick={() => setDialogOpen(true)}
             />
             <ReceiptDialog
@@ -186,24 +169,58 @@ const OrderListItem: StylableFC<{
               <Button
                 appearance="tonal"
                 icon={<MaterialIcon icon="move_down" />}
+                tooltip={t("action.changeStatus.label")}
                 onClick={() => setMenuOpen(true)}
               />
-              <Menu open={menuOpen} onBlur={() => setMenuOpen(false)}>
+              <Menu
+                open={menuOpen}
+                onBlur={() => setMenuOpen(false)}
+                className="!w-64"
+              >
                 <Text type="title-medium" className="py-2 pl-4 pr-6">
-                  ย้ายการสั่งซื้อไป…
+                  {t("action.changeStatus.menu.label")}
                 </Text>
-                <MenuItem onClick={() => handleChangeStatus("canceled")}>
-                  ยกเลิกไปแล้ว
+                <MenuItem
+                  icon={
+                    order.shipment_status === "not_shipped_out" ? (
+                      <MaterialIcon icon="check" />
+                    ) : undefined
+                  }
+                  onClick={() => handleChangeStatus("not_shipped_out")}
+                >
+                  {t("action.changeStatus.menu.notShipppedOut")}
                 </MenuItem>
-                <MenuItem onClick={() => handleChangeStatus("not_shipped_out")}>
-                  ยังไม่ได้จัดส่ง
+                <MenuItem
+                  icon={
+                    order.shipment_status === "pending" ? (
+                      <MaterialIcon icon="check" />
+                    ) : undefined
+                  }
+                  onClick={() => handleChangeStatus("pending")}
+                >
+                  {t("action.changeStatus.menu.pending")}
                 </MenuItem>
-                <MenuItem onClick={() => handleChangeStatus("pending")}>
-                  กำลังส่ง/พร้อมรับ
+                <MenuItem
+                  icon={
+                    order.shipment_status === "delivered" ? (
+                      <MaterialIcon icon="check" />
+                    ) : undefined
+                  }
+                  onClick={() => handleChangeStatus("delivered")}
+                  className={
+                    order.shipment_status !== "canceled" ? "mb-2" : undefined
+                  }
+                >
+                  {t("action.changeStatus.menu.delivered")}
                 </MenuItem>
-                <MenuItem onClick={() => handleChangeStatus("delivered")}>
-                  รับสินค้าแล้ว
-                </MenuItem>
+                {order.shipment_status !== "canceled" && (
+                  <MenuItem
+                    onClick={() => handleChangeStatus("canceled")}
+                    className="border-t-1 border-t-outline state-layer:!bg-error [&>span]:!text-error"
+                  >
+                    {t("action.changeStatus.menu.canceled")}
+                  </MenuItem>
+                )}
               </Menu>
             </div>
           </Actions>
