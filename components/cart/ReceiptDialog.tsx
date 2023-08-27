@@ -9,13 +9,16 @@ import {
   Button,
   Dialog,
   DialogContent,
+  Divider,
   MaterialIcon,
+  Menu,
+  MenuItem,
+  MenuItemProps,
   Text,
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import { camel } from "radash";
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import QRCode from "react-qr-code";
 import shortUUID from "short-uuid";
 
@@ -45,7 +48,44 @@ const ReceiptDialog: StylableFC<{
 
   const { fromUUID } = shortUUID();
 
-  const router = useRouter();
+  const [printMenuOpen, setPrintMenuOpen] = useState(false);
+
+  /**
+   * A Menu Item specialized for the Print Menu.
+   *
+   * @param children The text displayed inside the Menu Item.
+   * @param icon An icon can appear before the text (`children`) in a Menu Item.
+   * @param href The URL relative to the print directory of the page this Menu Item leads to.
+   * @param paperSize The ISO paper size (A5, A6, etc.) this will print in.
+   */
+  const PrintMenuItem: StylableFC<
+    Pick<MenuItemProps, "children" | "icon" | "href"> & { paperSize: string }
+  > = ({ children, icon, paperSize, href, style, className }) => (
+    <MenuItem
+      icon={
+        <div className="relative">
+          {icon}
+          <Text
+            type="label-small"
+            className={cn(`absolute -bottom-1 -right-1 rounded-full
+              bg-surface-2 px-0.5 !font-display text-secondary`)}
+          >
+            {paperSize}
+          </Text>
+        </div>
+      }
+      metadata={`ขนาด ${paperSize}`}
+      href={`/order/${fromUUID(order.id)}/print${href}`}
+      // eslint-disable-next-line react/display-name
+      element={forwardRef<HTMLAnchorElement>((props, ref) => (
+        <a {...props} ref={ref} target="_blank" />
+      ))}
+      style={style}
+      className={cn(`[&>span:nth-child(3)]:whitespace-nowrap`, className)}
+    >
+      {children}
+    </MenuItem>
+  );
 
   return (
     <Dialog
@@ -73,7 +113,10 @@ const ReceiptDialog: StylableFC<{
         </Text>
       </div>
       <div className="grid grid-cols-2 items-start gap-6 p-6">
-        <div className="grid grid-cols-[1.5rem,minmax(0,1fr)] gap-1 [&>i]:text-on-surface-variant [&>p]:py-0.5">
+        <div
+          className={cn(`grid grid-cols-[1.5rem,minmax(0,1fr)] gap-1
+            [&>i]:text-on-surface-variant [&>p]:py-0.5`)}
+        >
           <MaterialIcon icon="location_on" />
           <Text type="body-medium" element="p" className="line-clamp-3">
             {t(`details.delivery.${camel(order.delivery_type)}`, {
@@ -109,9 +152,7 @@ const ReceiptDialog: StylableFC<{
         </div>
         <figure className="light dark:rounded-md dark:bg-surface dark:p-3">
           <QRCode
-            value={`https://shopping.skkornor.org/order/${fromUUID(
-              order.id,
-            )}`}
+            value={`https://shopping.skkornor.org/order/${fromUUID(order.id)}`}
             bgColor="transparent"
             className="h-auto w-full"
           />
@@ -129,16 +170,41 @@ const ReceiptDialog: StylableFC<{
         />
       </DialogContent>
       <Actions className="!justify-between">
-        <Button
-          appearance="text"
-          icon={<MaterialIcon icon="print" />}
-          onClick={onClose}
-          href={`/order/${fromUUID(order.id)}/print/receipt`}
-          // eslint-disable-next-line react/display-name
-          element={forwardRef((props, ref) => (
-            <a {...props} ref={ref} target="_blank" />
-          ))}
-        />
+        <div className="relative">
+          <Button
+            appearance="text"
+            icon={<MaterialIcon icon="print" />}
+            onClick={() => setPrintMenuOpen(true)}
+          />
+          <Menu
+            open={printMenuOpen}
+            onBlur={() => setPrintMenuOpen(false)}
+            className="!bottom-12 !left-0 !top-auto !w-72"
+          >
+            <PrintMenuItem
+              icon={<MaterialIcon icon="receipt" />}
+              paperSize="A6"
+              href="/receipt"
+            >
+              พิมพ์ใบเสร็จ
+            </PrintMenuItem>
+            <Divider className="my-2 !border-outline" />
+            <PrintMenuItem
+              icon={<MaterialIcon icon="package" />}
+              paperSize="A5"
+              href="/label/a5"
+            >
+              พิมพ์ใบติดกล่องสินค้า
+            </PrintMenuItem>
+            <PrintMenuItem
+              icon={<MaterialIcon icon="package" />}
+              paperSize="A4"
+              href="/label/a4"
+            >
+              พิมพ์ใบติดกล่องสินค้า
+            </PrintMenuItem>
+          </Menu>
+        </div>
         <Button appearance="text" onClick={onClose}>
           {t("action.done")}
         </Button>
