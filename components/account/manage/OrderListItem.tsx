@@ -12,6 +12,7 @@ import {
   Avatar,
   Button,
   Columns,
+  Divider,
   ListItemContent,
   MaterialIcon,
   Menu,
@@ -37,6 +38,7 @@ import { useContext, useState } from "react";
  * good, is it!
  *
  * @param order The Order to display and/or modify.
+ * @param onStatusChange Triggers when the Order Status is changed.
  * @param setStatus The function to change the Order Status view.
  * @param jimmy A Jimmy instance.
  */
@@ -153,7 +155,7 @@ const OrderListItem: StylableFC<{
             }
             alt={t(`delivery.${camel(order.delivery_type)}`)}
           />
-          <Actions className="self-end">
+          <Actions align="full" className="self-end">
             <Button
               appearance="outlined"
               icon={<MaterialIcon icon="receipt_long" />}
@@ -207,19 +209,19 @@ const OrderListItem: StylableFC<{
                     ) : undefined
                   }
                   onClick={() => handleChangeStatus("delivered")}
-                  className={
-                    order.shipment_status !== "canceled" ? "mb-2" : undefined
-                  }
                 >
                   {t("action.changeStatus.menu.delivered")}
                 </MenuItem>
                 {order.shipment_status !== "canceled" && (
-                  <MenuItem
-                    onClick={() => handleChangeStatus("canceled")}
-                    className="border-t-1 border-t-outline state-layer:!bg-error [&>span]:!text-error"
-                  >
-                    {t("action.changeStatus.menu.canceled")}
-                  </MenuItem>
+                  <>
+                    <Divider className="!my-2 !border-outline" />
+                    <MenuItem
+                      onClick={() => handleChangeStatus("canceled")}
+                      className="state-layer:!bg-error [&>span]:!text-error"
+                    >
+                      {t("action.changeStatus.menu.canceled")}
+                    </MenuItem>
+                  </>
                 )}
               </Menu>
             </div>
