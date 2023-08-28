@@ -29,6 +29,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   locale,
   params,
 }) => {
+  if (locale !== "th")
+    return {
+      redirect: {
+        destination: `/order/${params!.orderID}/print/label/a5`,
+        permanent: false,
+      },
+    };
+
   const jimmy = await createJimmy();
   const { toUUID } = shortUUID();
 
