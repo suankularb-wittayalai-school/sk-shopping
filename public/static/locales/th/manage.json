@@ -16,7 +16,10 @@
       "pending": "กำลังส่ง/พร้อมรับ",
       "delivered": "รับสินค้าแล้ว"
     },
-    "searchAlt": "ค้นหาการสั่งซื้อ",
+    "search": {
+      "atl": "ค้นหาการสั่งซื้อ",
+      "helper": "<0> Enter ↵</0> เพื่อค้นหา"
+    },
     "order": {
       "payment": {
         "true": "จ่าย {{price, currency(currency: THB; maximumFractionDigits: 0;)}} แล้ว",

@@ -37,6 +37,12 @@
     }
   },
   "action": {
+    "print": {
+      "label": "Print",
+      "metadata": "Size {{paperSize}}",
+      "receipt": "Print receipt",
+      "packageLabel": "Print package label"
+    },
     "done": "Done"
   }
 }

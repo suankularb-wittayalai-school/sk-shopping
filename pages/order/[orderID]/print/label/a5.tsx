@@ -1,44 +1,29 @@
 // Imports
-import ReceiptDialog from "@/components/cart/ReceiptDialog";
-import AppStateContext from "@/contexts/AppStateContext";
+import PrintedOrder from "@/components/order/PrintedOrder";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
 import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
 /**
- * The destination of the QR code in Receipt Dialog, used by Shop staff to
- * verify Orders.
+ * A page that displays an Order in a printable A5 label format. A Package
+ * Label is to be placed on packages.
  *
- * @param order The Order to display with Receipt Dialog.
+ * @param order The Order to print.
  */
-const ReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
-  const router = useRouter();
-
-  const { setActiveNav } = useContext(AppStateContext);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  useEffect(() => {
-    setDialogOpen(true);
-    setActiveNav("cart");
-  }, []);
-
-  return (
-    <ReceiptDialog
-      order={order}
-      role="customer"
-      open={dialogOpen}
-      onClose={() => {
-        setDialogOpen(false);
-        router.push("/cart");
-      }}
-    />
-  );
-};
+const PrintA5LabelPage: NextPage<{ order: Order }> = ({ order }) => (
+  <PrintedOrder
+    order={order}
+    type="label"
+    width={148}
+    height={210}
+    density={-1}
+    autoPrint
+  />
+);
 
 export const getServerSideProps: GetServerSideProps = async ({
   locale,
@@ -67,4 +52,4 @@ export const getServerSideProps: GetServerSideProps = async ({
   };
 };
 
-export default ReceiptPage;
+export default PrintA5LabelPage;

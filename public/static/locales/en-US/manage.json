@@ -16,7 +16,10 @@
       "pending": "Pending",
       "delivered": "Delivered"
     },
-    "searchAlt": "Search orders",
+    "search": {
+      "alt": "Search orders",
+      "helper": "<0>Enter ↵</0> to search."
+    },
     "order": {
       "payment": {
         "true": "Paid {{price, currency(currency: THB; maximumFractionDigits: 0;)}}",

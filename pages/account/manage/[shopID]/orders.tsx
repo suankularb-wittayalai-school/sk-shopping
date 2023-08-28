@@ -25,7 +25,7 @@ import {
 } from "@suankularb-components/react";
 import { LayoutGroup } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
-import { useTranslation } from "next-i18next";
+import { Trans, useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { list } from "radash";
@@ -62,10 +62,7 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
     setOrders([]);
     const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
       query: {
-        pagination: {
-          p: (page - 1) * ROWS_PER_PAGE + 1,
-          size: ROWS_PER_PAGE,
-        },
+        pagination: { p: (page - 1) * ROWS_PER_PAGE, size: ROWS_PER_PAGE },
         filter: {
           ...(query ? { q: query } : {}),
           data: { shop_ids: [shop.id], shipment_status: status },
@@ -80,10 +77,10 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
     setLoading(false);
   }
 
-  useEffect(() => setPage(1), [query, status]);
+  useEffect(() => setPage(1), [status]);
   useEffect(() => {
     refreshOrders();
-  }, [query, status, page]);
+  }, [status, page]);
 
   return (
     <>
@@ -109,11 +106,20 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             className="md:col-span-2"
           />
           <Search
-            alt={t("searchAlt")}
+            alt={t("search.alt")}
             value={query}
             locale={locale}
             onChange={setQuery}
-          />
+            onSearch={refreshOrders}
+          >
+            <Text type="body-medium" element="p" className="mx-4">
+              <Trans
+                i18nKey="orders.search.helper"
+                ns="manage"
+                components={[<kbd key={0} className="kbd" />]}
+              />
+            </Text>
+          </Search>
         </Columns>
         <div aria-busy={loading}>
           <List divided>
@@ -212,3 +218,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default ManageOrdersPage;
+
