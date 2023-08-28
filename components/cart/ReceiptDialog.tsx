@@ -35,14 +35,16 @@ const FLAT_SHIPPING_COST_THB = 70;
  * A Dialog displaying detailed information about an Order.
  *
  * @param order The Order to display information of.
+ * @param role The role of the user viewing the Dialog. Used in determining what options to show in Print Menu.
  * @param open If the Dialog is open and shown.
  * @param onClose Triggers when the Dialog is closed.
  */
 const ReceiptDialog: StylableFC<{
   order: Order;
+  role: "customer" | "manager";
   open: boolean;
   onClose: () => void;
-}> = ({ order, open, onClose, style, className }) => {
+}> = ({ order, role, open, onClose, style, className }) => {
   const locale = useLocale();
   const { t } = useTranslation("receipt");
 
@@ -189,21 +191,25 @@ const ReceiptDialog: StylableFC<{
             >
               {t("action.print.receipt")}
             </PrintMenuItem>
-            <Divider className="my-2 !border-outline" />
-            <PrintMenuItem
-              icon={<MaterialIcon icon="package" />}
-              paperSize="A5"
-              href="/label/a5"
-            >
-              {t("action.print.packageLabel")}
-            </PrintMenuItem>
-            <PrintMenuItem
-              icon={<MaterialIcon icon="package" />}
-              paperSize="A4"
-              href="/label/a4"
-            >
-              {t("action.print.packageLabel")}
-            </PrintMenuItem>
+            {role === "manager" && (
+              <>
+                <Divider className="my-2 !border-outline" />
+                <PrintMenuItem
+                  icon={<MaterialIcon icon="package" />}
+                  paperSize="A5"
+                  href="/label/a5"
+                >
+                  {t("action.print.packageLabel")}
+                </PrintMenuItem>
+                <PrintMenuItem
+                  icon={<MaterialIcon icon="package" />}
+                  paperSize="A4"
+                  href="/label/a4"
+                >
+                  {t("action.print.packageLabel")}
+                </PrintMenuItem>
+              </>
+            )}
           </Menu>
         </div>
         <Button appearance="text" onClick={onClose}>

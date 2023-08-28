@@ -164,6 +164,7 @@ const OrderListItem: StylableFC<{
             />
             <ReceiptDialog
               order={order}
+              role="manager"
               open={dialogOpen}
               onClose={() => setDialogOpen(false)}
             />

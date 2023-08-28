@@ -98,6 +98,7 @@ const OrderCard: StylableFC<{
           </Button>
           <ReceiptDialog
             order={order}
+            role="customer"
             open={receiptOpen}
             onClose={() => setReceiptOpen(false)}
           />
