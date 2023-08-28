@@ -5,12 +5,21 @@ import cn from "@/utils/helpers/cn";
 import { StylableFC } from "@/utils/types/common";
 import { Order } from "@/utils/types/order";
 import { MaterialIcon, Text } from "@suankularb-components/react";
-import { sift } from "radash";
 import { useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import Balancer from "react-wrap-balancer";
 import shortUUID from "short-uuid";
 
+/**
+ * A component that displays an Order in a printable format.
+ *
+ * @param order The Order to display.
+ * @param type The type of the printed Order. Either a receipt or a label.
+ * @param width The width of the printed Order in millimeters.
+ * @param height The height of the printed Order in millimeters.
+ * @param density The density of the printed Order. -2 is the most dense, 0 is the least dense.
+ * @param autoPrint If the Order should be printed automatically when the component is mounted.
+ */
 const PrintedOrder: StylableFC<{
   order: Order;
   type: "receipt" | "label";
@@ -22,8 +31,8 @@ const PrintedOrder: StylableFC<{
   const { fromUUID } = shortUUID();
   useEffect(() => {
     if (!autoPrint) return;
-    // const timeout = setTimeout(() => window.print(), 100);
-    // return () => clearTimeout(timeout);
+    const timeout = setTimeout(() => window.print(), 100);
+    return () => clearTimeout(timeout);
   }, []);
 
   const tableRef = useRef<HTMLDivElement>(null);
