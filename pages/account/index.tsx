@@ -4,10 +4,12 @@ import AccountHeader from "@/components/account/AccountHeader";
 import GuestCard from "@/components/account/GuestCard";
 import AddAddressDialog from "@/components/address/AddAddressDialog";
 import AddressCard from "@/components/address/AddressCard";
+import ShopCard from "@/components/landing/ShopCard";
 import AppStateContext from "@/contexts/AppStateContext";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
+import { ShopCompact } from "@/utils/types/shop";
 import { UserDetailed } from "@/utils/types/user";
 import {
   Button,
@@ -31,7 +33,10 @@ import { useContext, useEffect, useState } from "react";
  *
  * @param user The user to display/edit information of.
  */
-const AccountPage: NextPage<{ user: UserDetailed }> = ({ user }) => {
+const AccountPage: NextPage<{
+  user: UserDetailed;
+  managingShops?: ShopCompact[];
+}> = ({ user, managingShops }) => {
   const { t } = useTranslation("account");
   const { t: tx } = useTranslation("common");
 
@@ -118,6 +123,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
   if (error) logError("/account getServerSideProps", error);
 
+  let managingShops: ShopCompact[] | null = null;
+  if (jimmy.user) {
+    const { data, error } = await jimmy.fetch<ShopCompact[]>(`/shops`, {
+      query: { filter: { data: { manager_ids: [jimmy.user.id] } } },
+    });
+    if (error) logError("/cart getServerSideProps (shops)", error);
+    managingShops = data;
+  }
   return {
     props: {
       ...(await serverSideTranslations(locale as LangCode, [
@@ -126,9 +139,9 @@ export const getServerSideProps: GetServerSideProps = async ({
         "address",
       ])),
       user,
+      managingShops,
     },
   };
 };
 
 export default AccountPage;
-
