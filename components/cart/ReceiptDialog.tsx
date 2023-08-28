@@ -74,7 +74,7 @@ const ReceiptDialog: StylableFC<{
           </Text>
         </div>
       }
-      metadata={`ขนาด ${paperSize}`}
+      metadata={t("action.print.metadata", { paperSize })}
       href={`/order/${fromUUID(order.id)}/print${href}`}
       // eslint-disable-next-line react/display-name
       element={forwardRef<HTMLAnchorElement>((props, ref) => (
@@ -174,6 +174,7 @@ const ReceiptDialog: StylableFC<{
           <Button
             appearance="text"
             icon={<MaterialIcon icon="print" />}
+            tooltip={t("action.print.label")}
             onClick={() => setPrintMenuOpen(true)}
           />
           <Menu
@@ -186,7 +187,7 @@ const ReceiptDialog: StylableFC<{
               paperSize="A6"
               href="/receipt"
             >
-              พิมพ์ใบเสร็จ
+              {t("action.print.receipt")}
             </PrintMenuItem>
             <Divider className="my-2 !border-outline" />
             <PrintMenuItem
@@ -194,14 +195,14 @@ const ReceiptDialog: StylableFC<{
               paperSize="A5"
               href="/label/a5"
             >
-              พิมพ์ใบติดกล่องสินค้า
+              {t("action.print.packageLabel")}
             </PrintMenuItem>
             <PrintMenuItem
               icon={<MaterialIcon icon="package" />}
               paperSize="A4"
               href="/label/a4"
             >
-              พิมพ์ใบติดกล่องสินค้า
+              {t("action.print.packageLabel")}
             </PrintMenuItem>
           </Menu>
         </div>
