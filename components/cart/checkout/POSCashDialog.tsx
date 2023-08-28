@@ -63,7 +63,9 @@ const POSCashDialog: StylableFC<{
     const { error } = await jimmy.fetch(`/orders/${order.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: { is_paid: true, is_verified: true } }),
+      body: JSON.stringify({
+        data: { is_paid: true, is_verified: true, shipment_status: "pending" },
+      }),
     });
     if (error) {
       logError("POSCashDialog", error);
@@ -110,3 +112,4 @@ const POSCashDialog: StylableFC<{
 };
 
 export default POSCashDialog;
+

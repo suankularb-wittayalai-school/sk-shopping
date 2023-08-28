@@ -11,6 +11,9 @@
       "logOut": "Log out"
     }
   },
+  "managingShops": {
+    "title": "Managing shops"
+  },
   "addresses": {
     "title": "Saved addresses",
     "empty": "No saved addresses yet. You can add addresses that you can use when you checkout.",

@@ -45,6 +45,16 @@
   .link:focus {
     text-decoration-color: var(--tertiary);
   }
+
+  .kbd {
+    background-color: var(--surface-variant);
+    padding-inline: 0.25rem;
+    border-color: var(--outline);
+    border-width: 1px;
+    border-bottom-width: 4px;
+    border-radius: var(--rounded-xs);
+    font-family: var(--font-body);
+  }
 }
 
 /* Google One Tap UI */
@@ -56,11 +66,5 @@
 #credential_picker_container {
   right: 0.5rem !important;
   top: 0.5rem !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  #credential_picker_container {
-    overflow: hidden;
-    border-radius: var(--rounded-md);
-  }
+  color-scheme: light;
 }

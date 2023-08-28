@@ -12,4 +12,16 @@ module.exports = withPlausibleProxy()({
       "lh3.googleusercontent.com",
     ],
   },
+  redirects: async () => [
+    {
+      source: "/receipt/:id",
+      destination: "/order/:id",
+      permanent: true,
+    },
+    {
+      source: "/receipt/:id/print",
+      destination: "/order/:id/print/receipt",
+      permanent: true,
+    },
+  ],
 });

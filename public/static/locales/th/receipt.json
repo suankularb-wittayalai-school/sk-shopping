@@ -2,6 +2,7 @@
   "title": "ใบเสร็จ {{date, datetime(dateStyle: long)}}",
   "details": {
     "delivery": {
+      "pos": "รับสินค้าที่หน้าร้าน",
       "schoolPickup": "รับสินค้าที่โรงเรียน",
       "delivery": "ส่งสินค้าไปที่ {{streetAddress}}"
     },
@@ -35,6 +36,12 @@
     }
   },
   "action": {
+    "print": {
+      "label": "พิมพ์",
+      "metadata": "ขนาด {{paperSize}}",
+      "receipt": "พิมพ์ใบเสร็จ",
+      "packageLabel": "พิมพ์ใบติดกล่องสินค้า"
+    },
     "done": "เสร็จสิ้น"
   }
 }

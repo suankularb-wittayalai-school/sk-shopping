@@ -2,6 +2,7 @@
   "title": "{{date, datetime(dateStyle: long)}} receipt",
   "details": {
     "delivery": {
+      "pos": "Storefront",
       "schoolPickup": "School pickup",
       "delivery": "Delivery to {{streetAddress}}"
     },
@@ -36,6 +37,12 @@
     }
   },
   "action": {
+    "print": {
+      "label": "Print",
+      "metadata": "Size {{paperSize}}",
+      "receipt": "Print receipt",
+      "packageLabel": "Print package label"
+    },
     "done": "Done"
   }
 }

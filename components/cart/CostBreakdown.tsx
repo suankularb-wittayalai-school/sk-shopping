@@ -1,3 +1,4 @@
+// Imports
 import cn from "@/utils/helpers/cn";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
@@ -7,15 +8,33 @@ import { Text } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 import { sift } from "radash";
 
+/**
+ * A table breaking down the cost of an Order.
+ * 
+ * @param items The Order Items (an array of objects with an Item and its quantity) in this Order.
+ * @param deliveryType The Delviery Type of this Order.
+ * @param shippingCost A number in Thai Baht appneded to the breakdown when Delivery Type is `delivery`.
+ * @param total The total cost of this Order, including the shipping cost.
+ * @param density A lower number means a more dense interface.
+ */
 const CostBreakdown: StylableFC<{
   items: { item: ListingOption; amount: number }[];
   deliveryType: DeliveryType;
   shippingCost?: number;
   total: number;
-}> = ({ items, deliveryType, shippingCost, total, style, className }) => {
+  density?: -2 | -1 | 0;
+}> = ({
+  items,
+  deliveryType,
+  shippingCost,
+  total,
+  density,
+  style,
+  className,
+}) => {
   const locale = useLocale();
   const { t } = useTranslation("receipt", { keyPrefix: "costBreakdown" });
-
+ 
   return (
     <table
       style={style}
@@ -28,9 +47,13 @@ const CostBreakdown: StylableFC<{
       <thead>
         <tr className="[&>*]:px-4 [&>*]:pb-1 [&>*]:pt-3">
           <Text type="title-medium" element="th">
-            {t("thead.amount")}
+            {[undefined, 0].includes(density) && t("thead.amount")}
           </Text>
-          <Text type="title-medium" element="th" className="w-full">
+          <Text
+            type="title-medium"
+            element="th"
+            className={cn(`w-full`, density !== 0 && `!px-0`)}
+          >
             {t("thead.item")}
           </Text>
           <Text type="title-medium" element="th">
@@ -38,7 +61,15 @@ const CostBreakdown: StylableFC<{
           </Text>
         </tr>
       </thead>
-      <tbody>
+      <tbody
+        className={
+          density === -2
+            ? `[&_td]:!py-0`
+            : density === -1
+            ? `[&_td]:!py-0.5`
+            : undefined
+        }
+      >
         {sift([
           ...items,
           deliveryType === "delivery" && {
@@ -61,7 +92,11 @@ const CostBreakdown: StylableFC<{
             >
               {item.id !== "shipping" ? amount : <>&nbsp;</>}
             </Text>
-            <Text type="body-medium" element="td">
+            <Text
+              type="body-medium"
+              element="td"
+              className={density !== 0 ? `!px-0` : undefined}
+            >
               {item.name}
             </Text>
             <Text
@@ -103,4 +138,3 @@ const CostBreakdown: StylableFC<{
 };
 
 export default CostBreakdown;
-
