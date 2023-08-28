@@ -10,6 +10,7 @@ const CARTS_LOCAL_STORAGE_KEY = "carts";
 const ORDERS_LOCAL_STORAGE_KEY = "orders";
 
 export default function useCarts() {
+  // Carts
   const [carts, setCarts] = useState<Cart[]>();
   useEffect(() => {
     const data = window.localStorage.getItem(CARTS_LOCAL_STORAGE_KEY);
@@ -18,9 +19,8 @@ export default function useCarts() {
   }, []);
 
   // Update localStorage to match React state
-  if (typeof window !== "undefined" && carts) {
+  if (typeof window !== "undefined" && carts)
     window.localStorage.setItem(CARTS_LOCAL_STORAGE_KEY, JSON.stringify(carts));
-  }
 
   // `cum` means “cumulative,” duh
   const totalItemCount = carts?.reduce(
@@ -102,12 +102,20 @@ export default function useCarts() {
     setCarts([]);
   }
 
+  // Orders
   const [orders, setOrders] = useState<Order[]>();
   useEffect(() => {
     const data = window.localStorage.getItem(ORDERS_LOCAL_STORAGE_KEY);
     if (data) setOrders(JSON.parse(data));
     else setOrders([]);
   }, []);
+
+  // Update localStorage to match React state
+  if (typeof window !== "undefined" && orders)
+    window.localStorage.setItem(
+      ORDERS_LOCAL_STORAGE_KEY,
+      JSON.stringify(orders),
+    );
 
   function addOrder(order: Order) {
     if (!orders) return;

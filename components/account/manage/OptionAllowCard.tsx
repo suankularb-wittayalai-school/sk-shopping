@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 /**
  * A toggle for a delivery or payment option in Customize Shop.
- * 
+ *
  * @param children Additional fields related to this option.
  * @param label The text label next to the Switch.
  * @param value If this option is enabled.
@@ -39,3 +39,4 @@ const OptionAllowCard: StylableFC<{
 );
 
 export default OptionAllowCard;
+
