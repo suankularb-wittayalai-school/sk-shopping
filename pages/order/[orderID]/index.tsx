@@ -30,6 +30,7 @@ const ReceiptPage: NextPage<{ order: Order }> = ({ order }) => {
   return (
     <ReceiptDialog
       order={order}
+      role="customer"
       open={dialogOpen}
       onClose={() => {
         setDialogOpen(false);

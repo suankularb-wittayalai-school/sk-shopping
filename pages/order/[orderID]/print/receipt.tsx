@@ -8,6 +8,15 @@ import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import shortUUID from "short-uuid";
 
+/**
+ * A page that displays an Order in a printable receipt format. A Receipt is to
+ * be given to customers.
+ *
+ * For POS orders, an extra portion of the Receipt is printed for the customer
+ * while the main part is for the Shop staff.
+ *
+ * @param order The Order to print.
+ */
 const PrintReceiptPage: NextPage<{ order: Order }> = ({ order }) => (
   <PrintedOrder
     order={order}

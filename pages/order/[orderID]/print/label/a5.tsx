@@ -8,8 +8,21 @@ import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import shortUUID from "short-uuid";
 
+/**
+ * A page that displays an Order in a printable A5 label format. A Package
+ * Label is to be placed on packages.
+ *
+ * @param order The Order to print.
+ */
 const PrintA5LabelPage: NextPage<{ order: Order }> = ({ order }) => (
-  <PrintedOrder order={order} type="label" width={148} height={210} density={-1} autoPrint />
+  <PrintedOrder
+    order={order}
+    type="label"
+    width={148}
+    height={210}
+    density={-1}
+    autoPrint
+  />
 );
 
 export const getServerSideProps: GetServerSideProps = async ({
