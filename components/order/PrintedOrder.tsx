@@ -67,43 +67,37 @@ const PrintedOrder: StylableFC<{
 
         {/* Header */}
         <div className="grid grid-cols-[minmax(0,1fr),4rem] items-end gap-6">
-          <Text
-            type={density === -2 ? "headline-medium" : "display-medium"}
-            element="h1"
-            className="!leading-none"
-          >
-            {type === "receipt" ? (
-              <>
-                {order.is_paid && order.is_verified
-                  ? "ใบเสร็จ"
-                  : "ใบแจ้งชำระเงิน"}
-                {" • "}
-                <Text type="title-large" className="!font-mono">
-                  {order.delivery_type === "pos" ? (
-                    <>
-                      <span className="opacity-50">
-                        {order.ref_id.slice(0, -5)}
-                      </span>
-                      <strong>{order.ref_id.slice(-5)}</strong>
-                    </>
-                  ) : (
-                    order.ref_id
-                  )}
-                </Text>
-              </>
-            ) : (
-              <>
-                <span className="!font-mono">
-                  {new Date(order.created_at)
-                    .getDate()
-                    .toString()
-                    .padStart(2, "0")}
-                </span>
-                {" • "}
-                <span className="!font-mono">{order.ref_id.slice(-5)}</span>
-              </>
-            )}
-          </Text>
+          {type === "receipt" ? (
+            <Text type="headline-medium" element="h1" className="!leading-none">
+              {order.is_paid && order.is_verified
+                ? "ใบเสร็จ"
+                : "ใบแจ้งชำระเงิน"}
+              {" • "}
+              <Text type="title-large" className="!font-mono">
+                {order.delivery_type === "pos" ? (
+                  <>
+                    <span className="opacity-50">
+                      {order.ref_id.slice(0, -5)}
+                    </span>
+                    <strong>{order.ref_id.slice(-5)}</strong>
+                  </>
+                ) : (
+                  order.ref_id
+                )}
+              </Text>
+            </Text>
+          ) : (
+            <Text type="display-large" element="h1" className="!leading-none">
+              <span className="!font-mono">
+                {new Date(order.created_at)
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")}
+              </span>
+              {" • "}
+              <span className="!font-mono">{order.ref_id.slice(-3)}</span>
+            </Text>
+          )}
           <QRCode
             value={`https://shopping.skkornor.org/order/${fromUUID(order.id)}`}
             bgColor="transparent"
