@@ -21,8 +21,6 @@ export default async function fetchJimmy<Data extends {} | unknown = unknown>(
     qs.stringify(options?.query, { encode: false }),
   ]).join("");
 
-  console.log(JSON.stringify(options?.query));
-
   /**
    * The original reponse from the API.
    */
