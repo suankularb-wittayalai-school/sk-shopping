@@ -46,7 +46,7 @@ const PrintedOrder: StylableFC<{
   return (
     <main
       style={{ width: `${width}mm`, height: `${height}mm` }}
-      className={cn(`light //invisible absolute flex flex-col divide-y-1
+      className={cn(`light invisible absolute flex flex-col divide-y-1
         divide-dashed divide-black bg-white text-black print:visible`)}
     >
       <div
