@@ -14,6 +14,7 @@ import { IDOnly, LangCode } from "@/utils/types/common";
 import { Order, OrderStatus } from "@/utils/types/order";
 import { ShopCompact } from "@/utils/types/shop";
 import {
+  Actions,
   Button,
   Columns,
   ContentLayout,
@@ -99,6 +100,8 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
       </PageHeader>
       <ContentLayout>
         <ManageShopTabs shopID={shop.id} />
+
+        {/* Filters */}
         <Columns columns={3} className="mx-4 !items-end sm:mx-0">
           <OrderStatusSelect
             value={status}
@@ -121,6 +124,8 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             </Text>
           </Search>
         </Columns>
+
+        {/* List */}
         <div aria-busy={loading}>
           <List divided>
             <LayoutGroup id="order">
@@ -142,31 +147,43 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             </LayoutGroup>
           </List>
         </div>
-        <SegmentedButton
-          alt={t("pagination.alt")}
-          className="sticky bottom-24 mx-auto sm:bottom-4 [&>*]:!bg-surface-1"
+
+        {/* Actions */}
+        <Actions
+          align="center"
+          className="sticky bottom-24 mx-auto sm:bottom-4"
         >
-          <Button
-            appearance="outlined"
-            icon={<MaterialIcon icon="chevron_left" />}
-            tooltip={t("pagination.action.previous")}
-            onClick={() => setPage(Math.max(page - 1, 1))}
-          />
-          <Text
-            type="title-medium"
-            element="div"
-            className={cn(`min-w-[2.5rem] select-none border-1 border-l-0
-              border-outline p-2 text-center`)}
+          <SegmentedButton
+            alt={t("pagination.alt")}
+            className="[&>*]:!bg-surface-1"
           >
-            {page}
-          </Text>
-          <Button
-            appearance="outlined"
-            icon={<MaterialIcon icon="chevron_right" />}
-            tooltip={t("pagination.action.next")}
-            onClick={() => orders.length === ROWS_PER_PAGE && setPage(page + 1)}
-          />
-        </SegmentedButton>
+            <Button
+              appearance="outlined"
+              icon={<MaterialIcon icon="chevron_left" />}
+              tooltip={t("pagination.action.previous")}
+              onClick={() => setPage(Math.max(page - 1, 1))}
+            />
+            <Text
+              type="title-medium"
+              element="div"
+              className={cn(`min-w-[2.5rem] select-none border-1 border-l-0
+                border-outline p-2 text-center`)}
+            >
+              {page}
+            </Text>
+            <Button
+              appearance="outlined"
+              icon={<MaterialIcon icon="chevron_right" />}
+              tooltip={t("pagination.action.next")}
+              onClick={() =>
+                orders.length === ROWS_PER_PAGE && setPage(page + 1)
+              }
+            />
+          </SegmentedButton>
+          <Button appearance="tonal" icon={<MaterialIcon icon="print" />}>
+            Print all
+          </Button>
+        </Actions>
       </ContentLayout>
     </>
   );
@@ -218,4 +235,3 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default ManageOrdersPage;
-
