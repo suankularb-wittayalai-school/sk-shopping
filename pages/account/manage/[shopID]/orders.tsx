@@ -62,10 +62,7 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
     setOrders([]);
     const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
       query: {
-        pagination: {
-          p: (page - 1) * ROWS_PER_PAGE + 1,
-          size: ROWS_PER_PAGE,
-        },
+        pagination: { p: (page - 1) * ROWS_PER_PAGE, size: ROWS_PER_PAGE },
         filter: {
           ...(query ? { q: query } : {}),
           data: { shop_ids: [shop.id], shipment_status: status },
@@ -212,3 +209,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default ManageOrdersPage;
+
