@@ -6,7 +6,8 @@ export default function Document() {
   return (
     <Html>
       <Head>
-        <meta property="og:locale" content="th_TH" />
+        <link rel="alternate" hrefLang="th" href="/" />
+        <link rel="alternate" hrefLang="en-US" href="/en-US" />
         <meta property="og:site_name" content="SK Shopping" />
       </Head>
       <body>
