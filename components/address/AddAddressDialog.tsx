@@ -1,17 +1,25 @@
 // Imports
 import AddressFields from "@/components/address/AddressFields";
+import { logError } from "@/utils/helpers/logError";
 import useForm from "@/utils/helpers/useForm";
+import useJimmy from "@/utils/helpers/useJimmy";
+import useRefreshProps from "@/utils/helpers/useRefreshProps";
 import { THAI_ZIPCODE_REGEX } from "@/utils/regex";
-import { Address } from "@/utils/types/address";
 import { StylableFC } from "@/utils/types/common";
 import { Button, FullscreenDialog } from "@suankularb-components/react";
-import { omit } from "radash";
-import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
-import useJimmy from "@/utils/helpers/useJimmy";
-import { logError } from "@/utils/helpers/logError";
-import useRefreshProps from "@/utils/helpers/useRefreshProps";
+import { omit } from "radash";
+import { useState } from "react";
 
+/**
+ * The Add Address Dialog allows users to add a new Address to their account.
+ * These Addresses are shown in the Checkout page.
+ * 
+ * This component also handle adding to the database.
+ * 
+ * @param open If the Dialog is open and shown.
+ * @param onClose Triggers when the Dialog is closed.
+ */
 const AddAddressDialog: StylableFC<{
   open: boolean;
   onClose: () => void;
