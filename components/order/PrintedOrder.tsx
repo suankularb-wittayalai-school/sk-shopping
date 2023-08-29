@@ -27,7 +27,7 @@ const PrintedOrder: StylableFC<{
   height: number;
   density?: -2 | -1 | 0;
   autoPrint?: boolean;
-}> = ({ order, type, width, height, density, autoPrint }) => {
+}> = ({ order, type, width, height, density, autoPrint, style, className }) => {
   const { fromUUID } = shortUUID();
   useEffect(() => {
     if (!autoPrint) return;
@@ -44,10 +44,13 @@ const PrintedOrder: StylableFC<{
   }, [tableRef]);
 
   return (
-    <main
-      style={{ width: `${width}mm`, height: `${height}mm` }}
-      className={cn(`light invisible absolute flex flex-col divide-y-1
-        divide-dashed divide-black bg-white text-black print:visible`)}
+    <div
+      style={{ width: `${width}mm`, height: `${height}mm`, ...style }}
+      className={cn(
+        `light invisible absolute flex flex-col divide-y-1 divide-dashed
+        divide-black bg-white text-black print:visible`,
+        className,
+      )}
     >
       <div
         className={cn(
@@ -214,7 +217,7 @@ const PrintedOrder: StylableFC<{
           }
         }
       `}</style>
-    </main>
+    </div>
   );
 };
 
