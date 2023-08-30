@@ -160,7 +160,7 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             icon={<MaterialIcon icon="print" />}
             onClick={() => setPrintOpen(true)}
           >
-            {t("action.print")}
+            {t("action.bulkPrint")}
           </Button>
           <BulkPrintOrdersDialog
             shopID={shop.id}
