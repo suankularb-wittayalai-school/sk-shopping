@@ -18,7 +18,7 @@ import {
   addDays
 } from "date-fns";
 import { useTranslation } from "next-i18next";
-import { camel } from "radash";
+import { camel, snake } from "radash";
 import shortUUID from "short-uuid";
 
 /**
@@ -78,7 +78,9 @@ const BulkPrintOrdersDialog: StylableFC<{
     // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
     window.open(
       `/account/manage/${fromUUID(shopID)}/orders/print?${new URLSearchParams(
-        form,
+        Object.fromEntries(
+          Object.entries(form).map(([key, value]) => [snake(key), value]),
+        ),
       )}`,
     );
   }

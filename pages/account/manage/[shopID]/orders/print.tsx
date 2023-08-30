@@ -8,6 +8,7 @@ import { DeliveryType, Order, OrderStatus } from "@/utils/types/order";
 import { endOfDay } from "date-fns";
 import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { camel } from "radash";
 import { useEffect } from "react";
 import shortUUID from "short-uuid";
 
@@ -67,13 +68,16 @@ export const getServerSideProps: GetServerSideProps = async ({
   query,
 }) => {
   // Get query parameters
-  const { shipmentStatus, deliveryType, dateStart, dateEnd, type } = query as {
-    shipmentStatus: OrderStatus;
-    deliveryType: DeliveryType;
-    dateStart: string;
-    dateEnd: string;
-    type: "receipt" | "label_a5" | "label_a4";
-  };
+  const { shipmentStatus, deliveryType, dateStart, dateEnd, type } =
+    Object.fromEntries(
+      Object.entries(query).map(([key, value]) => [camel(key), value]),
+    ) as {
+      shipmentStatus: OrderStatus;
+      deliveryType: DeliveryType;
+      dateStart: string;
+      dateEnd: string;
+      type: "receipt" | "label_a5" | "label_a4";
+    };
 
   const { toUUID } = shortUUID();
   const jimmy = await createJimmy();
