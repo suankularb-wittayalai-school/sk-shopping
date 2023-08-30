@@ -115,6 +115,9 @@ const PrintedOrder: StylableFC<{
                 ที่อยู่ผู้ส่ง
               </Text>
               <Text type="body-medium" element="address" className="not-italic">
+                {/* FIXME: The Shop name is hard-coded here; get from Order once implemented */}
+                คณะกรรมการนักเรียน
+                <br />
                 88 ถนนตรีเพชร
                 <br />
                 แขวงวังบูรพาภิรมย์
@@ -129,6 +132,8 @@ const PrintedOrder: StylableFC<{
                 ที่อยู่ผู้รับ
               </Text>
               <Text type="body-medium" element="address" className="not-italic">
+                {order.receiver_name}
+                <br />
                 <Balancer>{order.street_address_line_1}</Balancer>
                 <br />
                 {order.street_address_line_2 && (
