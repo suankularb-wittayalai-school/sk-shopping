@@ -14,9 +14,7 @@ import {
   Radio,
   TextField,
 } from "@suankularb-components/react";
-import {
-  addDays
-} from "date-fns";
+import { addDays, addMinutes } from "date-fns";
 import { useTranslation } from "next-i18next";
 import { camel, snake } from "radash";
 import shortUUID from "short-uuid";
@@ -77,11 +75,27 @@ const BulkPrintOrdersDialog: StylableFC<{
     // URLSearchParams is used to encode the form values as query
     // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
     window.open(
-      `/account/manage/${fromUUID(shopID)}/orders/print?${new URLSearchParams(
-        Object.fromEntries(
+      `/account/manage/${fromUUID(shopID)}/orders/print?${new URLSearchParams({
+        // Convert form keys to snake case
+        ...Object.fromEntries(
           Object.entries(form).map(([key, value]) => [snake(key), value]),
         ),
-      )}`,
+        // Convert `dateStart` and `dateEnd` to ISO 8601 format at UTC time
+        // (We are converting to UTC time just for Vercel; note that the time
+        // would be wrong on localhost. No idea why only Vercel requires UTC.)
+        ...Object.fromEntries(
+          (["dateStart", "dateEnd"] as ("dateStart" | "dateEnd")[]).map(
+            (key) => [
+              snake(key),
+              // Remove timezone offset
+              addMinutes(
+                new Date(form[key]),
+                new Date().getTimezoneOffset(),
+              ).toISOString(),
+            ],
+          ),
+        ),
+      })}`,
     );
   }
 
