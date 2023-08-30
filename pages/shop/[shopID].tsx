@@ -35,6 +35,15 @@ import { omit, pick } from "radash";
 import { useContext, useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
+/**
+ * The Shop page allows users to browse Listings in a Shop. The Listings are
+ * grouped by Collections shown on the left, and details on a selected Listing
+ * are shown on the right.
+ * 
+ * @param shop The Shop to display information about.
+ * @param collections An array of objects with a Collection and Listings in that Collection.
+ * @param orphanListings The Listings not in a Collection.
+ */
 const ShopPage: NextPage<{
   shop: Shop;
   collections: { collection: Collection; listings: ListingCompact[] }[];
