@@ -104,13 +104,11 @@ export const getServerSideProps: GetServerSideProps = async ({
   // Further filter orders as the API cannot sufficiently satisfy the query
   const orders = data
     // Filter orders by start and end date as provided in the query
-    .filter((order) => {
-      const orderDate = new Date(order.created_at);
-      const startDate = new Date(dateStart);
-      // Set dateEnd to the end of the day
-      const endDate = endOfDay(new Date(dateEnd));
-      return orderDate >= startDate && orderDate <= endDate;
-    })
+    .filter(
+      (order) =>
+        new Date(order.created_at) >= new Date(dateStart) &&
+        new Date(order.created_at) <= new Date(dateEnd),
+    )
     // Sort orders by name so customers who placed multiple Orders can receive
     // all of them at the same time
     .sort((a, b) => a.receiver_name.localeCompare(b.receiver_name))
