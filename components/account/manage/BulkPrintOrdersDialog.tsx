@@ -14,6 +14,9 @@ import {
   Radio,
   TextField,
 } from "@suankularb-components/react";
+import {
+  addDays
+} from "date-fns";
 import { useTranslation } from "next-i18next";
 import { camel } from "radash";
 import shortUUID from "short-uuid";
@@ -48,15 +51,16 @@ const BulkPrintOrdersDialog: StylableFC<{
       defaultValue: "school_pickup",
     },
     // The defaults for `dateStart` and `dateEnd` are today’s date
-    // in the format of YYYY-MM-DD
+    // in the format of YYYY-MM-DDTHH:mm
     {
       key: "dateStart",
-      defaultValue: new Date().toISOString().split("T")[0],
+      defaultValue: new Date().toISOString().split("T")[0] + "T00:00",
       required: true,
     },
     {
       key: "dateEnd",
-      defaultValue: new Date().toISOString().split("T")[0],
+      defaultValue:
+        addDays(new Date(), 1).toISOString().split("T")[0] + "T00:00",
       required: true,
     },
     {
@@ -144,13 +148,13 @@ const BulkPrintOrdersDialog: StylableFC<{
             appearance="outlined"
             label={t("dateRange.start")}
             onChange={(value) => console.log(value)}
-            inputAttr={{ type: "date" }}
+            inputAttr={{ type: "datetime-local" }}
             {...formProps.dateStart}
           />
           <TextField<string>
             appearance="outlined"
             label={t("dateRange.end")}
-            inputAttr={{ type: "date" }}
+            inputAttr={{ type: "datetime-local" }}
             {...formProps.dateEnd}
           />
         </FormGroup>
