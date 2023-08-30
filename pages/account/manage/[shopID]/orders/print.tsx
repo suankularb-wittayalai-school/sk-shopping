@@ -107,6 +107,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       const endDate = endOfDay(new Date(dateEnd));
       return orderDate >= startDate && orderDate <= endDate;
     })
+    // Sort orders by name so customers who placed multiple Orders can receive
+    // all of them at the same time
+    .sort((a, b) => a.receiver_name.localeCompare(b.receiver_name))
     // Blank out the PromptPay QR code URL as it is very big and not needed for
     // printing
     .map((order) => ({
