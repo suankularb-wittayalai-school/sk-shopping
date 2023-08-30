@@ -6,6 +6,10 @@
     "hidden": "Hidden",
     "item": {
       "outOfStock": "Currently out of stock"
+    },
+    "empty": {
+      "desc": "This shop has not put any items up for sale yet.",
+      "managerNote": "For shop managers, hidden items may currently be loading."
     }
   },
   "detail": {

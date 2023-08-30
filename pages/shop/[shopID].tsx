@@ -19,9 +19,11 @@ import { ListingCompact, ListingDetailed } from "@/utils/types/listing";
 import { ListingOptionDetailed } from "@/utils/types/listing-option";
 import { Shop } from "@/utils/types/shop";
 import {
+  Card,
   Columns,
   ContentLayout,
   Section,
+  Text,
   useBreakpoint,
 } from "@suankularb-components/react";
 import { LayoutGroup } from "framer-motion";
@@ -33,13 +35,14 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { omit, pick } from "radash";
 import { useContext, useEffect, useState } from "react";
+import { Balancer } from "react-wrap-balancer";
 import shortUUID from "short-uuid";
 
 /**
  * The Shop page allows users to browse Listings in a Shop. The Listings are
  * grouped by Collections shown on the left, and details on a selected Listing
  * are shown on the right.
- * 
+ *
  * @param shop The Shop to display information about.
  * @param collections An array of objects with a Collection and Listings in that Collection.
  * @param orphanListings The Listings not in a Collection.
@@ -63,17 +66,46 @@ const ShopPage: NextPage<{
   const { atBreakpoint } = useBreakpoint();
   const { activeNav } = useContext(AppStateContext);
 
+  // If the user is a manager of this Shop, fetch hidden Listings
+  const [hiddenListings, setHiddenListings] = useState<ListingCompact[]>([]);
+  useEffect(() => {
+    if (jimmy.user.status !== "authenticated" || !jimmy.user.user) return;
+    (async () => {
+      // If this Shop is not managed by the user, return
+      if (!(await isManagerOfShop(shop.id))) return;
+
+      // Fetch hidden Listings
+      const { data, error } = await jimmy.fetch<ListingCompact[]>(`/listings`, {
+        query: {
+          filter: { data: { shop_ids: [shop.id], is_hidden: true } },
+          fetch_level: "compact",
+        },
+      });
+      if (error) {
+        logError("useEffect (hidden listings)", error);
+        return;
+      }
+      // setHiddenListings(data);
+    })();
+  }, [jimmy.user]);
+
+  /**
+   * All the Listings in this Shop.
+   */
+  const listings = [
+    ...collections.map((collection) => collection.listings).flat(),
+    ...orphanListings,
+    ...hiddenListings,
+  ];
   const [selected, setSelected] = useState<ListingCompact>();
 
   // If a query is present, set the selected Listing to the one identified in
   // the query
   useEffect(() => {
     if (!router.query.selected) return;
-    const selected = [
-      ...collections.map((collection) => collection.listings).flat(),
-      ...orphanListings,
-      ...hiddenListings,
-    ].find((listing) => toUUID(router.query.selected as string) === listing.id);
+    const selected = listings.find(
+      (listing) => toUUID(router.query.selected as string) === listing.id,
+    );
     if (!selected) return;
     plausible("View Listing", {
       props: {
@@ -125,29 +157,6 @@ const ShopPage: NextPage<{
   const [image, setImage] = useState<string>();
   const [imageOpen, setImageOpen] = useState(false);
 
-  // If the user is a manager of this Shop, fetch hidden Listings
-  const [hiddenListings, setHiddenListings] = useState<ListingCompact[]>([]);
-  useEffect(() => {
-    if (jimmy.user.status !== "authenticated" || !jimmy.user.user) return;
-    (async () => {
-      // If this Shop is not managed by the user, return
-      if (!(await isManagerOfShop(shop.id))) return;
-
-      // Fetch hidden Listings
-      const { data, error } = await jimmy.fetch<ListingCompact[]>(`/listings`, {
-        query: {
-          filter: { data: { shop_ids: [shop.id], is_hidden: true } },
-          fetch_level: "compact",
-        },
-      });
-      if (error) {
-        logError("useEffect (hidden listings)", error);
-        return;
-      }
-      setHiddenListings(data);
-    })();
-  }, [jimmy.user.status]);
-
   return (
     <>
       <Head>
@@ -190,29 +199,47 @@ const ShopPage: NextPage<{
 
         <ContentLayout className="md:!mt-[4.25rem]">
           <Columns columns={2} className="sm:!grid-cols-1 md:!grid-cols-2">
-            <Section>
-              {collections.map(({ collection, listings }) => (
-                <CollectionSection
-                  key={collection.id}
-                  collection={collection}
-                  listings={listings}
+            {listings.length ? (
+              <Section>
+                {collections.map(({ collection, listings }) => (
+                  <CollectionSection
+                    key={collection.id}
+                    collection={collection}
+                    listings={listings}
+                    selected={selected}
+                    onCardClick={handleCardClick}
+                  />
+                ))}
+                <GenericListingsSection
+                  title={t("list.noCollection")}
+                  listings={orphanListings}
                   selected={selected}
                   onCardClick={handleCardClick}
                 />
-              ))}
-              <GenericListingsSection
-                title={t("list.noCollection")}
-                listings={orphanListings}
-                selected={selected}
-                onCardClick={handleCardClick}
-              />
-              <GenericListingsSection
-                title={t("list.hidden")}
-                listings={hiddenListings}
-                selected={selected}
-                onCardClick={handleCardClick}
-              />
-            </Section>
+                <GenericListingsSection
+                  title={t("list.hidden")}
+                  listings={hiddenListings}
+                  selected={selected}
+                  onCardClick={handleCardClick}
+                />
+              </Section>
+            ) : (
+              <Card
+                appearance="outlined"
+                className="mx-4 flex h-[calc(100dvh-11rem)] flex-col items-center justify-center gap-2 !bg-transparent p-6 sm:mx-0 sm:h-[calc(100dvh-8rem)]"
+              >
+                <Text type="body-medium" element="p" className="text-center">
+                  <Balancer>{t("list.empty.desc")}</Balancer>
+                </Text>
+                <Text
+                  type="body-small"
+                  element="p"
+                  className="text-center !text-on-surface-variant"
+                >
+                  <Balancer>{t("list.empty.managerNote")}</Balancer>
+                </Text>
+              </Card>
+            )}
           </Columns>
         </ContentLayout>
 
