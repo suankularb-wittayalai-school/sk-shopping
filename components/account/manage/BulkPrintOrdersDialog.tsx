@@ -48,17 +48,21 @@ const BulkPrintOrdersDialog: StylableFC<{
       key: "deliveryType",
       defaultValue: "school_pickup",
     },
-    // The defaults for `dateStart` and `dateEnd` are today’s date
-    // in the format of YYYY-MM-DDTHH:mm
+    // The defaults for `dateStart` and `dateEnd` are in YYYY-MM-DDTHH:mm
     {
       key: "dateStart",
+      // The default for `dateStart` is today at midnight
       defaultValue: new Date().toISOString().split("T")[0] + "T00:00",
       required: true,
     },
     {
       key: "dateEnd",
-      defaultValue:
-        addDays(new Date(), 1).toISOString().split("T")[0] + "T00:00",
+      // The default for `dateEnd` is now (without seconds)
+      defaultValue: addMinutes(new Date(), -1 * new Date().getTimezoneOffset())
+        .toISOString()
+        .split(":")
+        .slice(0, 2)
+        .join(":"),
       required: true,
     },
     {
@@ -75,27 +79,18 @@ const BulkPrintOrdersDialog: StylableFC<{
     // URLSearchParams is used to encode the form values as query
     // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
     window.open(
-      `/account/manage/${fromUUID(shopID)}/orders/print?${new URLSearchParams({
+      `/account/manage/${fromUUID(shopID)}/orders/print?${new URLSearchParams(
         // Convert form keys to snake case
-        ...Object.fromEntries(
-          Object.entries(form).map(([key, value]) => [snake(key), value]),
+        Object.fromEntries(
+          Object.entries(form).map(([key, value]) => [
+            snake(key),
+            ["dateStart", "dateEnd"].includes(key)
+              ? // Convert dates to ISO string
+                new Date(form[key as "dateStart" | "dateEnd"]).toISOString()
+              : value,
+          ]),
         ),
-        // Convert `dateStart` and `dateEnd` to ISO 8601 format at UTC time
-        // (We are converting to UTC time just for Vercel; note that the time
-        // would be wrong on localhost. No idea why only Vercel requires UTC.)
-        ...Object.fromEntries(
-          (["dateStart", "dateEnd"] as ("dateStart" | "dateEnd")[]).map(
-            (key) => [
-              snake(key),
-              // Remove timezone offset
-              addMinutes(
-                new Date(form[key]),
-                new Date().getTimezoneOffset(),
-              ).toISOString(),
-            ],
-          ),
-        ),
-      })}`,
+      )}`,
     );
   }
 
