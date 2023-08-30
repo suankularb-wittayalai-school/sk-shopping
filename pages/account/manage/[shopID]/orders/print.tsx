@@ -1,5 +1,6 @@
 // Imports
 import PrintedOrder from "@/components/order/PrintedOrder";
+import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
@@ -40,7 +41,7 @@ const BulkPrintOrdersPage: NextPage<{
   // I’m not sure if there’s a better way to do this.
 
   return (
-    <div className="absolute">
+    <div className={cn(`absolute`, type === "label_a4" && `space-y-1`)}>
       {orders.map((order) => (
         <PrintedOrder
           key={order.id}
