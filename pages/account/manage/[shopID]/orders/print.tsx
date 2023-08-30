@@ -5,7 +5,6 @@ import createJimmy from "@/utils/helpers/createJimmy";
 import { logError } from "@/utils/helpers/logError";
 import { LangCode } from "@/utils/types/common";
 import { DeliveryType, Order, OrderStatus } from "@/utils/types/order";
-import { endOfDay } from "date-fns";
 import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { camel } from "radash";
@@ -67,6 +66,8 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   query,
 }) => {
+  console.time("get orders");
+
   // Get query parameters
   const { shipmentStatus, deliveryType, dateStart, dateEnd, type } =
     Object.fromEntries(
@@ -98,11 +99,11 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
   if (error) {
     logError("/account/manage/:id/orders/print getServerSideProps", error);
-    return { notFound: true };
+    // return { notFound: true };
   }
 
   // Further filter orders as the API cannot sufficiently satisfy the query
-  const orders = data
+  const orders = data!
     // Filter orders by start and end date as provided in the query
     .filter(
       (order) =>
@@ -119,8 +120,11 @@ export const getServerSideProps: GetServerSideProps = async ({
       promptpay_qr_code_url: "",
     }));
 
+  console.timeEnd("get orders");
+  console.log("orders length", orders.length);
+
   // If there are no orders, return a 404
-  if (orders.length === 0) return { notFound: true };
+  // if (orders.length === 0)return { notFound: true };
 
   return {
     props: {
