@@ -3,6 +3,7 @@
   "list": {
     "collection": "Collection",
     "noCollection": "No collection",
+    "hidden": "Hidden",
     "item": {
       "outOfStock": "Currently out of stock"
     }

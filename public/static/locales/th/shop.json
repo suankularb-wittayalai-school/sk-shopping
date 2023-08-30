@@ -3,6 +3,7 @@
   "list": {
     "collection": "คอลเลคชั่น",
     "noCollection": "สินค้าอื่น ๆ",
+    "hidden": "สินค้าที่ซ่อนอยู่",
     "item": {
       "outOfStock": "สินค้าหมดในขณะนี้"
     }

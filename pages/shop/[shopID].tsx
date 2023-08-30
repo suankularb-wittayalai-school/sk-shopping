@@ -4,13 +4,15 @@ import CollectionSection from "@/components/shop/CollectionSection";
 import FullscreenImageDialog from "@/components/shop/details/FullscreenImageDialog";
 import ListingDetailsDialog from "@/components/shop/details/ListingDetailsDialog";
 import ListingDetailsSection from "@/components/shop/details/ListingDetailsSection";
-import NoCollectionSection from "@/components/shop/NoCollectionSection";
+import GenericListingsSection from "@/components/shop/GenericListingsSection";
 import AppStateContext from "@/contexts/AppStateContext";
 import cn from "@/utils/helpers/cn";
 import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
 import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
+import useIsManagerOfShop from "@/utils/helpers/useIsManagerOfShop";
+import useJimmy from "@/utils/helpers/useJimmy";
 import { Collection, CollectionDetailed } from "@/utils/types/collection";
 import { IDOnly, LangCode } from "@/utils/types/common";
 import { ListingCompact, ListingDetailed } from "@/utils/types/listing";
@@ -45,6 +47,8 @@ const ShopPage: NextPage<{
   const { fromUUID, toUUID } = shortUUID();
 
   const router = useRouter();
+  const jimmy = useJimmy();
+  const isManagerOfShop = useIsManagerOfShop();
   const plausible = usePlausible();
 
   const { atBreakpoint } = useBreakpoint();
@@ -56,12 +60,11 @@ const ShopPage: NextPage<{
   // the query
   useEffect(() => {
     if (!router.query.selected) return;
-    const selected = collections
-      .map((collection) => collection.listings)
-      .flat()
-      .find(
-        (listing) => toUUID(router.query.selected as string) === listing.id,
-      );
+    const selected = [
+      ...collections.map((collection) => collection.listings).flat(),
+      ...orphanListings,
+      ...hiddenListings,
+    ].find((listing) => toUUID(router.query.selected as string) === listing.id);
     if (!selected) return;
     plausible("View Listing", {
       props: {
@@ -103,7 +106,6 @@ const ShopPage: NextPage<{
       { shallow: true },
     );
   }
-
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 0);
     handleScroll();
@@ -113,6 +115,29 @@ const ShopPage: NextPage<{
 
   const [image, setImage] = useState<string>();
   const [imageOpen, setImageOpen] = useState(false);
+
+  // If the user is a manager of this Shop, fetch hidden Listings
+  const [hiddenListings, setHiddenListings] = useState<ListingCompact[]>([]);
+  useEffect(() => {
+    if (jimmy.user.status !== "authenticated" || !jimmy.user.user) return;
+    (async () => {
+      // If this Shop is not managed by the user, return
+      if (!(await isManagerOfShop(shop.id))) return;
+
+      // Fetch hidden Listings
+      const { data, error } = await jimmy.fetch<ListingCompact[]>(`/listings`, {
+        query: {
+          filter: { data: { shop_ids: [shop.id], is_hidden: true } },
+          fetch_level: "compact",
+        },
+      });
+      if (error) {
+        logError("useEffect (hidden listings)", error);
+        return;
+      }
+      setHiddenListings(data);
+    })();
+  }, [jimmy.user.status]);
 
   return (
     <>
@@ -166,8 +191,15 @@ const ShopPage: NextPage<{
                   onCardClick={handleCardClick}
                 />
               ))}
-              <NoCollectionSection
+              <GenericListingsSection
+                title={t("list.noCollection")}
                 listings={orphanListings}
+                selected={selected}
+                onCardClick={handleCardClick}
+              />
+              <GenericListingsSection
+                title={t("list.hidden")}
+                listings={hiddenListings}
                 selected={selected}
                 onCardClick={handleCardClick}
               />
