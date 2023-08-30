@@ -66,8 +66,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   query,
 }) => {
-  console.time("get orders");
-
   // Get query parameters
   const { shipmentStatus, deliveryType, dateStart, dateEnd, type } =
     Object.fromEntries(
@@ -79,12 +77,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       dateEnd: string;
       type: "receipt" | "label_a5" | "label_a4";
     };
-
-  console.log({
-    query,
-    dateStart: new Date(dateStart),
-    dateEnd: new Date(dateEnd),
-  });
 
   const { toUUID } = shortUUID();
   const jimmy = await createJimmy();
@@ -113,8 +105,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     // Filter orders by start and end date as provided in the query
     .filter(
       (order) =>
-        new Date(order.created_at) >= new Date(dateStart) &&
-        new Date(order.created_at) <= new Date(dateEnd),
+        new Date(order.created_at).getTime() >= new Date(dateStart).getTime() &&
+        new Date(order.created_at).getTime() <= new Date(dateEnd).getTime(),
     )
     // Sort orders by name so customers who placed multiple Orders can receive
     // all of them at the same time
