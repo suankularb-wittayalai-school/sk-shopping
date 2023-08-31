@@ -14,6 +14,12 @@ import {
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 
+/**
+ * Address Card displays an Address in a Card. It also allows the user to
+ * delete the Address.
+ * 
+ * @param address The Address to display.
+ */
 const AddressCard: StylableFC<{
   address: Address;
 }> = ({ address, style, className }) => {

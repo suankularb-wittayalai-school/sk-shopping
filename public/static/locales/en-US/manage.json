@@ -57,6 +57,48 @@
         "previous": "Previous",
         "next": "Next"
       }
+    },
+    "action": {
+      "bulkPrint": "Bulk print"
+    },
+    "dialog": {
+      "bulkPrint": {
+        "title": "Configure bulk print",
+        "desc": "Choose from the options below and press “Print” to print the selected orders.",
+        "shipmentStatus": {
+          "label": "Shipment status",
+          "option": {
+            "canceled": "Canceled",
+            "notShippedOut": "Not shipped out",
+            "pending": "Pending",
+            "delivered": "Delivered"
+          }
+        },
+        "deliveryType": {
+          "label": "Delivery type",
+          "option": {
+            "pos": "Storefront",
+            "schoolPickup": "School pickup",
+            "delivery": "Delivery to address"
+          }
+        },
+        "dateRange": {
+          "label": "Date range",
+          "start": "Start date",
+          "end": "End date"
+        },
+        "type": {
+          "label": "Type",
+          "option": {
+            "receipt": "Receipt (A6)",
+            "labelA5": "Package label (A5)",
+            "labelA4": "Package label (A4)"
+          }
+        },
+        "action": {
+          "print": "Print"
+        }
+      }
     }
   },
   "analytics": {

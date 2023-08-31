@@ -1,5 +1,6 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
+import BulkPrintOrdersDialog from "@/components/account/manage/BulkPrintOrdersDialog";
 import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
 import OrderListItem from "@/components/account/manage/OrderListItem";
 import OrderStatusSelect from "@/components/account/manage/OrderStatusSelect";
@@ -14,6 +15,7 @@ import { IDOnly, LangCode } from "@/utils/types/common";
 import { Order, OrderStatus } from "@/utils/types/order";
 import { ShopCompact } from "@/utils/types/shop";
 import {
+  Actions,
   Button,
   Columns,
   ContentLayout,
@@ -28,7 +30,7 @@ import { GetServerSideProps, NextPage } from "next";
 import { Trans, useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
-import { list } from "radash";
+import { list, omit } from "radash";
 import { useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
@@ -40,7 +42,10 @@ const ROWS_PER_PAGE = 100;
  *
  * @param shop The Shop to manage Orders for.
  */
-const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
+const ManageOrdersPage: NextPage<{
+  shop: ShopCompact;
+  orders: Order[];
+}> = ({ shop, orders: initialOrders }) => {
   const locale = useLocale();
   const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("manage", { keyPrefix: "orders" });
@@ -49,14 +54,17 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
   const { fromUUID } = shortUUID();
 
   const jimmy = useJimmy();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<OrderStatus>("not_shipped_out");
   const [page, setPage] = useState(1);
 
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
 
+  /**
+   * Refreshes the list of Orders.
+   */
   async function refreshOrders() {
     setLoading(true);
     setOrders([]);
@@ -70,7 +78,6 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
         sorting: { by: ["created_at"], ascending: false },
         descendant_fetch_level: "compact",
       },
-      cache: "no-cache",
     });
     if (error) logError("useEffect", error);
     else if (data) setOrders(data);
@@ -78,9 +85,8 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
   }
 
   useEffect(() => setPage(1), [status]);
-  useEffect(() => {
-    refreshOrders();
-  }, [status, page]);
+
+  const [printOpen, setPrintOpen] = useState(false);
 
   return (
     <>
@@ -99,10 +105,15 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
       </PageHeader>
       <ContentLayout>
         <ManageShopTabs shopID={shop.id} />
+
+        {/* Filters */}
         <Columns columns={3} className="mx-4 !items-end sm:mx-0">
           <OrderStatusSelect
             value={status}
-            onChange={setStatus}
+            onChange={(value) => {
+              setStatus(value);
+              refreshOrders();
+            }}
             className="md:col-span-2"
           />
           <Search
@@ -121,6 +132,8 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             </Text>
           </Search>
         </Columns>
+
+        {/* List */}
         <div aria-busy={loading}>
           <List divided>
             <LayoutGroup id="order">
@@ -142,6 +155,23 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             </LayoutGroup>
           </List>
         </div>
+
+        <Actions className="mx-4 sm:mx-0">
+          <Button
+            appearance="tonal"
+            icon={<MaterialIcon icon="print" />}
+            onClick={() => setPrintOpen(true)}
+          >
+            {t("action.bulkPrint")}
+          </Button>
+          <BulkPrintOrdersDialog
+            shopID={shop.id}
+            open={printOpen}
+            onClose={() => setPrintOpen(false)}
+          />
+        </Actions>
+
+        {/* Pagination */}
         <SegmentedButton
           alt={t("pagination.alt")}
           className="sticky bottom-24 mx-auto sm:bottom-4 [&>*]:!bg-surface-1"
@@ -150,7 +180,10 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             appearance="outlined"
             icon={<MaterialIcon icon="chevron_left" />}
             tooltip={t("pagination.action.previous")}
-            onClick={() => setPage(Math.max(page - 1, 1))}
+            onClick={() => {
+              setPage(Math.max(page - 1, 1));
+              refreshOrders();
+            }}
           />
           <Text
             type="title-medium"
@@ -164,7 +197,13 @@ const ManageOrdersPage: NextPage<{ shop: ShopCompact }> = ({ shop }) => {
             appearance="outlined"
             icon={<MaterialIcon icon="chevron_right" />}
             tooltip={t("pagination.action.next")}
-            onClick={() => orders.length === ROWS_PER_PAGE && setPage(page + 1)}
+            onClick={() => {
+              // If the Orders length is less than the page size, then we know
+              // that we are on the last page
+              if (orders.length !== ROWS_PER_PAGE) return;
+              setPage(page + 1);
+              refreshOrders();
+            }}
           />
         </SegmentedButton>
       </ContentLayout>
@@ -205,6 +244,22 @@ export const getServerSideProps: GetServerSideProps = async ({
   if (!managingShops?.find((managingShop) => shop.id === managingShop.id))
     return { notFound: true };
 
+  const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
+    query: {
+      pagination: { p: 0, size: ROWS_PER_PAGE },
+      filter: {
+        data: { shop_ids: [shop.id] },
+      },
+      sorting: { by: ["created_at"], ascending: false },
+      descendant_fetch_level: "compact",
+    },
+  });
+  if (error) {
+    logError("useEffect", error);
+    return { notFound: true };
+  }
+  const orders = data.map((order) => omit(order, ["promptpay_qr_code_url"]));
+
   return {
     props: {
       ...(await serverSideTranslations(locale as LangCode, [
@@ -213,6 +268,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         "receipt",
       ])),
       shop,
+      orders,
     },
   };
 };

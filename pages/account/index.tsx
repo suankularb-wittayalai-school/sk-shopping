@@ -12,6 +12,7 @@ import { LangCode } from "@/utils/types/common";
 import { ShopCompact } from "@/utils/types/shop";
 import { UserDetailed } from "@/utils/types/user";
 import {
+  Actions,
   Button,
   Card,
   Columns,
@@ -55,7 +56,7 @@ const AccountPage: NextPage<{
         {user ? (
           <>
             <AccountHeader user={user} />
-            {managingShops && (
+            {managingShops && managingShops.length && (
               <Section>
                 <Header>{t("managingShops.title")}</Header>
                 <Columns columns={4} element="ul">
@@ -66,15 +67,17 @@ const AccountPage: NextPage<{
               </Section>
             )}
             <Section>
-              <div className="flex flex-row gap-6">
+              <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
                 <Header className="grow">{t("addresses.title")}</Header>
-                <Button
-                  appearance="filled"
-                  icon={<MaterialIcon icon="add" />}
-                  onClick={() => setAddAddressOpen(true)}
-                >
-                  {t("addresses.action.add")}
-                </Button>
+                <Actions>
+                  <Button
+                    appearance="filled"
+                    icon={<MaterialIcon icon="add" />}
+                    onClick={() => setAddAddressOpen(true)}
+                  >
+                    {t("addresses.action.add")}
+                  </Button>
+                </Actions>
                 <AddAddressDialog
                   open={addAddressOpen}
                   onClose={() => setAddAddressOpen(false)}

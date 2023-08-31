@@ -18,7 +18,7 @@ import {
 } from "@suankularb-components/react";
 import { useTranslation } from "next-i18next";
 import { camel } from "radash";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import shortUUID from "short-uuid";
 
@@ -51,6 +51,9 @@ const ReceiptDialog: StylableFC<{
   const { fromUUID } = shortUUID();
 
   const [printMenuOpen, setPrintMenuOpen] = useState(false);
+  useEffect(() => {
+    if (!open) setPrintMenuOpen(false);
+  }, [open]);
 
   /**
    * A Menu Item specialized for the Print Menu.

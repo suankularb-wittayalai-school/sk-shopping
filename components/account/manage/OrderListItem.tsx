@@ -143,15 +143,33 @@ const OrderListItem: StylableFC<{
               </Text>
             }
             desc={
-              order.delivery_type === "delivery"
-                ? [
-                    order.street_address_line_1,
-                    order.street_address_line_2?.replace("\n", " "),
-                    order.district,
-                    order.province,
-                    order.zip_code,
-                  ].join(" ")
-                : undefined
+              {
+                // POS: show last 5 digits of Ref ID
+                pos: (
+                  <span className="!font-mono">{order.ref_id.slice(-5)}</span>
+                ),
+                // School Pickup: show date and last 3 digits of Ref ID
+                school_pickup: (
+                  <>
+                    <span className="!font-mono">
+                      {new Date(order.created_at)
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}
+                    </span>
+                    {" • "}
+                    <span className="!font-mono">{order.ref_id.slice(-3)}</span>
+                  </>
+                ),
+                // Delivery: show address
+                delivery: [
+                  order.street_address_line_1,
+                  order.street_address_line_2?.replace("\n", " "),
+                  order.district,
+                  order.province,
+                  order.zip_code,
+                ].join(" "),
+              }[order.delivery_type]
             }
             alt={t(`delivery.${camel(order.delivery_type)}`)}
           />

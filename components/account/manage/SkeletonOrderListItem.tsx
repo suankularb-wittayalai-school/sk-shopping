@@ -27,8 +27,9 @@ const SkeletonOrderListItem: StylableFC = ({ style, className }) => (
         className={cn(`grid grid-cols-[1fr,calc(5.5rem+2px)] gap-4
           sm:col-span-2 md:col-span-1`)}
       >
-        <div className="my-0.5">
+        <div className="my-0.5 space-y-1">
           <div className="h-5 w-20 rounded-xs bg-surface-variant" />
+          <div className="h-4 w-16 rounded-xs bg-surface-variant" />
         </div>
         <div className="my-0.5 flex flex-row justify-end gap-2 self-end">
           <div className="h-10 w-10 rounded-full bg-surface-variant" />

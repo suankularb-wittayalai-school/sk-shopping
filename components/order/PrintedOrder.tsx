@@ -27,7 +27,7 @@ const PrintedOrder: StylableFC<{
   height: number;
   density?: -2 | -1 | 0;
   autoPrint?: boolean;
-}> = ({ order, type, width, height, density, autoPrint }) => {
+}> = ({ order, type, width, height, density, autoPrint, style, className }) => {
   const { fromUUID } = shortUUID();
   useEffect(() => {
     if (!autoPrint) return;
@@ -44,10 +44,13 @@ const PrintedOrder: StylableFC<{
   }, [tableRef]);
 
   return (
-    <main
-      style={{ width: `${width}mm`, height: `${height}mm` }}
-      className={cn(`light //invisible absolute flex flex-col divide-y-1
-        divide-dashed divide-black bg-white text-black print:visible`)}
+    <div
+      style={{ width: `${width}mm`, height: `${height}mm`, ...style }}
+      className={cn(
+        `light invisible absolute flex flex-col divide-y-1 divide-dashed
+        divide-black bg-white text-black print:visible`,
+        className,
+      )}
     >
       <div
         className={cn(
@@ -67,43 +70,37 @@ const PrintedOrder: StylableFC<{
 
         {/* Header */}
         <div className="grid grid-cols-[minmax(0,1fr),4rem] items-end gap-6">
-          <Text
-            type={density === -2 ? "headline-medium" : "display-medium"}
-            element="h1"
-            className="!leading-none"
-          >
-            {type === "receipt" ? (
-              <>
-                {order.is_paid && order.is_verified
-                  ? "ใบเสร็จ"
-                  : "ใบแจ้งชำระเงิน"}
-                {" • "}
-                <Text type="title-large" className="!font-mono">
-                  {order.delivery_type === "pos" ? (
-                    <>
-                      <span className="opacity-50">
-                        {order.ref_id.slice(0, -5)}
-                      </span>
-                      <strong>{order.ref_id.slice(-5)}</strong>
-                    </>
-                  ) : (
-                    order.ref_id
-                  )}
-                </Text>
-              </>
-            ) : (
-              <>
-                <span className="!font-mono">
-                  {new Date(order.created_at)
-                    .getDate()
-                    .toString()
-                    .padStart(2, "0")}
-                </span>
-                {" • "}
-                <span className="!font-mono">{order.ref_id.slice(-5)}</span>
-              </>
-            )}
-          </Text>
+          {type === "receipt" ? (
+            <Text type="headline-medium" element="h1" className="!leading-none">
+              {order.is_paid && order.is_verified
+                ? "ใบเสร็จ"
+                : "ใบแจ้งชำระเงิน"}
+              {" • "}
+              <Text type="title-large" className="!font-mono">
+                {order.delivery_type === "pos" ? (
+                  <>
+                    <span className="opacity-50">
+                      {order.ref_id.slice(0, -5)}
+                    </span>
+                    <strong>{order.ref_id.slice(-5)}</strong>
+                  </>
+                ) : (
+                  order.ref_id
+                )}
+              </Text>
+            </Text>
+          ) : (
+            <Text type="display-large" element="h1" className="!leading-none">
+              <span className="!font-mono">
+                {new Date(order.created_at)
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")}
+              </span>
+              {" • "}
+              <span className="!font-mono">{order.ref_id.slice(-3)}</span>
+            </Text>
+          )}
           <QRCode
             value={`https://shopping.skkornor.org/order/${fromUUID(order.id)}`}
             bgColor="transparent"
@@ -118,6 +115,9 @@ const PrintedOrder: StylableFC<{
                 ที่อยู่ผู้ส่ง
               </Text>
               <Text type="body-medium" element="address" className="not-italic">
+                {/* FIXME: The Shop name is hard-coded here; get from Order once implemented */}
+                คณะกรรมการนักเรียน
+                <br />
                 88 ถนนตรีเพชร
                 <br />
                 แขวงวังบูรพาภิรมย์
@@ -132,6 +132,8 @@ const PrintedOrder: StylableFC<{
                 ที่อยู่ผู้รับ
               </Text>
               <Text type="body-medium" element="address" className="not-italic">
+                {order.receiver_name}
+                <br />
                 <Balancer>{order.street_address_line_1}</Balancer>
                 <br />
                 {order.street_address_line_2 && (
@@ -220,7 +222,7 @@ const PrintedOrder: StylableFC<{
           }
         }
       `}</style>
-    </main>
+    </div>
   );
 };
 
