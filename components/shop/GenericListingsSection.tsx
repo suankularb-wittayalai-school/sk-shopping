@@ -6,7 +6,7 @@ import { Columns, Header, Section } from "@suankularb-components/react";
 
 /**
  * For a Section of Listings that are not Collections.
- * 
+ *
  * @param title The title of the Section.
  * @param listings The Listings to display.
  * @param selected The selected Listing.
