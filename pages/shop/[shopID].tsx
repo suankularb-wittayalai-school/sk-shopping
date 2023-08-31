@@ -85,9 +85,9 @@ const ShopPage: NextPage<{
         logError("useEffect (hidden listings)", error);
         return;
       }
-      // setHiddenListings(data);
+      setHiddenListings(data);
     })();
-  }, [jimmy.user]);
+  }, [jimmy.user.status]);
 
   /**
    * All the Listings in this Shop.
@@ -418,3 +418,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export default ShopPage;
+
