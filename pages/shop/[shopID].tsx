@@ -11,7 +11,6 @@ import createJimmy from "@/utils/helpers/createJimmy";
 import insertLocaleIntoStaticPaths from "@/utils/helpers/insertLocaleIntoStaticPaths";
 import { logError } from "@/utils/helpers/logError";
 import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
-import useIsManagerOfShop from "@/utils/helpers/useIsManagerOfShop";
 import useJimmy from "@/utils/helpers/useJimmy";
 import { Collection, CollectionDetailed } from "@/utils/types/collection";
 import { IDOnly, LangCode } from "@/utils/types/common";
@@ -22,6 +21,7 @@ import {
   Card,
   Columns,
   ContentLayout,
+  Progress,
   Section,
   Text,
   useBreakpoint,
@@ -60,19 +60,36 @@ const ShopPage: NextPage<{
 
   const router = useRouter();
   const jimmy = useJimmy();
-  const isManagerOfShop = useIsManagerOfShop();
   const plausible = usePlausible();
 
   const { atBreakpoint } = useBreakpoint();
   const { activeNav } = useContext(AppStateContext);
 
   // If the user is a manager of this Shop, fetch hidden Listings
+  const [loading, setLoading] = useState(true);
   const [hiddenListings, setHiddenListings] = useState<ListingCompact[]>([]);
   useEffect(() => {
-    if (jimmy.user.status !== "authenticated" || !jimmy.user.user) return;
+    const { user, status } = jimmy.user;
+    if (status !== "authenticated") {
+      setLoading(false);
+      return;
+    }
+
     (async () => {
-      // If this Shop is not managed by the user, return
-      if (!(await isManagerOfShop(shop.id))) return;
+      // Fetch the Shops that the user is managing
+      const { data: managingShops, error: shopsError } = await jimmy.fetch<
+        IDOnly[]
+      >(`/shops`, {
+        query: { filter: { data: { manager_ids: [user!.id] } } },
+      });
+      if (shopsError) {
+        logError("useIsManagerOfShop", shopsError);
+        return;
+      }
+
+      // Check if the user is managing the given Shop
+      if (!managingShops?.find((managingShop) => shop.id === managingShop.id))
+        return;
 
       // Fetch hidden Listings
       const { data, error } = await jimmy.fetch<ListingCompact[]>(`/listings`, {
@@ -86,6 +103,7 @@ const ShopPage: NextPage<{
         return;
       }
       setHiddenListings(data);
+      setLoading(false);
     })();
   }, [jimmy.user.status]);
 
@@ -226,8 +244,16 @@ const ShopPage: NextPage<{
             ) : (
               <Card
                 appearance="outlined"
-                className="mx-4 flex h-[calc(100dvh-11rem)] flex-col items-center justify-center gap-2 !bg-transparent p-6 sm:mx-0 sm:h-[calc(100dvh-8rem)]"
+                className={cn(`relative mx-4 flex h-[calc(100dvh-11rem)]
+                  flex-col items-center justify-center gap-2 overflow-hidden
+                  !bg-transparent p-6 sm:mx-0 sm:h-[calc(100dvh-8rem)]`)}
               >
+                <Progress
+                  appearance="linear"
+                  visible={loading}
+                  alt={t("list.empty.loading")}
+                  className="absolute inset-0 bottom-auto"
+                />
                 <Text type="body-medium" element="p" className="text-center">
                   <Balancer>{t("list.empty.desc")}</Balancer>
                 </Text>
@@ -418,4 +444,3 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export default ShopPage;
-
