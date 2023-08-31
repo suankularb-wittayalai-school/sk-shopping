@@ -55,7 +55,7 @@ const AccountPage: NextPage<{
         {user ? (
           <>
             <AccountHeader user={user} />
-            {managingShops && (
+            {managingShops && managingShops.length && (
               <Section>
                 <Header>{t("managingShops.title")}</Header>
                 <Columns columns={4} element="ul">
