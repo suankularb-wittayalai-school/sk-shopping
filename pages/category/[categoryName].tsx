@@ -12,6 +12,7 @@ import { Category } from "@/utils/types/category";
 import { LangCode } from "@/utils/types/common";
 import { ListingCompact } from "@/utils/types/listing";
 import {
+  Card,
   Columns,
   ContentLayout,
   Header,
@@ -19,6 +20,7 @@ import {
   Section,
   Tab,
   TabsContainer,
+  Text,
 } from "@suankularb-components/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
@@ -28,6 +30,9 @@ import Link from "next/link";
 import { dash } from "radash";
 import { useContext, useEffect, useState } from "react";
 
+/**
+ * The Category page displays Listings in a Category.
+ */
 const CategoryPage: NextPage<{
   categories: Category[];
   selectedCategory: Category;
@@ -103,16 +108,25 @@ const CategoryPage: NextPage<{
           <Header className="sr-only">
             {getLocaleString(selectedCategory.name)}
           </Header>
-          <Columns columns={4}>
-            {listings.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                size="large"
-                listing={listing}
-                showShop
-              />
-            ))}
-          </Columns>
+          {listings.length ? (
+            <Columns columns={4}>
+              {listings.map((listing) => (
+                <ListingCard
+                  key={listing.id}
+                  size="large"
+                  listing={listing}
+                  showShop
+                />
+              ))}
+            </Columns>
+          ) : (
+            <Card
+              appearance="outlined"
+              className="grid h-56 place-content-center p-6 !text-center"
+            >
+              <Text type="body-medium">{t("empty")}</Text>
+            </Card>
+          )}
         </Section>
       </ContentLayout>
     </>
@@ -185,3 +199,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export default CategoryPage;
+

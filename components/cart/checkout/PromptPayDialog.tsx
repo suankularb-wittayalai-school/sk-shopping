@@ -35,10 +35,20 @@ const PromptPayDialog: StylableFC<{
 
   const jimmy = useJimmy();
 
+  // Keep track of whether the order has been paid so as to not cause duplicate
+  // Plausible events
+  const [isPaid, setIsPaid] = useState(false);
+  useEffect(() => {
+    if (open) setIsPaid(false);
+  }, [open]);
+
   // Every 1 second, reduce `timeLeft` by 1
   const [timeLeft, setTimeLeft] = useState(TIMEOUT_SEC);
   useEffect(() => {
     const interval = setInterval(() => {
+      // If the order is paid, effectively stop the interval
+      if (isPaid) return;
+
       // Calculate how much time is left until the order is canceled
       // (Using Date to prevent interval freeze caused by tabbing out)
       const newTimeLeft =
@@ -59,7 +69,10 @@ const PromptPayDialog: StylableFC<{
           { query: { fetch_level: "compact" } },
         );
         if (error) logError("PromptPayDialog", error);
-        else if (data.is_paid) onSubmit();
+        else if (data.is_paid) {
+          onSubmit();
+          setIsPaid(true);
+        }
       })();
     }, 1000);
 
@@ -93,4 +106,3 @@ const PromptPayDialog: StylableFC<{
 };
 
 export default PromptPayDialog;
-
