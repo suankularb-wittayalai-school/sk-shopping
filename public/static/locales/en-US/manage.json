@@ -16,6 +16,12 @@
       "pending": "Pending",
       "delivered": "Delivered"
     },
+    "deliverySelect": {
+      "all": "All",
+      "pos": "Storefront",
+      "schoolPickup": "School pickup",
+      "delivery": "Delivery"
+    },
     "search": {
       "alt": "Search orders",
       "helper": "<0>Enter ↵</0> to search."

@@ -3,10 +3,12 @@ import ReceiptDialog from "@/components/cart/ReceiptDialog";
 import SnackbarContext from "@/contexts/SnackbarContext";
 import cn from "@/utils/helpers/cn";
 import { logError } from "@/utils/helpers/logError";
+import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import useJimmy from "@/utils/helpers/useJimmy";
 import useLocale from "@/utils/helpers/useLocale";
 import { StylableFC } from "@/utils/types/common";
 import { Order, OrderStatus } from "@/utils/types/order";
+import { Shop } from "@/utils/types/shop";
 import {
   Actions,
   Avatar,
@@ -24,6 +26,7 @@ import {
 } from "@suankularb-components/react";
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
+import { usePlausible } from "next-plausible";
 import Image from "next/image";
 import { camel, sift } from "radash";
 import { useContext, useState } from "react";
@@ -38,18 +41,23 @@ import { useContext, useState } from "react";
  * good, is it!
  *
  * @param order The Order to display and/or modify.
+ * @param shop The Shop this Order is for.
  * @param onStatusChange Triggers when the Order Status is changed.
  * @param setStatus The function to change the Order Status view.
  * @param jimmy A Jimmy instance.
  */
 const OrderListItem: StylableFC<{
   order: Order;
+  shop: Pick<Shop, "name">;
   onStatusChange: () => void;
   setStatus: (status: OrderStatus) => void;
   jimmy: ReturnType<typeof useJimmy>;
-}> = ({ order, onStatusChange, setStatus, jimmy, style, className }) => {
+}> = ({ order, shop, onStatusChange, setStatus, jimmy, style, className }) => {
   const locale = useLocale();
+  const getLocaleString = useGetLocaleString();
   const { t } = useTranslation("manage", { keyPrefix: "orders.order" });
+
+  const plausible = usePlausible();
 
   const { setSnackbar } = useContext(SnackbarContext);
 
@@ -66,6 +74,11 @@ const OrderListItem: StylableFC<{
   async function handleChangeStatus(status: OrderStatus) {
     setMenuOpen(false);
     if (status === order.shipment_status) return;
+
+    plausible("Move Order to New Status", {
+      props: { shop: getLocaleString(shop.name) },
+    });
+
     const { error } = await jimmy.fetch(`/orders/${order.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -75,6 +88,7 @@ const OrderListItem: StylableFC<{
       logError("handleChangeStatus", error);
       return;
     }
+
     onStatusChange();
     setSnackbar(
       <Snackbar
@@ -107,7 +121,7 @@ const OrderListItem: StylableFC<{
           <ListItemContent
             title={order.receiver_name}
             desc={sift([
-              new Date(order.created_at).toLocaleString(locale, {
+              new Date(order.created_at).toLocaleDateString(locale, {
                 day: "numeric",
                 month: "short",
                 year:
@@ -115,6 +129,8 @@ const OrderListItem: StylableFC<{
                   new Date().getFullYear()
                     ? "numeric"
                     : undefined,
+              }),
+              new Date(order.created_at).toLocaleTimeString(locale, {
                 hour: "numeric",
                 minute: "numeric",
               }),

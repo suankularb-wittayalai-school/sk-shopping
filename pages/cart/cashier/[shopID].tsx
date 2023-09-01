@@ -17,6 +17,7 @@ import { Columns, ContentLayout, Text } from "@suankularb-components/react";
 import { GetServerSideProps, NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { usePlausible } from "next-plausible";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -41,6 +42,7 @@ const CheckoutAsCashierPage: NextPage<{
   const { fromUUID } = shortUUID();
 
   const jimmy = useJimmy();
+  const plausible = usePlausible();
   const router = useRouter();
 
   const { carts, removeCart, addOrder } = useContext(CartsContext);
@@ -97,6 +99,14 @@ const CheckoutAsCashierPage: NextPage<{
     if (!order) return;
     removeCart(shop.id);
     addOrder(order);
+    plausible("Sales", {
+      props: {
+        role: "Cashier",
+        method: paymentMethod === "pos_cash" ? "Cash on location" : "PromptPay",
+        shop: getLocaleString(shop.name, "en-US"),
+      },
+      revenue: { currency: "THB", amount: total },
+    });
     router.push(`/order/${fromUUID(order.id)}/print/receipt`);
   }
 
@@ -193,3 +203,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default CheckoutAsCashierPage;
+
