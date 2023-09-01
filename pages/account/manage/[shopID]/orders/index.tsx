@@ -1,6 +1,7 @@
 // Imports
 import PageHeader from "@/components/PageHeader";
 import BulkPrintOrdersDialog from "@/components/account/manage/BulkPrintOrdersDialog";
+import DeliveryTypeSelect from "@/components/account/manage/DeliveryTypeSelect";
 import ManageShopTabs from "@/components/account/manage/ManageShopTabs";
 import OrderListItem from "@/components/account/manage/OrderListItem";
 import OrderStatusSelect from "@/components/account/manage/OrderStatusSelect";
@@ -12,7 +13,7 @@ import useGetLocaleString from "@/utils/helpers/useGetLocaleString";
 import useJimmy from "@/utils/helpers/useJimmy";
 import useLocale from "@/utils/helpers/useLocale";
 import { IDOnly, LangCode } from "@/utils/types/common";
-import { Order, OrderStatus } from "@/utils/types/order";
+import { DeliveryType, Order, OrderStatus } from "@/utils/types/order";
 import { ShopCompact } from "@/utils/types/shop";
 import {
   Actions,
@@ -34,7 +35,7 @@ import { list, omit } from "radash";
 import { useEffect, useState } from "react";
 import shortUUID from "short-uuid";
 
-const ROWS_PER_PAGE = 100;
+const ROWS_PER_PAGE = 25;
 
 /**
  * The Manage Orders page allows Shop Managers to manage Orders for their Shop.
@@ -56,8 +57,13 @@ const ManageOrdersPage: NextPage<{
   const jimmy = useJimmy();
   const [loading, setLoading] = useState(false);
 
+  // Filters and pagination
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<OrderStatus>("not_shipped_out");
+  const [orderStatus, setOrderStatus] =
+    useState<OrderStatus>("not_shipped_out");
+  const [deliveryType, setDeliveryType] = useState<DeliveryType | "all">(
+    "school_pickup",
+  );
   const [page, setPage] = useState(1);
 
   const [orders, setOrders] = useState<Order[]>(initialOrders);
@@ -66,6 +72,7 @@ const ManageOrdersPage: NextPage<{
    * Refreshes the list of Orders.
    */
   async function refreshOrders() {
+    setIsInitial(false);
     setLoading(true);
     setOrders([]);
     const { data, error } = await jimmy.fetch<Order[]>(`/orders`, {
@@ -73,7 +80,11 @@ const ManageOrdersPage: NextPage<{
         pagination: { p: (page - 1) * ROWS_PER_PAGE, size: ROWS_PER_PAGE },
         filter: {
           ...(query ? { q: query } : {}),
-          data: { shop_ids: [shop.id], shipment_status: status },
+          data: {
+            shop_ids: [shop.id],
+            shipment_status: orderStatus,
+            ...(deliveryType !== "all" ? { delivery_type: deliveryType } : {}),
+          },
         },
         sorting: { by: ["created_at"], ascending: false },
         descendant_fetch_level: "compact",
@@ -84,8 +95,12 @@ const ManageOrdersPage: NextPage<{
     setLoading(false);
   }
 
-  useEffect(() => setPage(1), [status]);
+  const [isInitial, setIsInitial] = useState(true);
+  useEffect(() => {
+    if (!isInitial) refreshOrders();
+  }, [page, orderStatus, deliveryType, isInitial]);
 
+  // Dialog control
   const [printOpen, setPrintOpen] = useState(false);
 
   return (
@@ -108,20 +123,34 @@ const ManageOrdersPage: NextPage<{
 
         {/* Filters */}
         <Columns columns={3} className="mx-4 !items-end sm:mx-0">
-          <OrderStatusSelect
-            value={status}
-            onChange={(value) => {
-              setStatus(value);
-              refreshOrders();
-            }}
-            className="md:col-span-2"
-          />
+          <div className="space-y-2 md:col-span-2">
+            <OrderStatusSelect
+              value={orderStatus}
+              onChange={(value) => {
+                setIsInitial(false);
+                setPage(1);
+                setOrderStatus(value);
+              }}
+            />
+            <DeliveryTypeSelect
+              value={deliveryType}
+              onChange={(value) => {
+                setIsInitial(false);
+                setPage(1);
+                setDeliveryType(value);
+              }}
+            />
+          </div>
           <Search
             alt={t("search.alt")}
             value={query}
             locale={locale}
             onChange={setQuery}
-            onSearch={refreshOrders}
+            onSearch={() => {
+              setIsInitial(false);
+              setPage(1);
+              refreshOrders();
+            }}
           >
             <Text type="body-medium" element="p" className="mx-4">
               <Trans
@@ -147,7 +176,7 @@ const ManageOrdersPage: NextPage<{
                           orders.filter((mapOrder) => order.id !== mapOrder.id),
                         )
                       }
-                      setStatus={setStatus}
+                      setStatus={setOrderStatus}
                       jimmy={jimmy}
                     />
                   ))
@@ -181,8 +210,8 @@ const ManageOrdersPage: NextPage<{
             icon={<MaterialIcon icon="chevron_left" />}
             tooltip={t("pagination.action.previous")}
             onClick={() => {
-              setPage(Math.max(page - 1, 1));
-              refreshOrders();
+              if (page <= 1) return;
+              setPage(page - 1);
             }}
           />
           <Text
@@ -202,7 +231,6 @@ const ManageOrdersPage: NextPage<{
               // that we are on the last page
               if (orders.length !== ROWS_PER_PAGE) return;
               setPage(page + 1);
-              refreshOrders();
             }}
           />
         </SegmentedButton>
@@ -248,14 +276,18 @@ export const getServerSideProps: GetServerSideProps = async ({
     query: {
       pagination: { p: 0, size: ROWS_PER_PAGE },
       filter: {
-        data: { shop_ids: [shop.id] },
+        data: {
+          shop_ids: [shop.id],
+          shipment_status: "not_shipped_out",
+          delivery_type: "school_pickup",
+        },
       },
       sorting: { by: ["created_at"], ascending: false },
       descendant_fetch_level: "compact",
     },
   });
   if (error) {
-    logError("useEffect", error);
+    logError("/account/manage/:id/orders getServerSideProps (orders)", error);
     return { notFound: true };
   }
   const orders = data.map((order) => omit(order, ["promptpay_qr_code_url"]));
