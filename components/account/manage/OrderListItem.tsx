@@ -107,7 +107,7 @@ const OrderListItem: StylableFC<{
           <ListItemContent
             title={order.receiver_name}
             desc={sift([
-              new Date(order.created_at).toLocaleString(locale, {
+              new Date(order.created_at).toLocaleDateString(locale, {
                 day: "numeric",
                 month: "short",
                 year:
@@ -115,6 +115,8 @@ const OrderListItem: StylableFC<{
                   new Date().getFullYear()
                     ? "numeric"
                     : undefined,
+              }),
+              new Date(order.created_at).toLocaleTimeString(locale, {
                 hour: "numeric",
                 minute: "numeric",
               }),
