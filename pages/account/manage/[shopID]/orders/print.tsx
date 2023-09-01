@@ -7,6 +7,7 @@ import { LangCode } from "@/utils/types/common";
 import { DeliveryType, Order, OrderStatus } from "@/utils/types/order";
 import { GetServerSideProps, NextPage } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { usePlausible } from "next-plausible";
 import { camel } from "radash";
 import { useEffect } from "react";
 import shortUUID from "short-uuid";
@@ -33,6 +34,17 @@ const BulkPrintOrdersPage: NextPage<{
   useEffect(() => {
     const timeout = setTimeout(() => window.print(), 100);
     return () => clearTimeout(timeout);
+  }, []);
+
+  // Listen for print events and log to Plausible
+  const plausible = usePlausible();
+  useEffect(() => {
+    const listener = () => {
+      console.log("print");
+      plausible("Bulk Print Orders", { props: { type } });
+    };
+    window.addEventListener("afterprint", listener);
+    return () => window.removeEventListener("afterprint", listener);
   }, []);
 
   // To print many Orders at the same time, I just map the Orders into Printed
@@ -137,3 +149,4 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default BulkPrintOrdersPage;
+

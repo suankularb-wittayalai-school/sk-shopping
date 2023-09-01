@@ -30,6 +30,7 @@ import { LayoutGroup } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { Trans, useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { usePlausible } from "next-plausible";
 import Head from "next/head";
 import { list, omit } from "radash";
 import { useEffect, useState } from "react";
@@ -55,6 +56,8 @@ const ManageOrdersPage: NextPage<{
   const { fromUUID } = shortUUID();
 
   const jimmy = useJimmy();
+  const plausible = usePlausible();
+
   const [loading, setLoading] = useState(false);
 
   // Filters and pagination
@@ -127,6 +130,12 @@ const ManageOrdersPage: NextPage<{
             <OrderStatusSelect
               value={orderStatus}
               onChange={(value) => {
+                plausible("Filter Orders by Status", {
+                  props: {
+                    status: value,
+                    shop: getLocaleString(shop.name),
+                  },
+                });
                 setIsInitial(false);
                 setPage(1);
                 setOrderStatus(value);
@@ -135,6 +144,12 @@ const ManageOrdersPage: NextPage<{
             <DeliveryTypeSelect
               value={deliveryType}
               onChange={(value) => {
+                plausible("Filter Orders by Delivery Type", {
+                  props: {
+                    deliveryType: value,
+                    shop: getLocaleString(shop.name),
+                  },
+                });
                 setIsInitial(false);
                 setPage(1);
                 setDeliveryType(value);
@@ -147,6 +162,9 @@ const ManageOrdersPage: NextPage<{
             locale={locale}
             onChange={setQuery}
             onSearch={() => {
+              plausible("Search Orders", {
+                props: { shop: getLocaleString(shop.name) },
+              });
               setIsInitial(false);
               setPage(1);
               refreshOrders();
@@ -171,6 +189,7 @@ const ManageOrdersPage: NextPage<{
                     <OrderListItem
                       key={order.id}
                       order={order}
+                      shop={shop}
                       onStatusChange={() =>
                         setOrders(
                           orders.filter((mapOrder) => order.id !== mapOrder.id),
